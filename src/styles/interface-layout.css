@@ -233,15 +233,6 @@ body:has(.tadeon-tabletop-command-layer) :where(
   pointer-events: none !important;
 }
 
-/* O radial deve animar a saída, não apenas desaparecer ao fechar por estado. */
-.tadeon-radial-trigger,
-.tadeon-radial-actions {
-  transition:
-    opacity 150ms ease,
-    visibility 0s linear 0s,
-    filter 180ms ease;
-}
-
 /* No mobile o Placeables disputava a mesma borda inferior dos docks. Ele vira
    utilidade superior direita e o painel cresce para baixo, sempre dentro da
    viewport e das safe-areas. */
@@ -315,32 +306,6 @@ body:has(.tadeon-tabletop-command-layer) :where(
 /* Superfícies customizadas da Mesa não têm o Presence do Radix. O DOM fica
    montado durante o estado fechado para que abertura e saída compartilhem a
    mesma linguagem de motion sem manter foco ou clique. */
-.tadeon-radial-actions[data-state="open"] {
-  visibility: visible;
-  opacity: 1;
-  scale: 1;
-  rotate: 0deg;
-  pointer-events: auto;
-  transition:
-    opacity 160ms var(--ease-out),
-    scale 190ms var(--ease-out),
-    rotate 190ms var(--ease-out),
-    visibility 0s linear 0s !important;
-}
-
-.tadeon-radial-actions[data-state="closed"] {
-  visibility: hidden;
-  opacity: 0;
-  scale: 0.86;
-  rotate: -3deg;
-  pointer-events: none;
-  transition:
-    opacity 150ms ease,
-    scale 180ms var(--ease-out),
-    rotate 180ms var(--ease-out),
-    visibility 0s linear 180ms !important;
-}
-
 .tadeon-placeables__panel[data-state="open"] {
   visibility: visible;
   opacity: 1;
@@ -374,7 +339,6 @@ body:has(.tadeon-tabletop-command-layer) :where(
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-radial-actions[data-state],
   .tadeon-placeables__panel[data-state] {
     transition-duration: .01ms !important;
   }
@@ -545,17 +509,6 @@ body:has(.tadeon-tabletop-studio) {
 .tadeon-rename-popover header small { color:hsl(var(--muted-foreground)); font-size:.56rem; text-transform:uppercase; letter-spacing:.08em; }
 .tadeon-rename-popover header strong { font-family:var(--font-cinzel); font-size:.82rem; }
 .tadeon-rename-popover select { width:100%; min-height:2.25rem; border:1px solid var(--border); border-radius:.55rem; padding:.35rem .55rem; color:var(--foreground); background:hsl(var(--background)); font-size:.68rem; }
-
-/* Radial trigger stays screen-space sized and pinned above its subject. */
-.tadeon-radial-trigger {
-  width:2.15rem !important;
-  height:2.15rem !important;
-  translate:-50% calc(-100% - .7rem) !important;
-  transform:none !important;
-  transform-origin:50% 100% !important;
-  box-shadow:0 10px 32px -16px color-mix(in srgb, var(--primary) 75%, transparent),0 0 0 1px color-mix(in srgb, var(--border) 70%, transparent) !important;
-}
-.tadeon-radial-trigger svg { width:.92rem !important; height:.92rem !important; }
 
 /* Mobile Mesa launcher matches its neighboring icon actions. */
 @media (max-width:767px) {

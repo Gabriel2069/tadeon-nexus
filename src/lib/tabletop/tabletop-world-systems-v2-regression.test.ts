@@ -56,7 +56,7 @@ describe("Tabletop world systems v2", () => {
     const radial = source("src/components/tabletop/tabletop-radial-actions-bridge.tsx");
     expect(radial).toContain('event.key.toLowerCase() === "q"');
     expect(radial).toContain("tadeon-radial-trigger");
-    expect(radial).toContain("safeAnchor(selected)");
+    expect(radial).toContain("safeAnchor(selected, open)");
     expect(radial).not.toContain("MutationObserver");
   });
 

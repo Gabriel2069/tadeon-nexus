@@ -39,6 +39,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-027 | Composição móvel, tipografia e seleção contínua de tecido | Integrado | 7 | shell | NEX-025, NEX-026 |
 | NEX-028 | Tecido esculpido, instrumentos compactos e efeitos com custo limitado | Integrado | 7 | shell | NEX-027 |
 | NEX-029 | Fólios compactos, material do shell e reflexão local exclusiva | Integrado | 7 | shell | NEX-028 |
+| NEX-030 | Mesa circular e profundidade contida dos materiais | Em andamento | 7 | tabletop | NEX-029 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -276,6 +277,15 @@ Evidências: [docs/visual-system-validation.json](../docs/visual-system-validati
 - Comparar baseline e implementação em navegador, validar celular/tablet/desktop, foco e portais; não declarar desempenho físico a partir de fixtures.
 
 Evidências: [docs/visual-system-validation.json](../docs/visual-system-validation.json), [docs/DESIGN.md](../docs/DESIGN.md), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/289), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494025169), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494025229), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494974487), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494974499).
+
+## NEX-030 — Mesa circular e profundidade contida dos materiais
+
+- Restabelecer o menu circular junto à entidade selecionada com um único proprietário de coordenadas e portal de viewport.
+- Preservar foco, teclado, ações, controles de modelo e limites visíveis no celular; seguir câmera e rolagem por eventos, sem loop permanente de acompanhamento.
+- Aprofundar relevo óptico de cards e transições de menus sem inclinar texto ou alterar o material aprovado dos botões.
+- Validar ações reais do motor em fixtures, quatro larguras, foco/retorno e redução de movimento; preservar limites de hardware e contas reais.
+
+Evidências: [docs/visual-system-validation.json](../docs/visual-system-validation.json), [docs/DESIGN.md](../docs/DESIGN.md).
 
 ## Decisões vigentes
 

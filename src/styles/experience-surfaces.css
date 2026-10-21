@@ -1453,14 +1453,23 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
     linear-gradient(154deg, rgb(255 249 232 / 5%), transparent 28%, rgb(0 0 0 / 16%) 54%, transparent 76%),
     repeating-linear-gradient(112deg, transparent 0 20px, rgb(233 227 213 / 1.4%) 20px 21px, transparent 21px 34px),
     var(--surface-ink);
-  box-shadow: inset 0 1px rgb(255 249 232 / 10%), inset 1px 0 rgb(255 249 232 / 3%), inset 0 -1px rgb(0 0 0 / 45%), var(--shadow-relief);
+  box-shadow: inset 0 1px rgb(255 249 232 / 14%), inset 1px 0 rgb(255 249 232 / 5%), inset -1px 0 rgb(0 0 0 / 25%), inset 0 -2px 3px rgb(0 0 0 / 35%), 0 1px 0 rgb(0 0 0 / 50%), var(--shadow-relief);
   transition: border-color var(--motion-fast) var(--ease-out), box-shadow var(--motion-panel) var(--ease-out);
 }
+.tadeon-material-card::after {
+  content: ""; position: absolute; inset: 1px; border-radius: inherit; pointer-events: none;
+  border: 1px solid transparent;
+  background: radial-gradient(ellipse at var(--material-x, 20%) var(--material-y, 0%), rgb(255 249 232 / 22%), transparent 62%) border-box;
+  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude; opacity: .45;
+  transition: opacity 180ms var(--ease-out);
+}
+.tadeon-material-card:focus-within::after { opacity: .85; }
 .tadeon-material-card:focus-within { border-color: rgb(233 227 213 / 42%); }
 @media (hover: hover) and (pointer: fine) {
   .tadeon-material-card:hover { border-color: rgb(233 227 213 / 30%); box-shadow: inset 0 1px 0 var(--material-crest), inset 0 -1px 0 rgb(0 0 0 / 55%), 0 22px 48px -28px rgb(0 0 0 / 85%); }
 }
-@media (prefers-reduced-motion: reduce) { .tadeon-material-card { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .tadeon-material-card, .tadeon-material-card::after { transition: none; } }
 @media (prefers-contrast: more) { .tadeon-material-card { border-color: var(--tadeon-metal); } }
 
 /* Fio-Mestre: woven atmosphere and contact-lit planes, one material owner. */

@@ -235,3 +235,12 @@ useMaterialLight reconhece o ancestral data-material-surface mais próximo do al
 CharacterArchive conserva os dados autorizados recebidos pela rota e suas operações locais. A identificação Seu fio deriva da mesma identidade já usada pelo filtro. Geometria e material dos fólios permanecem em experience-surfaces.css. Material do shell permanece em navigation-layout.css: a lateral opaca dispensa backdrop-filter; a redução de transparência continua sendo a última autoridade.
 
 Visual review roda as fixtures existentes no GitHub Actions com Playwright isolado das dependências da aplicação. Baseline usa a base da PR e o mesmo verificador da implementação; screenshots e resultados têm retenção de sete dias. Quality continua responsável por auditoria, estilos, mapas, lint, tipos, testes e build. Os artefatos não certificam contas ou hardware reais.
+
+
+## Radial com proprietário único — NEX-030
+
+TabletopRadialActionsBridge renderiza por portal no body. safeAnchor usa coordenadas do runtime e limita a moldura ao espaço visível. Renderizações sem notificação semântica emitem tadeon-tabletop-view; a seleção e os dados continuam em tadeon-tabletop-render. Acompanhamento agrupa eventos em um frame pendente e o descarta ao desmontar. O loop de bootstrap/acompanhamento do radial e o escritor de coordenadas em TabletopFinalInteractionBridge foram retirados; o trabalho restante de renomeação desse bridge foi preservado.
+
+Material, geometria e presença do radial pertencem a tabletop-radial-actions.css. Duplicatas de presença e o tamanho/translate impostos por interface-layout foram retirados; tetos reduzidos. Guards existentes de modo limpo/utensílios continuam explícitos. Foco entra no menu e retorna ao gatilho, Q ignora campos editáveis, Escape e clique externo dispensam. Testes renderizados substituem a asserção textual que exigia um loop permanente.
+
+O relevo compartilhado pertence a experience-surfaces; route-popup-frame mantém a abertura/saída de menus ancorados. Escritores antigos de transição e pressão do card deixam superfícies materiais explícitas. O material do Button não foi refeito.

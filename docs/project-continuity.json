@@ -157,13 +157,14 @@
         "src/lib/tabletop/tabletop-view-preference-service.ts",
         "src/lib/tabletop/tabletop-scene-fingerprint-guard.ts",
         "supabase/functions/_shared/tabletop-entity-color.ts",
-        "supabase/functions/tabletop-view/index.ts"
+        "supabase/functions/tabletop-view/index.ts",
+        "src/components/tabletop/tabletop-radial-actions-bridge.tsx"
       ],
       "styles": [
         "src/styles/tabletop-workspace.css",
         "src/styles/tabletop-route-experience.css"
       ],
-      "boundary": "Motor mantém coordenadas; persistência mantém versões; interfaces não devem criar câmera ou fonte de dados paralela. Editor lateral/compacto pertence a TabletopEditorPanel; ações agrupadas ao workspace; comandos à interface progressiva. Callbacks substituem a busca de botões por texto; mapa dos bridges em tabletop-workspace-map.md. Comparação de cena é pura, sem toJSON capturado ou monkeypatch do serviço. Escritas de mapa, ambiente e câmera recebem a identidade de origem. StagePortal usa eventos de runtime; jogador aplica estado somente após init. Cor-base é um escalar compartilhado entre persistência e projeção protegida; fingerprint normaliza a representação e a ordem jsonb."
+      "boundary": "Motor mantém coordenadas; persistência mantém versões; interfaces não devem criar câmera ou fonte de dados paralela. Editor lateral/compacto pertence a TabletopEditorPanel; ações agrupadas ao workspace; comandos à interface progressiva. Callbacks substituem a busca de botões por texto; mapa dos bridges em tabletop-workspace-map.md. Comparação de cena é pura, sem toJSON capturado ou monkeypatch do serviço. Escritas de mapa, ambiente e câmera recebem a identidade de origem. StagePortal usa eventos de runtime; jogador aplica estado somente após init. Cor-base é um escalar compartilhado entre persistência e projeção protegida; fingerprint normaliza a representação e a ordem jsonb. NEX-030: radial é um portal de viewport com coordenadas próprias; o bridge final não as reescreve. Eventos view-only atualizam o ponto sem publicar snapshot semântico."
     },
     {
       "id": "master",
@@ -1006,6 +1007,26 @@
         "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494974499"
       ],
       "checkpoint": "Integrado pela PR #289, HEAD 13b10c5, merge 2bc2ae5. Quality aprovado: 146 suítes/597 testes. Visual review: baseline 390/1440, 16 estados atuais em quatro larguras e quatro vistas Nexus/offline, foco/portais/preferências; sem overflow ou erros. Em 1440, fólios comuns 320 → 240px e nome longo 320 → 293,5px; em 390, cerca de 9,6px retirados por registro. Reflexão do controle preservada, leitura do card ancestral 1 → zero na rajada de 120 eventos. Sidebar já sem blur no baseline: sem alegação de ganho medido nesse ponto. HTTP 200/SHA exato em 2026-10-20T20:50:08.3535778Z. Auditoria: dois avisos moderados launch-editor/vite, nenhum alto. NEX-009/010/011 preservam hardware, contas reais e restauração."
+    },
+    {
+      "id": "NEX-030",
+      "title": "Mesa circular e profundidade contida dos materiais",
+      "domain": "tabletop",
+      "status": "active",
+      "priority": 7,
+      "dependsOn": [
+        "NEX-029"
+      ],
+      "acceptance": [
+        "Restabelecer o menu circular junto à entidade selecionada com um único proprietário de coordenadas e portal de viewport.",
+        "Preservar foco, teclado, ações, controles de modelo e limites visíveis no celular; seguir câmera e rolagem por eventos, sem loop permanente de acompanhamento.",
+        "Aprofundar relevo óptico de cards e transições de menus sem inclinar texto ou alterar o material aprovado dos botões.",
+        "Validar ações reais do motor em fixtures, quatro larguras, foco/retorno e redução de movimento; preservar limites de hardware e contas reais."
+      ],
+      "evidence": [
+        "docs/visual-system-validation.json",
+        "docs/DESIGN.md"
+      ]
     }
   ],
   "decisions": [
