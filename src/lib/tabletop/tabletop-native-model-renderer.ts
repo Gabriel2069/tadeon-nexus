@@ -447,6 +447,7 @@ export class TabletopNativeModelRenderer {
   private readonly maxJoints: number;
   private readonly models = new Map<string, ModelRecord>();
   private readonly abort = new AbortController();
+  private assetRevision = 0;
   private previousHostPosition = "";
 
   constructor(private readonly host: HTMLElement, private readonly onReady: () => void = () => {}) {
@@ -545,12 +546,14 @@ export class TabletopNativeModelRenderer {
         current.cpu = cpu;
         current.gpu = gpu;
         current.pending = undefined;
+        this.assetRevision += 1;
         if (!this.abort.signal.aborted) this.onReady();
       } catch {
         const current = this.models.get(key);
         if (current?.url === url) {
           current.failed = true;
           current.pending = undefined;
+          this.assetRevision += 1;
           if (!this.abort.signal.aborted) this.onReady();
         }
       }
@@ -570,6 +573,16 @@ export class TabletopNativeModelRenderer {
       const model = this.models.get(modelKey(entity))?.gpu?.source;
       return properties.model_animation_paused !== true && !!model && this.animationIndex(entity, model) >= 0;
     });
+  }
+
+  /** Persistence/status notifications may emit a view event without changing any pixels. */
+  frameSignature(runtime: TabletopBrowserRuntime, snapshot: TabletopSnapshot) {
+    const models = snapshot.scene.entities.filter(entity => isModelEntity(entity) &&
+      (!snapshot.activeLevelId || !entity.levelId || entity.levelId === snapshot.activeLevelId));
+    const ids = new Set(models.map(entity => entity.id));
+    return JSON.stringify([this.assetRevision, this.host.clientWidth, this.host.clientHeight,
+      window.devicePixelRatio, this.host.style.getPropertyValue("--tadeon-tabletop-quality-resolution"),
+      this.cameraUniforms(runtime, snapshot), models, snapshot.selectedIds.filter(id => ids.has(id)).sort()]);
   }
 
   private cameraUniforms(runtime: TabletopBrowserRuntime, snapshot: TabletopSnapshot) {

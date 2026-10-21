@@ -3,6 +3,7 @@ import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 const state = vi.hoisted(() => ({
   animated: false,
+  visualRevision: 0,
   draw: vi.fn(),
   dispose: vi.fn(),
   ready: null as null | (() => void),
@@ -10,13 +11,20 @@ const state = vi.hoisted(() => ({
 }));
 vi.mock("@/lib/tabletop/tabletop-native-model-renderer", () => ({
   TabletopNativeModelRenderer: class {
+    private assetRevision = 0;
     constructor(_host: HTMLElement, ready: () => void) {
-      state.ready = ready;
+      state.ready = () => {
+        this.assetRevision += 1;
+        ready();
+      };
     }
     ensureCanvasSize() {}
     preload() {}
     hasAnimatedModels() {
       return state.animated;
+    }
+    frameSignature() {
+      return `${state.visualRevision}:${this.assetRevision}`;
     }
     render() {
       state.draw();
@@ -49,6 +57,7 @@ function flush(time = 100) {
 beforeEach(() => {
   state.host = document.createElement("div");
   state.animated = false;
+  state.visualRevision = 0;
   state.draw.mockClear();
   state.dispose.mockClear();
   vi.stubGlobal("requestAnimationFrame", (fn: FrameRequestCallback) => {
@@ -78,6 +87,7 @@ it("draws static models once, redraws on camera bursts and readiness, and leaves
   flush();
   expect(state.draw).toHaveBeenCalledTimes(1);
   expect(frames.size).toBe(0);
+  state.visualRevision += 1;
   act(() => {
     for (let i = 0; i < 40; i++) window.dispatchEvent(new Event("tadeon-tabletop-view"));
   });
@@ -92,6 +102,19 @@ it("draws static models once, redraws on camera bursts and readiness, and leaves
   view.unmount();
   expect(frames.size).toBe(0);
   expect(state.dispose).toHaveBeenCalledTimes(1);
+});
+it("ignores repeated semantic and view notifications when the rendered pixels have not changed", () => {
+  render(<TabletopNativeModelBridge />);
+  flush();
+  act(() => {
+    for (let i = 0; i < 30; i++) {
+      window.dispatchEvent(new Event("tadeon-tabletop-render"));
+      window.dispatchEvent(new Event("tadeon-tabletop-view"));
+    }
+  });
+  flush();
+  expect(state.draw).toHaveBeenCalledTimes(1);
+  expect(frames.size).toBe(0);
 });
 it("continues real animation, stops when paused and suspends while the document is hidden", () => {
   state.animated = true;

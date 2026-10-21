@@ -114,7 +114,7 @@ export function TabletopCompositionPanel({
                 [
                   ["model_scale", "Escala do modelo", 1, 0.05, 20, 0.05],
                   ["model_yaw", "Giro do modelo (°)", 0, -360, 360, 15],
-                  ["model_elevation_offset", "Altura da base", 0, -4096, 4096, 8],
+                ["model_elevation_offset", "Altura da base (px)", 0, -4096, 4096, 8],
                   ["model_animation_speed", "Velocidade da animação", 1, 0.05, 4, 0.05],
                 ] as const
               ).map(([key, label, fallback, min, max, step]) => (

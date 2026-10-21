@@ -9625,7 +9625,7 @@
       "unit": {
         "status": "passed",
         "suites": 152,
-        "tests": 618,
+        "tests": 619,
         "command": "npm run check",
         "includes": [
           "lint",
@@ -9663,6 +9663,33 @@
               "Gatilho clicável e ações orbitais com geometria própria",
               "Editor compacto dentro de fullscreen, Escape e foco contido",
               "Movimento reduzido"
+            ]
+          }
+        },
+        "additionalLocal": {
+          "navigation": {
+            "widths": [
+              390,
+              1440
+            ],
+            "states": 26,
+            "checks": [
+              "Áreas do editor",
+              "Grupos de comandos e retorno de foco",
+              "Busca global e atalho da Mesa sem sobreposição",
+              "Seleção real por ponteiro e projeção"
+            ]
+          },
+          "resize": {
+            "widths": [
+              1440,
+              1190
+            ],
+            "states": 5,
+            "checks": [
+              "Editor vira diálogo no breakpoint compacto",
+              "Foco contido e Escape",
+              "Reabertura do editor lateral após resize"
             ]
           }
         }
@@ -9704,7 +9731,8 @@
       "Modelos estáticos/pausados desenham por demanda. Modelos animados respeitam orçamento 60/30/20 FPS por perfil; aba oculta suspende frames.",
       "Perfil econômico conserva a camada nativa: o comportamento anterior a escondia por display:none. Pausa/velocidade preservam a fase do clipe.",
       "Tela inteira usa o mesmo workbench; roda e portais Radix acompanham a árvore fullscreen.",
-      "Enquadramento da seleção considera o envelope normalizado do modelo e sua elevação, antes mesmo do carregamento; margem acompanha a largura disponível. Formato/rest pose do asset delimita esse envelope, sem análise de deformações externas."
+      "Enquadramento da seleção considera o envelope normalizado do modelo e sua elevação, antes mesmo do carregamento; margem acompanha a largura disponível. Formato/rest pose do asset delimita esse envelope, sem análise de deformações externas.",
+      "A assinatura de quadro nativo evita redesenhar após notificações sem mudança visual (incluindo salvamento); câmera, conteúdo, seleção, resolução e prontidão de assets conservam invalidação. Máscaras de visibilidade são sincronizadas mesmo quando o quadro pode ser reutilizado."
     ],
     "performance": {
       "scope": "Apenas a camada nativa de modelos, não o loop principal Pixi nem FPS/INP globais.",

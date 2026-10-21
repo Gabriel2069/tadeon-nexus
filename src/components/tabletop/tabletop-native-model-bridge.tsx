@@ -100,6 +100,7 @@ export function TabletopNativeModelBridge({
     let animationInterval = 1000 / 60;
     let lastDraw = -Infinity;
     let forceDraw = true;
+    let lastFrameSignature: string | null = null;
 
     const activeSnapshot = () => (snapshot ? streamedSnapshot(snapshot, streamingPlan) : null);
 
@@ -145,7 +146,10 @@ export function TabletopNativeModelBridge({
       forceDraw = false;
       lastDraw = time;
       syncVisibilityMask();
+      const signature = animated ? null : renderer.frameSignature(runtime, renderSnapshot);
+      if (!animated && signature === lastFrameSignature) return;
       renderer.render(runtime, renderSnapshot, time);
+      lastFrameSignature = signature;
       if (renderer.hasAnimatedModels(renderSnapshot)) frame = window.requestAnimationFrame(draw);
     };
 
@@ -216,6 +220,7 @@ export function TabletopNativeModelBridge({
       renderer = null;
       snapshot = null;
       unavailableHost = null;
+      lastFrameSignature = null;
       maskFingerprint = "";
     };
 
@@ -243,7 +248,10 @@ export function TabletopNativeModelBridge({
       if (document.hidden) {
         if (frame) window.cancelAnimationFrame(frame);
         frame = 0;
-      } else start();
+      } else {
+        lastFrameSignature = null;
+        start();
+      }
     };
     window.addEventListener("tadeon-tabletop-render", onRender);
     window.addEventListener("tadeon-tabletop-view", start);

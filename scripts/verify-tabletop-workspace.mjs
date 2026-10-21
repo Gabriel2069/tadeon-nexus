@@ -804,6 +804,9 @@ try {
         rt.engine.focusSelection();
       });
       await page.waitForFunction(() => window.__nativeDraws > 0);
+      await page.waitForFunction(() =>
+        document.querySelector(".tadeon-tabletop-mobile-save")?.textContent?.includes("Salvo"),
+      );
       await page.waitForTimeout(1500);
       const before = await page.evaluate(() => window.__nativeDraws);
       await page.waitForTimeout(400);
@@ -1053,11 +1056,18 @@ try {
         rt.engine.focusSelection();
       });
       await page.waitForFunction(() => window.__nativeDraws > 0);
+      await page.waitForFunction(() =>
+        document.querySelector(".tadeon-tabletop-mobile-save")?.textContent?.includes("Salvo"),
+      );
       await page.waitForTimeout(1500);
       const beforeIdle = await page.evaluate(() => window.__nativeDraws);
       await page.waitForTimeout(400);
       const idleDraws = await page.evaluate((before) => window.__nativeDraws - before, beforeIdle);
-      assert(idleDraws === 0, "Static native model produces no continuous draw calls");
+      console.log("Native idle sample", JSON.stringify({ width, idleDraws, sampleMs: 400 }));
+      assert(
+        idleDraws === 0,
+        `Static native model produced ${idleDraws} redundant draw calls in 400 ms`,
+      );
       const modelLayer = page.locator(".tadeon-tabletop-native-model-layer");
       assert(await modelLayer.isVisible(), "Quality adaptation keeps authored models visible");
       const pixels = await page.evaluate(() => window.__nativeDiagnostic);

@@ -1059,7 +1059,7 @@
         "docs/DESIGN.md",
         "scripts/verify-tabletop-workspace.mjs"
       ],
-      "checkpoint": "Implementação local concluída; npm run check aprovado (152 suítes/618 testes), audit zero. Formações/repetição, autoria 3D, idle zero com pixels visíveis e tela inteira/editor/foco passaram em rodadas locais; matriz final em execução. CI, integração e publicação pendentes. Produção permanece no merge d050946 de NEX-030."
+      "checkpoint": "Implementação local concluída; npm run check aprovado (152 suítes/619 testes), audit zero. Navegação/atalhos/ponteiro em 26 estados e resize/editor em cinco estados aprovados. Última rodada visual aprovou base anterior e roda em quatro larguras, mas detectou redesenho nativo redundante durante notificações de persistência. A assinatura visual do quadro corrige essa invalidação; matriz final em revalidação. CI final, integração e publicação pendentes. Produção permanece em d050946 de NEX-030."
     }
   ],
   "decisions": [
