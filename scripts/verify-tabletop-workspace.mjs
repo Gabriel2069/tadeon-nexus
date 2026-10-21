@@ -196,16 +196,33 @@ const results = [];
 const role = process.env.NEXUS_AUDIT_ROLE || "mestre";
 const functional = process.env.NEXUS_AUDIT_SCOPE !== "baseline";
 try {
-  await new Promise((ok, fail) => {
-    server.stdout.on("data", (b) => {
-      if (b.toString().includes("Local:")) ok();
-    });
-    server.stderr.on("data", (b) => console.log(b.toString().slice(0, 500)));
-    server.on("exit", (c) => fail(Error(`Vite ${c}`)));
-    setTimeout(() => fail(Error("Vite timeout")), 30000).unref();
+  let serverLog = "";
+  let serverExit = null;
+  const captureServerLog = (chunk) => {
+    serverLog = (serverLog + chunk.toString()).slice(-12000);
+  };
+  server.stdout.on("data", captureServerLog);
+  server.stderr.on("data", captureServerLog);
+  server.on("exit", (code) => {
+    serverExit = code ?? -1;
   });
-  // Prime the server module graph before the first protected route (same readiness contract as the shared audit).
-  await fetch(`http://127.0.0.1:${port}/`).then((response) => response.text());
+  const deadline = Date.now() + 120000;
+  let ready = false;
+  while (Date.now() < deadline && serverExit === null) {
+    try {
+      const response = await fetch(`http://127.0.0.1:${port}/`, {
+        signal: AbortSignal.timeout(5000),
+      });
+      if (response.status < 500) {
+        ready = true;
+        break;
+      }
+    } catch {
+      /* Startup and initial dependency optimization are still in progress. */
+    }
+    await new Promise((resolve) => setTimeout(resolve, 300));
+  }
+  if (!ready) throw new Error("Vite did not become ready. Exit: " + serverExit + "\n" + serverLog);
   for (const width of JSON.parse(process.env.NEXUS_AUDIT_WIDTHS || "[390,1440]")) {
     if (browser) await browser.close();
     browser = await launchBrowser();
