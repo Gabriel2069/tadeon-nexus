@@ -254,10 +254,6 @@ body:has(.tadeon-tabletop-command-layer) :where(
     ) !important;
   }
 
-  .tadeon-radial-actions {
-    max-width: calc(100vw - var(--tadeon-safe-left) - var(--tadeon-safe-right));
-    max-height: calc(100dvh - var(--tadeon-safe-top) - var(--tadeon-safe-bottom));
-  }
 }
 
 /* O segundo cérebro usava 8px físicos para toolbar e seletor de modo. Em

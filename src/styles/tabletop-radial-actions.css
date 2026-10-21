@@ -13,7 +13,8 @@
 }
 .tadeon-radial-trigger svg { width: 18px; height: 18px; }
 .tadeon-radial-actions {
-  width: 256px; height: 256px; border: 1px solid #e9e3d52e; border-radius: 50%;
+  --radial-size: min(256px, calc(100vw - 28px), calc(100dvh - 28px));
+  width: var(--radial-size); height: var(--radial-size); border: 1px solid #e9e3d52e; border-radius: 50%;
   color: var(--foreground);
   background: radial-gradient(ellipse at 30% 0%, #e9e3d51a, transparent 60%),
     radial-gradient(circle, #101720 0 34%, transparent 35% 64%, #e9e3d50c 65% 66%, transparent 67%), #141b24f7;

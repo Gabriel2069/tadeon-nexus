@@ -239,11 +239,12 @@ try {
         radialAudit = await menu.evaluate(e => {
           const r = e.getBoundingClientRect();
           return { portal: e.parentElement === document.body, rect: [r.x,r.y,r.width,r.height],
+            circular: Math.abs(r.width-r.height) < 1,
             inside: r.x >= 0 && r.right <= innerWidth && r.y >= 0 && r.bottom <= innerHeight,
             focus: e.contains(document.activeElement),
             targets: [...e.querySelectorAll('[role="menuitem"]')].map(b=>{const r=b.getBoundingClientRect();return [r.width,r.height];}) };
         });
-        if (!radialAudit.portal || !radialAudit.inside || !radialAudit.focus || radialAudit.targets.some(r => r[0] < 44 || r[1] < 44)) errors.push("Radial geometry/focus failed: " + JSON.stringify(radialAudit));
+        if (!radialAudit.circular || !radialAudit.portal || !radialAudit.inside || !radialAudit.focus || radialAudit.targets.some(r => r[0] < 44 || r[1] < 44)) errors.push("Radial geometry/focus failed: " + JSON.stringify(radialAudit));
         await page.screenshot({ path: `${root}/${phase}-radial-${width}.png` });
         await menu.getByRole("menuitem", { name: "Memória", exact: true }).click();
         radialAudit.memoryTargets = await menu.locator(".is-memory button").evaluateAll(buttons => buttons.map(b => { const r=b.getBoundingClientRect(); return [r.width,r.height]; }));
