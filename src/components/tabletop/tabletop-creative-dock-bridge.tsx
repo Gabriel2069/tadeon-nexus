@@ -16,6 +16,8 @@ import {
   Wind,
   X,
 } from "lucide-react";
+import { tabletopVisualPreset } from "@/lib/tabletop/tabletop-visual-preset";
+import { tabletopMediaKind } from "@/lib/tabletop/tabletop-media";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -38,6 +40,8 @@ interface PlaceablePreset {
   width: number;
   height: number;
   color: number;
+  rotation?: number;
+  elevation?: number;
   assetId?: string | null;
   assetUrl?: string;
   properties?: unknown;
@@ -66,37 +70,9 @@ function objectValue(value: unknown): Record<string, unknown> {
     : {};
 }
 
-function safeVisualProperties(entity: TabletopEntity) {
-  const source = objectValue(entity.properties);
-  const allowed = [
-    "mime_type",
-    "render_mode",
-    "billboard_anchor",
-    "billboard_scale",
-    "shadow",
-    "playback_speed",
-    "playback_loop",
-    "playback_muted",
-    "playback_paused",
-    "visual_conditions",
-    "icons",
-    "aura_color",
-    "aura_intensity",
-  ];
-  return Object.fromEntries(allowed.flatMap((key) => (key in source ? [[key, source[key]]] : [])));
-}
-
 function presetFromEntity(entity: TabletopEntity): PlaceablePreset {
-  return {
-    label: entity.label,
-    type: entity.type,
-    width: entity.width,
-    height: entity.height,
-    color: entity.color,
-    assetId: entity.assetId,
-    assetUrl: entity.assetUrl,
-    properties: safeVisualProperties(entity),
-  };
+  return { ...tabletopVisualPreset(entity), color: entity.color,
+    width: entity.width, height: entity.height };
 }
 
 function presetSeed(preset: PlaceablePreset): TabletopEntitySeed {
@@ -105,6 +81,9 @@ function presetSeed(preset: PlaceablePreset): TabletopEntitySeed {
     label: preset.label,
     width: preset.width,
     height: preset.height,
+    color: preset.color,
+    rotation: preset.rotation,
+    elevation: preset.elevation,
     assetId: preset.assetId,
     assetUrl: preset.assetUrl,
     properties: preset.properties,
@@ -277,7 +256,7 @@ export function TabletopCreativeDockBridge() {
           </header>
           <nav>
             <button type="button" aria-pressed={mode === "library"} onClick={() => setMode("library")}>
-              <Archive aria-hidden="true" /> Placeables
+              <Archive aria-hidden="true" /> Peças
             </button>
             <button type="button" aria-pressed={mode === "regions"} onClick={() => setMode("regions")}>
               <MapPinned aria-hidden="true" /> Regiões
@@ -290,6 +269,7 @@ export function TabletopCreativeDockBridge() {
                 <Search aria-hidden="true" />
                 <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Filtrar por nome ou tipo" />
               </label>
+              <p className="tadeon-creative-dock__hint">Arraste uma peça ao mapa ou use + para inserir. Modelos 3D conservam escala, giro e altura próprios.</p>
               <div className="tadeon-creative-dock__stats">
                 <span>{library.length} modelos únicos</span>
                 <span>{snapshot.scene.entities.length} na cena</span>
@@ -307,7 +287,9 @@ export function TabletopCreativeDockBridge() {
                       }}
                     >
                       <div className="tadeon-creative-dock__thumb">
-                        {entity.assetUrl ? <img src={entity.assetUrl} alt="" loading="lazy" /> : <Box aria-hidden="true" />}
+                        {entity.assetUrl && ["image", "gif"].includes(tabletopMediaKind(objectValue(entity.properties).mime_type, entity.assetUrl))
+                          ? <img src={entity.assetUrl} alt="" loading="lazy" />
+                          : <Box aria-hidden="true" />}
                       </div>
                       <div>
                         <strong>{entity.label}</strong>
@@ -326,7 +308,7 @@ export function TabletopCreativeDockBridge() {
                 {library.length === 0 && (
                   <div className="tadeon-creative-dock__empty">
                     <LibraryBig aria-hidden="true" />
-                    <strong>Nenhum placeable visual encontrado</strong>
+                    <strong>Nenhuma peça visual encontrada</strong>
                     <span>Quando tokens, objetos e tiles entram na cena, eles passam a formar uma biblioteca reutilizável sem duplicar vínculos sensíveis.</span>
                   </div>
                 )}

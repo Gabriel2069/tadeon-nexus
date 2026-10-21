@@ -323,3 +323,17 @@ Pedido de Tadeu: refinar botões/menus e a profundidade de cards/caixas sem exag
 O menu da entidade conserva seis ações orbitais e o núcleo de fechamento/memória/modelo. Rótulos não giram; os alvos têm pelo menos 44 px. A moldura circular se resolve por escala curta e opacidade, sem overshoot. O portal vai ao body para que coordenadas de viewport não dependam de contenção/transformação da rota. A geometria pertence ao radial, que acompanha câmera, scroll e resize por eventos; o bridge final deixa de reescrevê-la. O modo limpo e utilidades concorrentes conservam seus limites explícitos.
 
 Provas e limites ficam em materialMotionRevision de visual-system-validation.json. Fixtures interceptam dados: não certificam permissões ou dispositivos reais.
+
+
+## Mesa como espaço de composição — NEX-031
+
+Direção: o tabuleiro é a superfície de trabalho; identidade, sessão e ferramentas tornam-se instrumentos compactos. PageHeader conserva a anatomia e a tipografia aprovadas numa faixa operacional (DEC-019). A barra de visão fica fora do canvas, com placa de seleção 2D/3D, enquadramentos, giro, encaixe, histórico e abertura do editor; a telemetria inferior deixa de duplicar câmera e zoom. O editor começa recolhido no desktop e vira diálogo no compacto. Sincronização e ferramentas extensas são disclosures, não blocos permanentes antes do mapa. Tela inteira mantém o mesmo DOM e leva os portais para a árvore visível do navegador.
+
+Referências oficiais consultadas em 21/10/2026:
+- [Owlbear: imagens](https://docs.owlbear.rodeo/docs/images/), [cenas](https://docs.owlbear.rodeo/docs/scenes/) e [assets](https://docs.owlbear.rodeo/docs/managing-assets/): seleção contextual, tipos de peça, encaixe e separação entre biblioteca e cena. Adaptado em comandos próximos ao mapa e biblioteca com autoria visual reutilizável.
+- [Foundry: tiles](https://foundryvtt.com/article/tiles/): propriedades precisas, elevação e edição de múltiplas peças. Adaptado no painel de composição e nos lotes de histórico.
+- [TaleSpire: Slab Browser](https://talespire.com/using-the-slab-browser): busca e inserção de conjuntos pré-montados. A adaptação do Tadeon usa formações e repetição do conjunto selecionado; não importa o catálogo externo.
+
+Formações conservam tipos, dimensões e propriedades; mantêm o conjunto dentro da cena ou recusam uma configuração sem espaço. Repetição oferece passo horizontal/vertical, giro e elevação por cópia, com um desfazer para o lote. Modelos têm escala, giro, altura da base e velocidade de animação no editor. A biblioteca preserva autoria 3D e cor, sem copiar propriedade de conta, vínculos privados ou notas arbitrárias. Nenhum asset GLB é exibido por img. O enquadramento usa o envelope conservador da normalização do modelo e sua elevação, com margem proporcional no celular, para evitar focar apenas a base e cortar o topo.
+
+Modelos estáticos e pausados desenham sob demanda. Só modelos com animação carregada mantêm o ciclo; aba oculta suspende o trabalho. O perfil econômico preserva a camada 3D e reduz efeitos, resolução e orçamento de animação (20 FPS; equilibrado 30; alto/cinemático 60). Pausar, retomar ou mudar a velocidade preserva a fase do clipe. Medições e limites ficam em spatialWorkbenchRevision de visual-system-validation.json.

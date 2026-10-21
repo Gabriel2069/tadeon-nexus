@@ -11,10 +11,12 @@ export function WorkspaceActions({
   workspace,
   nodeId,
   menuItem = false,
+  compact = false,
 }: {
   workspace: "/nexus" | "/master-panel" | "/tabletop";
   nodeId?: string;
   menuItem?: boolean;
+  compact?: boolean;
 }) {
   const { user, role } = useAuth();
   const identity = `${user?.id ?? ""}:${role ?? ""}`;
@@ -110,12 +112,13 @@ export function WorkspaceActions({
       )}
       <Button
         variant="ghost"
-        size="sm"
+        size={compact ? "icon" : "sm"}
+        title={`Abrir ${label} em nova janela`}
         aria-label={`Abrir ${label} em nova janela`}
         onClick={openWorkspace}
       >
         <ExternalLink className="h-4 w-4" />
-        Nova janela
+        <span className={compact ? "sr-only" : undefined}>Nova janela</span>
       </Button>
     </>
   );

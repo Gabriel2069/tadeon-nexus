@@ -244,3 +244,14 @@ TabletopRadialActionsBridge renderiza por portal no body. safeAnchor usa coorden
 Material, geometria e presença do radial pertencem a tabletop-radial-actions.css. Duplicatas de presença e o tamanho/translate impostos por interface-layout foram retirados; tetos reduzidos. Guards existentes de modo limpo/utensílios continuam explícitos. Foco entra no menu e retorna ao gatilho, Q ignora campos editáveis, Escape e clique externo dispensam. Testes renderizados substituem a asserção textual que exigia um loop permanente.
 
 O relevo compartilhado pertence a experience-surfaces; route-popup-frame mantém a abertura/saída de menus ancorados. Escritores antigos de transição e pressão do card deixam superfícies materiais explícitas. O material do Button não foi refeito.
+
+
+## Composição espacial e repouso do 3D — NEX-031
+
+TabletopViewBar recebe o estado controlado do workspace. Os enquadramentos pertencem a tabletop-projection; TabletopCompositionPanel chama comandos públicos do motor, sem escrever uma cena paralela. tabletop-arrangement calcula formações e repetição; o motor filtra a seleção editável e registra o lote num único comando do histórico. Encaixe explícito respeita a origem da malha mesmo quando o snap automático está desligado. tabletop-visual-preset conserva apenas a autoria visual permitida; o seed conserva cor, giro e elevação e não leva autoria/vínculos de conta.
+
+TabletopNativeModelRenderer avisa quando um modelo termina de carregar e informa se há animação ativa. O bridge agenda um frame por rajada de vista, resize ou alteração semântica; animações reais podem continuar. A visibilidade da aba interrompe e retoma esse agendamento. Sem varredura de DOM adicional. O descarte cancela frames, observer e callbacks.
+
+usePopupPortalContainer, no proprietário route-popup-frame, acompanha fullscreenchange e fornece o mesmo host para Dialog, AlertDialog, Popover, Dropdown e Select. A moldura de colisão usa o elemento fullscreen. A roda usa esse host e conserva coordenadas de viewport. Fora da tela inteira, o destino continua o body. A geometria do cabeçalho permanece em page-hero-parity; a estrutura e o material dos instrumentos pertencem a tabletop-workspace e os limites do canvas a tabletop-route-experience.
+
+Em fullscreen, os fallbacks de movimento global respeitam o material do radial e seus botões: não podem reatribuir position:relative aos alvos que o proprietário circular posiciona em viewport. Enquadramento da seleção passa pelo CameraController e inclui o envelope normalizado de modelos, sem câmera paralela.

@@ -1,4 +1,5 @@
 import type { Point, TabletopEntity } from "./types";
+import { tabletopModelEnvelope } from "./tabletop-media";
 
 const MIN_ENTITY_SIZE = 8;
 
@@ -17,10 +18,7 @@ export function clampEntityToScene(
   sceneHeight: number,
 ): TabletopEntity {
   const safeSceneWidth = Math.max(MIN_ENTITY_SIZE, finiteOr(sceneWidth, 1_920));
-  const safeSceneHeight = Math.max(
-    MIN_ENTITY_SIZE,
-    finiteOr(sceneHeight, 1_080),
-  );
+  const safeSceneHeight = Math.max(MIN_ENTITY_SIZE, finiteOr(sceneHeight, 1_080));
   const width = Math.min(
     safeSceneWidth,
     Math.max(MIN_ENTITY_SIZE, finiteOr(entity.width, MIN_ENTITY_SIZE)),
@@ -29,14 +27,8 @@ export function clampEntityToScene(
     safeSceneHeight,
     Math.max(MIN_ENTITY_SIZE, finiteOr(entity.height, MIN_ENTITY_SIZE)),
   );
-  const x = Math.max(
-    0,
-    Math.min(finiteOr(entity.x, 0), safeSceneWidth - width),
-  );
-  const y = Math.max(
-    0,
-    Math.min(finiteOr(entity.y, 0), safeSceneHeight - height),
-  );
+  const x = Math.max(0, Math.min(finiteOr(entity.x, 0), safeSceneWidth - width));
+  const y = Math.max(0, Math.min(finiteOr(entity.y, 0), safeSceneHeight - height));
   const rawRotation = finiteOr(entity.rotation, 0);
   const rotation = ((rawRotation % 360) + 360) % 360;
 
@@ -54,19 +46,10 @@ export function pointInRotatedRect(point: Point, entity: TabletopEntity) {
   const localX = deltaX * cosine - deltaY * sine + entity.width / 2;
   const localY = deltaX * sine + deltaY * cosine + entity.height / 2;
 
-  return (
-    localX >= 0 &&
-    localX <= entity.width &&
-    localY >= 0 &&
-    localY <= entity.height
-  );
+  return localX >= 0 && localX <= entity.width && localY >= 0 && localY <= entity.height;
 }
 
-export function rotatePointAround(
-  point: Point,
-  center: Point,
-  degrees: number,
-): Point {
+export function rotatePointAround(point: Point, center: Point, degrees: number): Point {
   const radians = (degrees * Math.PI) / 180;
   const cosine = Math.cos(radians);
   const sine = Math.sin(radians);
@@ -100,10 +83,31 @@ export function boundsFromPoints(points: Point[]): TabletopBounds | null {
   return { x: left, y: top, width: right - left, height: bottom - top };
 }
 
-export function boundsFromEntities(
-  entities: TabletopEntity[],
-): TabletopBounds | null {
+export function boundsFromEntities(entities: TabletopEntity[]): TabletopBounds | null {
   return boundsFromPoints(entities.flatMap(entityCorners));
+}
+
+/** Include the normalized native volume even before a GLB has finished loading. */
+export function tabletopSelectionFrame(entities: TabletopEntity[]) {
+  const volumes = entities.map((entity) => tabletopModelEnvelope(entity));
+  const points = entities.flatMap((entity, i) => {
+    const volume = volumes[i];
+    if (!volume) return entityCorners(entity);
+    const cx = entity.x + entity.width / 2,
+      cy = entity.y + entity.height / 2;
+    return [-1, 1].flatMap((x) =>
+      [-1, 1].map((y) => ({ x: cx + x * volume.radius, y: cy + y * volume.radius })),
+    );
+  });
+  return {
+    bounds: boundsFromPoints(points),
+    elevationRange: volumes.some(Boolean)
+      ? {
+          min: Math.min(...volumes.map((volume) => volume?.base ?? 0)),
+          max: Math.max(...volumes.map((volume) => (volume ? volume.base + volume.height : 0))),
+        }
+      : undefined,
+  };
 }
 
 export function normalizeBounds(start: Point, end: Point): TabletopBounds {
@@ -124,10 +128,7 @@ export function boundsIntersect(first: TabletopBounds, second: TabletopBounds) {
   );
 }
 
-export function entityIntersectsBounds(
-  entity: TabletopEntity,
-  bounds: TabletopBounds,
-) {
+export function entityIntersectsBounds(entity: TabletopEntity, bounds: TabletopBounds) {
   const entityBounds = boundsFromPoints(entityCorners(entity));
   return entityBounds ? boundsIntersect(entityBounds, bounds) : false;
 }

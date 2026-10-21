@@ -4,6 +4,7 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 const m = vi.hoisted(() => ({ search: vi.fn() }));
 vi.mock("@/components/ui/route-popup-frame", () => ({
   useRoutePopupFrame: () => ({ boundary: null, style: {} }),
+  usePopupPortalContainer: () => undefined,
 }));
 vi.mock("@/lib/knowledge/knowledge-service", () => ({
   knowledgeService: { search: m.search, listFavoriteNodes: vi.fn().mockResolvedValue([]) },

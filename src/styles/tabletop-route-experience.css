@@ -735,7 +735,7 @@ body:has(.tadeon-dedicated-shell .tadeon-tabletop-studio) {
 
 /* Fixed chrome gets one consistent fade contract. Never animate transform here:
    centered docks already own transform for their geometry/motion. */
-:where(.tadeon-tactical-dock,.tadeon-creative-dock,.tadeon-placeables,.tadeon-tabletop-now,.tadeon-semantic-transform,.tadeon-tabletop-reliability-strip,.tadeon-director-enhancement-bar,.tadeon-tabletop-precision-editor) {
+:where(.tadeon-tactical-dock,.tadeon-creative-dock,.tadeon-placeables,.tadeon-tabletop-now,.tadeon-semantic-transform,.tadeon-tabletop-reliability-strip,.tadeon-director-enhancement-bar,.tadeon-tabletop-precision-editor,.tadeon-tabletop-selection-actions) {
   transition:
     opacity 160ms ease,
     visibility 0s linear 0s;
@@ -858,7 +858,7 @@ body:has(.tadeon-dedicated-shell .tadeon-tabletop-studio) {
 /* An open utility is a temporary working surface. Suppress chrome that would
    physically sit behind it instead of relying on z-index and showing two UIs
    through each other. The handle of the active utility remains available. */
-body:has(.tadeon-tabletop-now[data-open="true"]) :where(.tadeon-tactical-dock),body:has(.tadeon-placeables[data-open="true"]) :where(.tadeon-tactical-dock,.tadeon-creative-dock,.tadeon-semantic-transform),body:has(.tadeon-creative-dock[data-open="true"]) :where(.tadeon-tactical-dock,.tadeon-placeables,.tadeon-semantic-transform),body:has(.tadeon-tabletop-precision-editor) :where(.tadeon-creative-dock,.tadeon-placeables,.tadeon-semantic-transform) {
+body:has(.tadeon-tabletop-now[data-open="true"]) :where(.tadeon-tactical-dock,.tadeon-tabletop-selection-actions),body:has(.tadeon-placeables[data-open="true"]) :where(.tadeon-tactical-dock,.tadeon-creative-dock,.tadeon-semantic-transform,.tadeon-tabletop-selection-actions),body:has(.tadeon-creative-dock[data-open="true"]) :where(.tadeon-tactical-dock,.tadeon-placeables,.tadeon-semantic-transform,.tadeon-tabletop-selection-actions),body:has(.tadeon-tabletop-precision-editor) :where(.tadeon-creative-dock,.tadeon-placeables,.tadeon-semantic-transform,.tadeon-tabletop-selection-actions) {
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
@@ -867,8 +867,8 @@ body:has(.tadeon-tabletop-now[data-open="true"]) :where(.tadeon-tactical-dock),b
 
 /* The responsive inspector is itself a modal sheet. Nothing fixed should float
    above it while it is open. */
-@media (max-width: 1179px) {
-  body:has(.tadeon-tabletop-panel[data-mobile-open="true"]) :where(.tadeon-tactical-dock,.tadeon-creative-dock,.tadeon-placeables,.tadeon-tabletop-now,.tadeon-semantic-transform,.tadeon-tabletop-reliability-strip,.tadeon-director-enhancement-bar,.tadeon-tabletop-precision-editor) {
+@media (max-width: 1199px) {
+  body:has(.tadeon-tabletop-panel[data-mobile-open="true"]) :where(.tadeon-tactical-dock,.tadeon-creative-dock,.tadeon-placeables,.tadeon-tabletop-now,.tadeon-semantic-transform,.tadeon-tabletop-reliability-strip,.tadeon-director-enhancement-bar,.tadeon-tabletop-precision-editor,.tadeon-tabletop-selection-actions) {
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
@@ -944,7 +944,7 @@ html[data-tadeon-tabletop-clean="true"] :where(.tadeon-tactical-dock,.tadeon-cre
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :where(.tadeon-tactical-dock,.tadeon-creative-dock,.tadeon-placeables,.tadeon-tabletop-now,.tadeon-semantic-transform,.tadeon-tabletop-reliability-strip,.tadeon-director-enhancement-bar,.tadeon-tabletop-precision-editor) {
+  :where(.tadeon-tactical-dock,.tadeon-creative-dock,.tadeon-placeables,.tadeon-tabletop-now,.tadeon-semantic-transform,.tadeon-tabletop-reliability-strip,.tadeon-director-enhancement-bar,.tadeon-tabletop-precision-editor,.tadeon-tabletop-selection-actions) {
     transition: none !important;
   }
 }
@@ -1473,6 +1473,8 @@ html:has(.tadeon-tabletop-studio) {
 }
 
 .tadeon-tabletop-stage {
+  grid-row: 2;
+  grid-column: 1;
   height: clamp(30rem, 72svh, 60rem);
   min-height: 0;
   position: relative !important;
@@ -1766,7 +1768,7 @@ html:has(.tadeon-tabletop-studio)
   left: auto !important;
   width: 100% !important;
   max-width: none !important;
-  max-height: calc(100cqb - 6rem) !important;
+  max-height: calc(100cqb - var(--tadeon-tabletop-progressive-h, 6rem) - 2rem) !important;
 }
 
 html:has(.tadeon-tabletop-studio)
@@ -1949,7 +1951,8 @@ html:has(.tadeon-tabletop-studio)
   }
 
   .tadeon-tabletop-studio__primary > .grid {
-    grid-column: 1 / -1;
+    grid-column: 1 / 3;
+    grid-row: 1;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     width: 100%;
   }

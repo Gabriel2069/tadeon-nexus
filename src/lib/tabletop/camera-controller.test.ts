@@ -3,6 +3,27 @@ import { describe, expect, it } from "vitest";
 import { CameraController } from "./camera-controller";
 
 describe("tabletop camera projection", () => {
+  it("fits both the base and the top of elevated volumes at different camera angles", () => {
+    for (const yaw of [0, 217, 330]) {
+      const camera = new CameraController(new Container());
+      camera.setProjection("isometric");
+      camera.setOrientation({ yaw, tilt: 0.58, elevationScale: 1.35 });
+      camera.fitBounds({ x: 500, y: 600, width: 280, height: 280 }, 320, 600, 24, 2.25, {
+        min: 80,
+        max: 650,
+      });
+      for (const x of [500, 780])
+        for (const y of [600, 880])
+          for (const height of [80, 650]) {
+            const point = camera.worldToScreen({ x, y });
+            point.y -= height * 1.35 * camera.zoom;
+            expect(point.x).toBeGreaterThanOrEqual(23.9);
+            expect(point.x).toBeLessThanOrEqual(296.1);
+            expect(point.y).toBeGreaterThanOrEqual(23.9);
+            expect(point.y).toBeLessThanOrEqual(576.1);
+          }
+    }
+  });
   it("round-trips world coordinates in the isometric projection", () => {
     const viewport = new Container();
     const camera = new CameraController(viewport);

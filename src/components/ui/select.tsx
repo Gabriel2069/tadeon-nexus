@@ -1,5 +1,8 @@
 "use client";
 
+import { usePopupPortalContainer } from "@/components/ui/route-popup-frame";
+
+
 import * as React from "react";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { Check, ChevronDown, ChevronUp } from "lucide-react";
@@ -83,8 +86,9 @@ const SelectContent = React.forwardRef<
     ref,
   ) => {
     const materialStyle = useMaterialToneStyle();
+    const portalContainer = usePopupPortalContainer();
     return (
-      <SelectPrimitive.Portal>
+      <SelectPrimitive.Portal container={portalContainer}>
         <SelectPrimitive.Content
           ref={ref}
           data-slot="select-content"

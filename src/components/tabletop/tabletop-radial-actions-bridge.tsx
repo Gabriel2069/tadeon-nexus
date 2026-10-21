@@ -1,5 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { usePopupPortalContainer } from "@/components/ui/route-popup-frame";
 import { useMaterialToneStyle } from "@/lib/use-material-light";
 import {
   BookOpen,
@@ -21,7 +22,7 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { tabletopMediaKind } from "@/lib/tabletop/tabletop-media";
+import { tabletopMediaKind, tabletopModelPausePatch } from "@/lib/tabletop/tabletop-media";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import type { TabletopEntity, TabletopSnapshot } from "@/lib/tabletop/types";
 import "@/styles/tabletop-radial-actions.css";
@@ -75,6 +76,7 @@ function clamp(value: number, minimum: number, maximum: number) {
 type NexusCaptureAction = "register-nexus" | "capture-note" | "capture-clue" | "capture-event";
 
 export function TabletopRadialActionsBridge() {
+  const portalContainer = usePopupPortalContainer();
   const materialStyle = useMaterialToneStyle();
   const menuId = useId();
   const menuRef = useRef<HTMLDivElement>(null);
@@ -142,7 +144,7 @@ export function TabletopRadialActionsBridge() {
       window.removeEventListener("resize", schedule);
       window.removeEventListener("scroll", schedule, true);
     };
-  }, [selected, open]);
+  }, [selected, open, portalContainer]);
 
   useEffect(() => {
     if (open)
@@ -371,7 +373,7 @@ export function TabletopRadialActionsBridge() {
                     aria-label={modelPaused ? "Continuar animação 3D" : "Pausar animação 3D"}
                     onClick={() =>
                       patchModel(
-                        { model_animation_paused: !modelPaused },
+                        tabletopModelPausePatch(properties, !modelPaused, performance.now() / 1000),
                         modelPaused ? "Continuar animação 3D" : "Pausar animação 3D",
                       )
                     }
@@ -494,6 +496,6 @@ export function TabletopRadialActionsBridge() {
         </button>
       </div>
     </>,
-    document.body,
+    portalContainer ?? document.body,
   );
 }

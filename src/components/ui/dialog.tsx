@@ -46,7 +46,7 @@ const DialogContent = React.forwardRef<
   const routeFrame = useRoutePopupFrame();
   const returnFocusRef = React.useRef<HTMLElement | null>(null);
   return (
-    <DialogPortal>
+    <DialogPortal container={routeFrame.portalContainer}>
       <DialogOverlay />
       <div data-slot="dialog-positioner" style={routeFrame.style}>
         <DialogPrimitive.Content

@@ -3,6 +3,117 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { spawn } from "node:child_process";
 import { installDesignFonts } from "./design-font-fixtures.mjs";
 const { chromium } = await import(process.env.NEXUS_BROWSER_MODULE || "playwright-core");
+
+function cubeGlb() {
+  const vertices = [],
+    normals = [],
+    indices = [];
+  const faces = [
+    [
+      [0, 0, 1],
+      [0, 0, 1],
+      [1, 0, 1],
+      [1, 1, 1],
+      [0, 1, 1],
+    ],
+    [
+      [0, 0, -1],
+      [1, 0, 0],
+      [0, 0, 0],
+      [0, 1, 0],
+      [1, 1, 0],
+    ],
+    [
+      [1, 0, 0],
+      [1, 0, 1],
+      [1, 0, 0],
+      [1, 1, 0],
+      [1, 1, 1],
+    ],
+    [
+      [-1, 0, 0],
+      [0, 0, 0],
+      [0, 0, 1],
+      [0, 1, 1],
+      [0, 1, 0],
+    ],
+    [
+      [0, 1, 0],
+      [0, 1, 1],
+      [1, 1, 1],
+      [1, 1, 0],
+      [0, 1, 0],
+    ],
+    [
+      [0, -1, 0],
+      [0, 0, 0],
+      [1, 0, 0],
+      [1, 0, 1],
+      [0, 0, 1],
+    ],
+  ];
+  for (const [normal, ...points] of faces) {
+    const start = vertices.length / 3;
+    points.forEach((p) => {
+      vertices.push(...p);
+      normals.push(...normal);
+    });
+    indices.push(start, start + 1, start + 2, start, start + 2, start + 3);
+  }
+  const p = Buffer.from(new Float32Array(vertices).buffer),
+    n = Buffer.from(new Float32Array(normals).buffer),
+    i = Buffer.from(new Uint16Array(indices).buffer);
+  const bin = Buffer.concat([p, n, i]);
+  const data = {
+    asset: { version: "2.0" },
+    scene: 0,
+    scenes: [{ nodes: [0] }],
+    nodes: [{ mesh: 0 }],
+    meshes: [{ primitives: [{ attributes: { POSITION: 0, NORMAL: 1 }, indices: 2, material: 0 }] }],
+    materials: [
+      {
+        doubleSided: true,
+        pbrMetallicRoughness: {
+          baseColorFactor: [0.33, 0.54, 0.67, 1],
+          metallicFactor: 0,
+          roughnessFactor: 0.7,
+        },
+      },
+    ],
+    buffers: [{ byteLength: bin.length }],
+    bufferViews: [
+      { buffer: 0, byteOffset: 0, byteLength: p.length },
+      { buffer: 0, byteOffset: p.length, byteLength: n.length },
+      { buffer: 0, byteOffset: p.length + n.length, byteLength: i.length },
+    ],
+    accessors: [
+      {
+        bufferView: 0,
+        componentType: 5126,
+        count: 24,
+        type: "VEC3",
+        min: [0, 0, 0],
+        max: [1, 1, 1],
+      },
+      { bufferView: 1, componentType: 5126, count: 24, type: "VEC3" },
+      { bufferView: 2, componentType: 5123, count: 36, type: "SCALAR" },
+    ],
+  };
+  const json = Buffer.from(JSON.stringify(data)),
+    padded = Buffer.alloc(Math.ceil(json.length / 4) * 4, 0x20);
+  json.copy(padded);
+  const head = Buffer.alloc(20);
+  head.writeUInt32LE(0x46546c67, 0);
+  head.writeUInt32LE(2, 4);
+  head.writeUInt32LE(28 + padded.length + bin.length, 8);
+  head.writeUInt32LE(padded.length, 12);
+  head.writeUInt32LE(0x4e4f534a, 16);
+  const bh = Buffer.alloc(8);
+  bh.writeUInt32LE(bin.length, 0);
+  bh.writeUInt32LE(0x004e4942, 4);
+  return Buffer.concat([head, padded, bh, bin]);
+}
+
 const output = process.env.NEXUS_AUDIT_OUTPUT || "/tmp/nexus-tabletop-workspace";
 mkdirSync(output, { recursive: true });
 const assert = (ok, message) => {
@@ -75,7 +186,11 @@ const port = 6135,
   server = spawn(
     "npm",
     ["run", "dev", "--", "--host", "127.0.0.1", "--strictPort", "--port", String(port)],
-    { detached: true, stdio: ["ignore", "pipe", "pipe"] },
+    {
+      cwd: process.env.NEXUS_AUDIT_REPO || process.cwd(),
+      detached: true,
+      stdio: ["ignore", "pipe", "pipe"],
+    },
   );
 const results = [];
 const role = process.env.NEXUS_AUDIT_ROLE || "mestre";
@@ -89,6 +204,8 @@ try {
     server.on("exit", (c) => fail(Error(`Vite ${c}`)));
     setTimeout(() => fail(Error("Vite timeout")), 30000).unref();
   });
+  // Prime the server module graph before the first protected route (same readiness contract as the shared audit).
+  await fetch(`http://127.0.0.1:${port}/`).then((response) => response.text());
   for (const width of JSON.parse(process.env.NEXUS_AUDIT_WIDTHS || "[390,1440]")) {
     if (browser) await browser.close();
     browser = await launchBrowser();
@@ -295,7 +412,9 @@ try {
             ...e,
             scene_id: scene.id,
             version: e.version + 1,
-            properties: Object.fromEntries(Object.entries(e.properties ?? {}).sort(([a], [b]) => a.localeCompare(b))),
+            properties: Object.fromEntries(
+              Object.entries(e.properties ?? {}).sort(([a], [b]) => a.localeCompare(b)),
+            ),
           })),
         );
         return route.fulfill({ status: 200, contentType: "application/json", body: "null" });
@@ -619,6 +738,366 @@ try {
       await context.close();
       continue;
     }
+
+    if (process.env.NEXUS_AUDIT_SCOPE === "native-idle") {
+      await page.route("**/composition-cube.glb", (route) =>
+        route.fulfill({ status: 200, contentType: "model/gltf-binary", body: cubeGlb() }),
+      );
+      await page.evaluate(() => {
+        window.__nativeDraws = 0;
+        const original = WebGL2RenderingContext.prototype.drawElements;
+        WebGL2RenderingContext.prototype.drawElements = function (...args) {
+          if (this.canvas.classList.contains("tadeon-tabletop-native-model-layer"))
+            window.__nativeDraws++;
+          const result = original.apply(this, args);
+          if (
+            this.canvas.classList.contains("tadeon-tabletop-native-model-layer") &&
+            !window.__nativeDiagnostic
+          ) {
+            const pixels = new Uint8Array(this.drawingBufferWidth * this.drawingBufferHeight * 4);
+            this.readPixels(
+              0,
+              0,
+              this.drawingBufferWidth,
+              this.drawingBufferHeight,
+              this.RGBA,
+              this.UNSIGNED_BYTE,
+              pixels,
+            );
+            window.__nativeDiagnostic = {
+              error: this.getError(),
+              pixels: pixels.filter((v, i) => i % 4 === 3 && v > 0).length,
+            };
+          }
+          return result;
+        };
+        const rt = window.__tadeonTabletopRuntime;
+        rt.engine.setProjectionMode("isometric");
+        rt.engine.addEntityAt(
+          {
+            type: "object",
+            label: "Modelo estático de teste",
+            width: 96,
+            height: 96,
+            assetUrl: location.origin + "/composition-cube.glb",
+            properties: { mime_type: "model/gltf-binary" },
+          },
+          { x: 1100, y: 900 },
+        );
+        rt.engine.focusSelection();
+      });
+      await page.waitForFunction(() => window.__nativeDraws > 0);
+      await page.waitForTimeout(1500);
+      const before = await page.evaluate(() => window.__nativeDraws);
+      await page.waitForTimeout(400);
+      const idleDraws = await page.evaluate((before) => window.__nativeDraws - before, before);
+      const visibleLayer = await page
+        .locator(".tadeon-tabletop-native-model-layer")
+        .evaluate((canvas) => {
+          const rect = canvas.getBoundingClientRect(),
+            style = getComputedStyle(canvas);
+          return (
+            rect.width > 0 &&
+            rect.height > 0 &&
+            style.display !== "none" &&
+            style.visibility !== "hidden"
+          );
+        });
+      await page.evaluate(() => window.__tadeonTabletopRuntime.engine.zoomBy(1.1));
+      await page.waitForFunction((before) => window.__nativeDraws > before, before);
+      operations.push({
+        kind: "native-idle",
+        sampleMs: 400,
+        idleNativeDraws: idleDraws,
+        redrawAfterZoom: true,
+        visibleLayer,
+        diagnostic: await page.evaluate(() => window.__nativeDiagnostic),
+      });
+      console.log("Native diagnostics", JSON.stringify(operations.at(-1)));
+      await capture("native-idle");
+      await context.close();
+      continue;
+    }
+
+    async function verifyFullscreen(bar) {
+      if (width === 320 || width === 1440) {
+        await page.emulateMedia({ reducedMotion: "reduce" });
+        await bar
+          .getByRole("button", { name: "Expandir tabuleiro em tela inteira", exact: true })
+          .click();
+        await page.waitForFunction(() => !!document.fullscreenElement);
+        const radial = page.locator(".tadeon-radial-trigger");
+        console.log(
+          "Fullscreen geometry",
+          await radial.evaluate((e) => ({
+            trigger: e.getBoundingClientRect().toJSON(),
+            inline: e.getAttribute("style"),
+            position: getComputedStyle(e).position,
+            transform: getComputedStyle(e).transform,
+            workbench: document.fullscreenElement.getBoundingClientRect().toJSON(),
+            host: window.__tadeonTabletopRuntime.host.getBoundingClientRect().toJSON(),
+            viewport: [innerWidth, innerHeight],
+          })),
+        );
+        await capture("fullscreen-before-menu");
+        await radial.click();
+        const ring = page.getByRole("menu", { name: /Ações rápidas de/ });
+        await ring.waitFor();
+        assert(
+          await ring.evaluate((e) => document.fullscreenElement.contains(e)),
+          "Radial portal remains in the fullscreen subtree",
+        );
+        assert(
+          await ring.evaluate((e) => getComputedStyle(e).animationName === "none"),
+          "Reduced motion removes the radial entrance",
+        );
+        await ring.getByRole("button", { name: "Fechar ações rápidas", exact: true }).click();
+        await capture("fullscreen");
+        if (width < 1200) {
+          await bar.getByRole("button", { name: "Editar seleção", exact: true }).click();
+          const editor = page.getByRole("dialog", { name: "Editor da Mesa", exact: true });
+          await editor.waitFor();
+          assert(
+            await editor.evaluate((e) => document.fullscreenElement.contains(e)),
+            "Compact editor portal remains in fullscreen",
+          );
+          for (let i = 0; i < 8; i++) await page.keyboard.press("Tab");
+          assert(
+            await editor.evaluate((e) => e.contains(document.activeElement)),
+            "Keyboard focus stays inside the compact editor",
+          );
+          await capture("fullscreen-editor");
+          await page.keyboard.press("Escape");
+          await editor.waitFor({ state: "hidden" });
+        }
+        await bar.getByRole("button", { name: "Sair da tela inteira", exact: true }).click();
+        await page.waitForFunction(() => !document.fullscreenElement);
+      }
+    }
+
+    if (process.env.NEXUS_AUDIT_SCOPE === "fullscreen") {
+      const bar = page.locator(".tadeon-tabletop-viewbar");
+      await bar.getByRole("button", { name: "3D", exact: true }).click();
+      await page.evaluate(() => {
+        const rt = window.__tadeonTabletopRuntime;
+        rt.engine.selectEntityById(rt.snapshot().scene.entities.find((e) => e.type === "token").id);
+        rt.engine.focusSelection();
+      });
+      await verifyFullscreen(bar);
+      await context.close();
+      continue;
+    }
+
+    if (process.env.NEXUS_AUDIT_SCOPE === "composition") {
+      const bar = page.locator(".tadeon-tabletop-viewbar");
+      await bar.waitFor();
+      await capture("workbench");
+      const opening = await page.locator("[data-page-header]").boundingBox();
+      assert(opening.height < 110, "Operational header stays compact");
+      await bar.getByRole("button", { name: "3D", exact: true }).click();
+      await bar
+        .getByRole("combobox", { name: "Enquadramento da câmera" })
+        .selectOption("cinematic");
+      await bar.getByRole("button", { name: "Girar câmera 90 graus", exact: true }).click();
+      await page.waitForFunction(
+        () =>
+          window.__tadeonTabletopRuntime.view().projection === "isometric" &&
+          Math.abs(window.__tadeonTabletopRuntime.view().orientation.yaw - 60) < 0.1,
+      );
+      await page.evaluate(() => window.__tadeonTabletopRuntime.engine.selectAll());
+      const selectedCount = await page.evaluate(
+        () => window.__tadeonTabletopRuntime.snapshot().selectedIds.length,
+      );
+      await bar.getByRole("button", { name: "Editar seleção", exact: true }).click();
+      const composition = page.getByRole("region", { name: "Montagem e encaixe" });
+      await composition.waitFor();
+      for (const formation of ["fileira", "coluna", "grade", "círculo"]) {
+        await composition
+          .getByRole("button", { name: `Organizar em ${formation}`, exact: true })
+          .click();
+        const changed = await page.evaluate(() =>
+          window.__tadeonTabletopRuntime
+            .snapshot()
+            .scene.entities.filter((e) =>
+              window.__tadeonTabletopRuntime.snapshot().selectedIds.includes(e.id),
+            ),
+        );
+        assert(changed.length === selectedCount, "Formation retains selection");
+        assert(
+          changed.every(
+            (e) => e.x >= 0 && e.y >= 0 && e.x + e.width <= 2400 && e.y + e.height <= 1600,
+          ),
+          "Formation remains within scene",
+        );
+      }
+      await composition.getByRole("button", { name: "Encaixar na grade", exact: true }).click();
+      const snapped = await page.evaluate(() =>
+        window.__tadeonTabletopRuntime
+          .snapshot()
+          .scene.entities.filter((e) =>
+            window.__tadeonTabletopRuntime.snapshot().selectedIds.includes(e.id),
+          ),
+      );
+      assert(
+        snapped.every((e) => e.x % 64 === 0 && e.y % 64 === 0),
+        "Explicit fitting snaps all editable pieces",
+      );
+      await composition.locator("summary").filter({ hasText: "Repetir conjunto" }).click();
+      await composition.getByLabel("Altura por cópia", { exact: true }).fill("0.5");
+      await composition
+        .getByRole("button", { name: "Inserir 3 cópias do conjunto", exact: true })
+        .click();
+      const repeated = await page.evaluate(() => window.__tadeonTabletopRuntime.snapshot());
+      assert(
+        repeated.scene.entities.length === 3 + selectedCount * 3,
+        "Repeat inserts complete sets",
+      );
+      assert(
+        repeated.scene.entities.slice(3).some((e) => e.elevation === 96),
+        "Repeat includes stepped 3D elevation",
+      );
+      await capture("composition");
+      if (width < 1200) await page.keyboard.press("Escape");
+      await bar.getByRole("button", { name: "Desfazer edição da cena", exact: true }).click();
+      assert(
+        (await page.evaluate(
+          () => window.__tadeonTabletopRuntime.snapshot().scene.entities.length,
+        )) === 3,
+        "One undo removes the entire repetition",
+      );
+      await bar.getByRole("button", { name: "Refazer edição da cena", exact: true }).click();
+      assert(
+        (await page.evaluate(
+          () => window.__tadeonTabletopRuntime.snapshot().scene.entities.length,
+        )) === repeated.scene.entities.length,
+        "Redo restores the whole batch",
+      );
+      await bar.getByRole("button", { name: "Desfazer edição da cena", exact: true }).click();
+      const commands = page.locator(".tadeon-tabletop-scene-commands");
+      await commands.locator(":scope > summary").click();
+      assert(
+        await commands.locator(".tadeon-tabletop-toolbar").isVisible(),
+        "Scene commands open through their disclosure",
+      );
+      await commands.locator(":scope > summary").click();
+      assert(
+        !(await commands.locator(".tadeon-tabletop-toolbar").isVisible()),
+        "Scene commands collapse without covering the board",
+      );
+      await page.route("**/composition-cube.glb", (route) =>
+        route.fulfill({ status: 200, contentType: "model/gltf-binary", body: cubeGlb() }),
+      );
+      await page.evaluate(() => {
+        window.__nativeDraws = 0;
+        const original = WebGL2RenderingContext.prototype.drawElements;
+        WebGL2RenderingContext.prototype.drawElements = function (...args) {
+          if (this.canvas.classList.contains("tadeon-tabletop-native-model-layer"))
+            window.__nativeDraws++;
+          const result = original.apply(this, args);
+          if (
+            this.canvas.classList.contains("tadeon-tabletop-native-model-layer") &&
+            !window.__nativeDiagnostic
+          ) {
+            const pixels = new Uint8Array(this.drawingBufferWidth * this.drawingBufferHeight * 4);
+            this.readPixels(
+              0,
+              0,
+              this.drawingBufferWidth,
+              this.drawingBufferHeight,
+              this.RGBA,
+              this.UNSIGNED_BYTE,
+              pixels,
+            );
+            window.__nativeDiagnostic = {
+              error: this.getError(),
+              pixels: pixels.filter((v, i) => i % 4 === 3 && v > 0).length,
+            };
+          }
+          return result;
+        };
+        const rt = window.__tadeonTabletopRuntime;
+        rt.engine.addEntityAt(
+          {
+            type: "object",
+            label: "Modelo de encaixe",
+            width: 96,
+            height: 96,
+            color: 0x547b94,
+            assetUrl: location.origin + "/composition-cube.glb",
+            properties: {
+              mime_type: "model/gltf-binary",
+              model_scale: 1.25,
+              model_yaw: 45,
+              model_elevation_offset: 8,
+            },
+          },
+          { x: 1100, y: 900 },
+        );
+        rt.engine.focusSelection();
+      });
+      await page.waitForFunction(() => window.__nativeDraws > 0);
+      await page.waitForTimeout(1500);
+      const beforeIdle = await page.evaluate(() => window.__nativeDraws);
+      await page.waitForTimeout(400);
+      const idleDraws = await page.evaluate((before) => window.__nativeDraws - before, beforeIdle);
+      assert(idleDraws === 0, "Static native model produces no continuous draw calls");
+      const modelLayer = page.locator(".tadeon-tabletop-native-model-layer");
+      assert(await modelLayer.isVisible(), "Quality adaptation keeps authored models visible");
+      const pixels = await page.evaluate(() => window.__nativeDiagnostic);
+      assert(
+        pixels.error === 0 && pixels.pixels > 0,
+        "Native model produces visible geometry without WebGL errors",
+      );
+      await bar.getByRole("button", { name: "Girar câmera 90 graus", exact: true }).click();
+      await page.waitForFunction((before) => window.__nativeDraws > before, beforeIdle);
+      await bar.getByRole("button", { name: "Editar seleção", exact: true }).click();
+      const scale = composition.getByRole("spinbutton", { name: "Escala do modelo", exact: true });
+      await scale.fill("1.8");
+      await scale.press("Tab");
+      assert(
+        (await page.evaluate(
+          () =>
+            window.__tadeonTabletopRuntime.snapshot().scene.entities.at(-1).properties.model_scale,
+        )) === 1.8,
+        "Model precision changes real renderer properties",
+      );
+      await capture("model-editor");
+      if (width < 1200) await page.keyboard.press("Escape");
+      await page.getByRole("button", { name: "Abrir biblioteca criativa", exact: true }).click();
+      const piece = page
+        .locator(".tadeon-creative-dock__cards article")
+        .filter({ hasText: "Modelo de encaixe" });
+      await piece.getByRole("button").click();
+      const copied = await page.evaluate(() =>
+        window.__tadeonTabletopRuntime.snapshot().scene.entities.at(-1),
+      );
+      assert(
+        copied.properties.model_scale === 1.8 &&
+          copied.properties.model_yaw === 45 &&
+          copied.properties.model_elevation_offset === 8 &&
+          copied.color === 0x547b94,
+        "Reusable model retains scale, yaw, height and color",
+      );
+      assert(
+        (await piece.locator("img").count()) === 0,
+        "Native GLB never becomes a broken thumbnail",
+      );
+      await page.getByRole("button", { name: "Fechar biblioteca criativa", exact: true }).click();
+      await page.evaluate(() => window.__tadeonTabletopRuntime.engine.focusSelection());
+      await capture("model-copies");
+      operations.push({
+        kind: "composition",
+        formations: 4,
+        selectedCount,
+        repeatCount: repeated.scene.entities.length - 3,
+        idleNativeDraws: idleDraws,
+        modelCopies: true,
+      });
+      await verifyFullscreen(bar);
+      await capture("composition-complete");
+      await context.close();
+      continue;
+    }
     await capture("play");
     const resources = page.getByRole("button", { name: "Recursos da cena", exact: true });
     await resources.click();
@@ -651,7 +1130,7 @@ try {
       await capture("projection");
       if (width === 1440) {
         await page.getByRole("button", { name: "Editar Mesa", exact: true }).click();
-        await page.setViewportSize({ width: 820, height: 1000 });
+        await page.setViewportSize({ width: 1190, height: 1000 });
         const editor = page.getByRole("dialog", { name: "Editor da Mesa", exact: true });
         await editor.waitFor();
         await page.waitForFunction(() =>
@@ -709,26 +1188,43 @@ try {
       }
     }
     if (process.env.NEXUS_AUDIT_SCOPE === "color") {
-      await page.evaluate(entityId => window.__tadeonTabletopRuntime.engine.select(entityId, false), id(50));
+      await page.evaluate(
+        (entityId) => window.__tadeonTabletopRuntime.engine.select(entityId, false),
+        id(50),
+      );
       const color = page.getByLabel("Personalizada", { exact: true });
       await color.fill("#123456");
       await closeEditor();
       await activateSave();
-      await page.waitForFunction(() => document.querySelector(".tadeon-tabletop-mobile-save")?.textContent?.includes("Salvo"));
-      assert(entityRows.find(e => e.id === id(50)).properties.base_color === 0x123456, "Custom color persisted with jsonb key ordering");
+      await page.waitForFunction(() =>
+        document.querySelector(".tadeon-tabletop-mobile-save")?.textContent?.includes("Salvo"),
+      );
+      assert(
+        entityRows.find((e) => e.id === id(50)).properties.base_color === 0x123456,
+        "Custom color persisted with jsonb key ordering",
+      );
 
-      if (width < 640) await page.getByRole("button", { name: "Ferramentas", exact: true }).click();
-      await page.locator(".tadeon-tabletop-toolbar").getByRole("button", { name: "Cena", exact: true }).click();
+      if (!(await page.locator(".tadeon-tabletop-scene-commands").evaluate((e) => e.open)))
+        await page.locator(".tadeon-tabletop-scene-commands > summary").click();
+      await page
+        .locator(".tadeon-tabletop-toolbar")
+        .getByRole("button", { name: "Cena", exact: true })
+        .click();
       await page.getByRole("button", { name: "Recarregar cena", exact: true }).click();
       await page.keyboard.press("Escape");
-      await page.waitForFunction(() => window.__tadeonTabletopRuntime?.snapshot().scene.entities[0]?.color === 0x123456);
-      await page.waitForFunction(() => document.querySelector(".tadeon-tabletop-mobile-save")?.textContent?.includes("Salvo"));
+      await page.waitForFunction(
+        () => window.__tadeonTabletopRuntime?.snapshot().scene.entities[0]?.color === 0x123456,
+      );
+      await page.waitForFunction(() =>
+        document.querySelector(".tadeon-tabletop-mobile-save")?.textContent?.includes("Salvo"),
+      );
       await capture("color-round-trip");
       await context.close();
       continue;
     }
     await closeEditor();
-    if (width < 640) await page.getByRole("button", { name: "Ferramentas", exact: true }).click();
+    if (!(await page.locator(".tadeon-tabletop-scene-commands").evaluate((e) => e.open)))
+      await page.locator(".tadeon-tabletop-scene-commands > summary").click();
     for (const group of ["Cena", "Editar", "Visão", "Grade"]) {
       const trigger = page
         .locator(".tadeon-tabletop-toolbar")
@@ -794,6 +1290,10 @@ try {
     );
     await verifyPointerSelection();
     await capture("pointer-selection");
+    if (process.env.NEXUS_AUDIT_SCOPE === "navigation") {
+      await context.close();
+      continue;
+    }
     await page
       .locator(".tadeon-tabletop-mobile-save")
       .evaluate((element) => element.scrollIntoView({ block: "center", behavior: "instant" }));
@@ -801,7 +1301,10 @@ try {
     await page.evaluate((entityId) => {
       const e = window.__tadeonTabletopRuntime.engine;
       e.select(entityId, false);
-      e.updateSelected({ label: "Ariadne · rascunho", color: 0x123456 }, "Renomear e escolher cor-base");
+      e.updateSelected(
+        { label: "Ariadne · rascunho", color: 0x123456 },
+        "Renomear e escolher cor-base",
+      );
     }, id(50));
     await page.waitForFunction(() =>
       document.querySelector(".tadeon-tabletop-mobile-save")?.textContent?.includes("Salvar"),
@@ -834,12 +1337,22 @@ try {
       entityRows.find((e) => e.id === id(50)).name === "Ariadne · edição posterior",
       "Second save retains latest edit",
     );
-    assert(entityRows.find((e) => e.id === id(50)).properties.base_color === 0x123456, "Chosen base color reaches the save payload");
-    await page.locator(".tadeon-tabletop-toolbar").getByRole("button", { name: "Cena", exact: true }).click();
+    assert(
+      entityRows.find((e) => e.id === id(50)).properties.base_color === 0x123456,
+      "Chosen base color reaches the save payload",
+    );
+    await page
+      .locator(".tadeon-tabletop-toolbar")
+      .getByRole("button", { name: "Cena", exact: true })
+      .click();
     await page.getByRole("button", { name: "Recarregar cena", exact: true }).click();
     await page.keyboard.press("Escape");
-    await page.waitForFunction(() => window.__tadeonTabletopRuntime?.snapshot().scene.entities[0]?.color === 0x123456);
-    await page.waitForFunction(() => document.querySelector(".tadeon-tabletop-mobile-save")?.textContent?.includes("Salvo"));
+    await page.waitForFunction(
+      () => window.__tadeonTabletopRuntime?.snapshot().scene.entities[0]?.color === 0x123456,
+    );
+    await page.waitForFunction(() =>
+      document.querySelector(".tadeon-tabletop-mobile-save")?.textContent?.includes("Salvo"),
+    );
     await capture("color-round-trip");
     await page
       .locator(".tadeon-tabletop-toolbar")

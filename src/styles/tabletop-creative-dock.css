@@ -467,3 +467,5 @@
 }
 
 /* end-source: src/styles/tabletop-creative-dock.css */
+
+.tadeon-creative-dock__hint { padding: .5rem 0; color: var(--muted-foreground); font-size: .8125rem; line-height: 1.45; }

@@ -9531,7 +9531,7 @@
   },
   "materialMotionRevision": {
     "task": "NEX-030",
-    "status": "in_progress",
+    "status": "published",
     "base": "f6ec7f7ed942dc0ce7c44e83c48446065fdc76ea",
     "validation": {
       "targeted": {
@@ -9540,18 +9540,182 @@
         "tests": 26
       },
       "browser": {
-        "status": "pending",
-        "expectedWidths": [
+        "status": "passed",
+        "run": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39526550963",
+        "widths": [
           320,
           390,
           820,
           1440
-        ]
+        ],
+        "archiveStates": 16,
+        "sharedViews": 4,
+        "tabletopViews": 4,
+        "radial": [
+          {
+            "width": 320,
+            "circular": true,
+            "minimumTarget": 44,
+            "focusAndReturn": true,
+            "duplication": true
+          },
+          {
+            "width": 390,
+            "circular": true,
+            "minimumTarget": 44,
+            "focusAndReturn": true,
+            "duplication": true
+          },
+          {
+            "width": 820,
+            "circular": true,
+            "minimumTarget": 44,
+            "focusAndReturn": true,
+            "duplication": true
+          },
+          {
+            "width": 1440,
+            "circular": true,
+            "minimumTarget": 44,
+            "focusAndReturn": true,
+            "duplication": true
+          }
+        ],
+        "manualInspection": [
+          "Dashboard 390/1440, conta 320, Mais 390, roda 320/390/1440"
+        ],
+        "measurement": "Alvos medidos após finished das animações finitas; sem tolerância que aceite alvo menor."
+      },
+      "full": {
+        "status": "passed",
+        "suites": 147,
+        "tests": 600,
+        "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39526551047",
+        "auditVulnerabilities": 0
       }
     },
     "limits": [
       "Fixtures não certificam contas reais ou hardware físico.",
       "Loop restante de renomeação no bridge final não foi retirado."
-    ]
+    ],
+    "sourceCommit": "b3a239976ab77ec2945a0bd27fa099b586ee2a4d",
+    "integration": {
+      "pr": 291,
+      "branch": "feat/nex-030-material-motion-radials",
+      "base": "main",
+      "baseCommit": "f6ec7f7ed942dc0ce7c44e83c48446065fdc76ea",
+      "sourceCommit": "b3a239976ab77ec2945a0bd27fa099b586ee2a4d",
+      "headCommit": "b3a239976ab77ec2945a0bd27fa099b586ee2a4d",
+      "state": "integrated",
+      "mergeCommit": "d050946adb0580cf1335db1499cda050e8fc49d7",
+      "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39526551047",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39575515524",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39575515416",
+      "productionCommit": "d050946adb0580cf1335db1499cda050e8fc49d7",
+      "productionVerifiedAt": "2026-10-21T09:17:51.8018329Z",
+      "productionHttpStatus": 200
+    }
+  },
+  "spatialWorkbenchRevision": {
+    "task": "NEX-031",
+    "status": "local_validation_in_progress",
+    "base": "d050946adb0580cf1335db1499cda050e8fc49d7",
+    "validation": {
+      "unit": {
+        "status": "passed",
+        "suites": 152,
+        "tests": 618,
+        "command": "npm run check",
+        "includes": [
+          "lint",
+          "typecheck",
+          "build",
+          "styles",
+          "project continuity"
+        ]
+      },
+      "audit": {
+        "command": "npm audit --audit-level=high",
+        "vulnerabilities": 0
+      },
+      "browser": {
+        "status": "final_matrix_in_progress",
+        "script": "scripts/verify-tabletop-workspace.mjs",
+        "scope": "composition",
+        "widths": [
+          320,
+          390,
+          820,
+          1440
+        ],
+        "fixtures": "Supabase interceptado, motor real, Chromium/WebGL por software; GLB geométrico local.",
+        "completedAdditional": {
+          "fullscreen": {
+            "widths": [
+              320,
+              1440
+            ],
+            "states": 5,
+            "status": "passed",
+            "checks": [
+              "Portal da roda na árvore fullscreen",
+              "Gatilho clicável e ações orbitais com geometria própria",
+              "Editor compacto dentro de fullscreen, Escape e foco contido",
+              "Movimento reduzido"
+            ]
+          }
+        }
+      }
+    },
+    "limits": [
+      "Fixtures locais e WebGL por software não certificam hardware ou contas reais.",
+      "Não altera schema, RLS, formato de assets ou serviços pagos.",
+      "Enquadramento usa envelope conservador da normalização do GLB, não colisão física nem limites exatos de cada frame de animação."
+    ],
+    "references": [
+      {
+        "product": "Owlbear Rodeo",
+        "urls": [
+          "https://docs.owlbear.rodeo/docs/images/",
+          "https://docs.owlbear.rodeo/docs/scenes/"
+        ],
+        "adaptation": "Seleção contextual, encaixe e separação entre biblioteca e cena."
+      },
+      {
+        "product": "Foundry VTT",
+        "urls": [
+          "https://foundryvtt.com/article/tiles/"
+        ],
+        "adaptation": "Precisão de escala, giro e elevação; edição em lote com histórico atômico."
+      },
+      {
+        "product": "TaleSpire",
+        "urls": [
+          "https://talespire.com/using-the-slab-browser"
+        ],
+        "adaptation": "Conjuntos reutilizáveis, adaptados como formações e repetição de peças da própria cena."
+      }
+    ],
+    "implementation": [
+      "Cabeçalho operacional PageHeader, barra de câmera e histórico junto ao mapa, editor contextual e disclosures de ferramentas/sessão.",
+      "Formações em fileira, coluna, grade e círculo; repetição com passo, giro e elevação. Limites e bloqueios respeitados no motor; desfazer atômico.",
+      "Reutilização conserva cor, escala e propriedades visuais 3D, sem copiar notas e vínculos privados; GLB não vira img.",
+      "Modelos estáticos/pausados desenham por demanda. Modelos animados respeitam orçamento 60/30/20 FPS por perfil; aba oculta suspende frames.",
+      "Perfil econômico conserva a camada nativa: o comportamento anterior a escondia por display:none. Pausa/velocidade preservam a fase do clipe.",
+      "Tela inteira usa o mesmo workbench; roda e portais Radix acompanham a árvore fullscreen.",
+      "Enquadramento da seleção considera o envelope normalizado do modelo e sua elevação, antes mesmo do carregamento; margem acompanha a largura disponível. Formato/rest pose do asset delimita esse envelope, sem análise de deformações externas."
+    ],
+    "performance": {
+      "scope": "Apenas a camada nativa de modelos, não o loop principal Pixi nem FPS/INP globais.",
+      "staticSampleMs": 400,
+      "staticIdleDrawsVerified": {
+        "320": 0,
+        "390": 0,
+        "820": 0
+      },
+      "proof": "Pixels não transparentes e erro WebGL zero no primeiro desenho; camada deve permanecer visível após adaptação de qualidade; giro de câmera deve redesenhar.",
+      "physicalHardware": "not_verified"
+    }
   }
 }

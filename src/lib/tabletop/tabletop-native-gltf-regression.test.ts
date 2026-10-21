@@ -82,7 +82,7 @@ describe("native tabletop GLTF renderer", () => {
     expect(renderer).toContain("gl.drawElements");
     expect(renderer).toContain("createTexture");
     expect(renderer).toContain("uJoints[");
-    expect(renderer).toContain("model_animation_speed");
+    // Playback semantics are covered behaviorally by tabletop-media.test.ts.
   });
 
   it("keeps the mesh layer visual-only so pointer ownership stays with Pixi", () => {

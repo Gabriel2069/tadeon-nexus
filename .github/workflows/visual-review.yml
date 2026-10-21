@@ -55,6 +55,13 @@ jobs:
           NEXUS_MATERIAL_AUDIT: "1"
           NEXUS_LAYOUT_AUDIT: "1"
         run: node scripts/verify-header-ownership.mjs current
+      - name: Comparar composição anterior da Mesa
+        env:
+          NEXUS_AUDIT_REPO: /tmp/tadeon-baseline
+          NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/tabletop-baseline
+          NEXUS_AUDIT_SCOPE: baseline
+          NEXUS_AUDIT_WIDTHS: "[390,1440]"
+        run: node scripts/verify-tabletop-workspace.mjs
       - name: Conferir ações circulares da Mesa
         env:
           NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/tabletop
@@ -64,6 +71,12 @@ jobs:
           NEXUS_LAYOUT_AUDIT: "1"
           NEXUS_RADIAL_AUDIT: "1"
         run: node scripts/verify-header-ownership.mjs current
+      - name: Validar composição espacial, modelos e tela inteira
+        env:
+          NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/composition
+          NEXUS_AUDIT_SCOPE: composition
+          NEXUS_AUDIT_WIDTHS: "[320,390,820,1440]"
+        run: node scripts/verify-tabletop-workspace.mjs
       - name: Publicar métricas de comparação no log
         if: always()
         run: |

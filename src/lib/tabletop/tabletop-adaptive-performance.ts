@@ -12,6 +12,7 @@ export interface TabletopQualityProfile {
   tier: TabletopQualityTier;
   maxResolution: number;
   nativeModels: boolean;
+  nativeAnimationFps?: number;
   effects: "full" | "reduced" | "minimal";
   textureBudgetMb: number;
 }
@@ -25,6 +26,7 @@ const PROFILES: Record<TabletopQualityTier, TabletopQualityProfile> = {
     tier: "cinematic",
     maxResolution: 3,
     nativeModels: true,
+    nativeAnimationFps: 60,
     effects: "full",
     textureBudgetMb: 512,
   },
@@ -32,6 +34,7 @@ const PROFILES: Record<TabletopQualityTier, TabletopQualityProfile> = {
     tier: "high",
     maxResolution: 3,
     nativeModels: true,
+    nativeAnimationFps: 60,
     effects: "full",
     textureBudgetMb: 384,
   },
@@ -39,13 +42,16 @@ const PROFILES: Record<TabletopQualityTier, TabletopQualityProfile> = {
     tier: "balanced",
     maxResolution: 2.5,
     nativeModels: true,
+    nativeAnimationFps: 30,
     effects: "reduced",
     textureBudgetMb: 256,
   },
   economy: {
     tier: "economy",
     maxResolution: 2,
-    nativeModels: false,
+    // Quality adaptation may simplify motion, never remove authored scene content.
+    nativeModels: true,
+    nativeAnimationFps: 20,
     effects: "minimal",
     textureBudgetMb: 160,
   },
