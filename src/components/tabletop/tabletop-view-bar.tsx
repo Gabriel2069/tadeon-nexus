@@ -12,6 +12,13 @@ import {
 } from "lucide-react";
 import { SelectionGroup } from "@/components/selection-plate";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { TabletopEngine } from "@/lib/tabletop/tabletop-engine";
 import type { TabletopSnapshot } from "@/lib/tabletop/types";
 import {
@@ -54,63 +61,69 @@ export function TabletopViewBar({
     )?.id ?? "custom";
   return (
     <div className="tadeon-tabletop-viewbar" aria-label="Visão e encaixe do tabuleiro">
-      <SelectionGroup
-        className="tadeon-tabletop-viewbar__projection"
-        aria-label="Projeção da cena"
-        activeKey={projection}
-        selector='button[aria-pressed="true"]'
-      >
-        <button
-          data-material-surface="view-mode"
-          type="button"
-          aria-pressed={projection === "plan"}
-          onClick={() => onProjection("plan")}
+      <div className="tadeon-tabletop-viewbar__camera" role="group" aria-label="Câmera">
+        <SelectionGroup
+          className="tadeon-tabletop-viewbar__projection"
+          aria-label="Projeção da cena"
+          activeKey={projection}
+          selector='button[aria-pressed="true"]'
         >
-          2D
-        </button>
-        <button
-          data-material-surface="view-mode"
-          type="button"
-          aria-pressed={projection === "isometric"}
-          onClick={() => onProjection("isometric")}
-        >
-          <Axis3d aria-hidden="true" />
-          3D
-        </button>
-      </SelectionGroup>
-      <label className="tadeon-tabletop-viewbar__preset">
-        <span className="sr-only">Enquadramento da câmera</span>
-        <select
-          aria-label="Enquadramento da câmera"
+          <button
+            data-material-surface="view-mode"
+            type="button"
+            aria-pressed={projection === "plan"}
+            onClick={() => onProjection("plan")}
+          >
+            2D
+          </button>
+          <button
+            data-material-surface="view-mode"
+            type="button"
+            aria-pressed={projection === "isometric"}
+            onClick={() => onProjection("isometric")}
+          >
+            <Axis3d aria-hidden="true" />
+            3D
+          </button>
+        </SelectionGroup>
+        <Select
           value={projection === "plan" ? "plan" : currentPreset}
-          onChange={(event) => {
-            if (event.target.value === "plan") {
+          onValueChange={(value) => {
+            if (value === "plan") {
               onProjection("plan");
               return;
             }
-            const preset = TABLETOP_CAMERA_PRESETS.find((p) => p.id === event.target.value);
+            const preset = TABLETOP_CAMERA_PRESETS.find((p) => p.id === value);
             if (preset) {
               onOrientation(normalizeTabletopViewOrientation(preset.orientation));
               onProjection("isometric");
             }
           }}
         >
-          <option value="plan">Planta</option>
-          {TABLETOP_CAMERA_PRESETS.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.label}
-            </option>
-          ))}
-          <option value="custom" disabled>
-            Personalizado
-          </option>
-        </select>
-      </label>
-      {projection === "isometric" && (
+          <SelectTrigger
+            className="tadeon-tabletop-viewbar__preset"
+            aria-label="Enquadramento da câmera"
+          >
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent className="tadeon-tabletop-camera-menu">
+            <SelectItem value="plan">Planta</SelectItem>
+            {TABLETOP_CAMERA_PRESETS.map((p) => (
+              <SelectItem key={p.id} value={p.id}>
+                {p.label}
+              </SelectItem>
+            ))}
+            <SelectItem value="custom" disabled>
+              Personalizado
+            </SelectItem>
+          </SelectContent>
+        </Select>
         <Button
           size="icon"
           variant="outline"
           aria-label="Girar câmera 90 graus"
+          title="Girar câmera 90 graus"
+          disabled={projection !== "isometric"}
           onClick={() =>
             onOrientation(
               normalizeTabletopViewOrientation({ ...orientation, yaw: orientation.yaw + 90 }),
@@ -119,70 +132,94 @@ export function TabletopViewBar({
         >
           <RotateCw aria-hidden="true" />
         </Button>
-      )}
-      <Button
-        size="icon"
-        variant="outline"
-        aria-label="Ajustar mapa à tela"
-        onClick={() => engine()?.fitToScreen()}
+      </div>
+      <div
+        className="tadeon-tabletop-viewbar__framing"
+        role="group"
+        aria-label="Enquadramento e grade"
       >
-        <ScanLine aria-hidden="true" />
-      </Button>
-      <Button
-        size="icon"
-        variant="outline"
-        aria-label="Enquadrar peças selecionadas"
-        disabled={!snapshot.selectedIds.length}
-        onClick={() => engine()?.focusSelection()}
-      >
-        <Focus aria-hidden="true" />
-      </Button>
-      <Button
-        size="sm"
-        variant="outline"
-        className="tadeon-tabletop-viewbar__snap"
-        aria-label="Alternar encaixe na grade"
-        aria-pressed={snapshot.scene.snap}
-        disabled={!editable || snapshot.scene.gridMode === "none"}
-        onClick={() => engine()?.setSnap(!snapshot.scene.snap)}
-      >
-        <Grid2X2 aria-hidden="true" />
-        <span>Encaixe</span>
-      </Button>
-      <div className="tadeon-tabletop-viewbar__history">
         <Button
           size="icon"
-          variant="ghost"
-          aria-label="Desfazer edição da cena"
-          disabled={!editable || !snapshot.canUndo}
-          onClick={() => engine()?.undo()}
+          variant="outline"
+          aria-label="Ajustar mapa à tela"
+          title="Ajustar mapa à tela"
+          onClick={() => engine()?.fitToScreen()}
         >
-          <Undo2 aria-hidden="true" />
+          <ScanLine aria-hidden="true" />
         </Button>
         <Button
           size="icon"
-          variant="ghost"
-          aria-label="Refazer edição da cena"
-          disabled={!editable || !snapshot.canRedo}
-          onClick={() => engine()?.redo()}
+          variant="outline"
+          aria-label="Enquadrar peças selecionadas"
+          title="Enquadrar peças selecionadas"
+          disabled={!snapshot.selectedIds.length}
+          onClick={() => engine()?.focusSelection()}
         >
-          <Redo2 aria-hidden="true" />
+          <Focus aria-hidden="true" />
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          className="tadeon-tabletop-viewbar__snap"
+          aria-label="Alternar encaixe na grade"
+          title="Alternar encaixe na grade"
+          aria-pressed={snapshot.scene.snap}
+          disabled={!editable || snapshot.scene.gridMode === "none"}
+          onClick={() => engine()?.setSnap(!snapshot.scene.snap)}
+        >
+          <Grid2X2 aria-hidden="true" />
+          <span>Encaixe</span>
         </Button>
       </div>
-      <Button size="sm" variant="outline" onClick={onEdit}>
-        <PanelRightOpen aria-hidden="true" />
-        <span>{snapshot.selectedIds.length ? "Editar seleção" : "Editor"}</span>
-      </Button>
-      {canFullscreen && (
+      <div
+        className="tadeon-tabletop-viewbar__actions"
+        role="group"
+        aria-label="Histórico e editor"
+      >
+        <div className="tadeon-tabletop-viewbar__history">
+          <Button
+            size="icon"
+            variant="ghost"
+            aria-label="Desfazer edição da cena"
+            title="Desfazer edição da cena"
+            disabled={!editable || !snapshot.canUndo}
+            onClick={() => engine()?.undo()}
+          >
+            <Undo2 aria-hidden="true" />
+          </Button>
+          <Button
+            size="icon"
+            variant="ghost"
+            aria-label="Refazer edição da cena"
+            title="Refazer edição da cena"
+            disabled={!editable || !snapshot.canRedo}
+            onClick={() => engine()?.redo()}
+          >
+            <Redo2 aria-hidden="true" />
+          </Button>
+        </div>
         <Button
-          size="icon"
-          variant="ghost"
-          aria-label={fullscreen ? "Sair da tela inteira" : "Expandir tabuleiro em tela inteira"}
-          onClick={onFullscreen}
+          className="tadeon-tabletop-viewbar__editor"
+          size="sm"
+          variant="outline"
+          onClick={onEdit}
+          aria-label={snapshot.selectedIds.length ? "Editar seleção" : "Editor"}
+          title={snapshot.selectedIds.length ? "Editar seleção" : "Abrir editor"}
         >
-          {fullscreen ? <Minimize2 aria-hidden="true" /> : <Maximize2 aria-hidden="true" />}
+          <PanelRightOpen aria-hidden="true" />
+          <span>{snapshot.selectedIds.length ? "Editar seleção" : "Editor"}</span>
         </Button>
-      )}
+        {canFullscreen && (
+          <Button
+            size="icon"
+            variant="ghost"
+            aria-label={fullscreen ? "Sair da tela inteira" : "Expandir tabuleiro em tela inteira"}
+            onClick={onFullscreen}
+          >
+            {fullscreen ? <Minimize2 aria-hidden="true" /> : <Maximize2 aria-hidden="true" />}
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

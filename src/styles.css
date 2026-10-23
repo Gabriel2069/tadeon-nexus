@@ -1297,7 +1297,7 @@ body
     [data-slot="button"]:not([data-material-surface], .tadeon-material-button),
     [data-slot="toggle"],
     [data-slot="toggle-group-item"],
-    [data-slot="collapsible-trigger"]:not([data-sheet-fold-trigger]),
+    [data-slot="collapsible-trigger"]:not([data-sheet-fold-trigger], [data-tabletop-fold-trigger]),
     .tadeon-shell button:not([data-material-surface], .tadeon-material-button):not([data-slot])
   ):is(
     [aria-pressed="true"],

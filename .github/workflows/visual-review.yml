@@ -77,6 +77,13 @@ jobs:
           NEXUS_AUDIT_SCOPE: composition
           NEXUS_AUDIT_WIDTHS: "[320,390,820,1440]"
         run: node scripts/verify-tabletop-workspace.mjs
+      - name: Conferir dobras compartilhadas na Ficha
+        env:
+          NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/sheet-folds
+          NEXUS_AUDIT_WIDTHS: "[320,1440]"
+          NEXUS_AUDIT_STATES: '["editable"]'
+          NEXUS_SKIP_SCREENSHOTS: "1"
+        run: node scripts/verify-sheet-design.mjs
       - name: Publicar métricas de comparação no log
         if: always()
         run: |

@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-21; referência de runtime: `0318936b38c8a1e3a24b1f858cd95c60048cc976`. PR #292 em `feat/nex-031-tabletop-composition`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-22; referência de runtime: `0318936b38c8a1e3a24b1f858cd95c60048cc976`. PR #292 em `feat/nex-031-tabletop-composition`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -41,6 +41,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-029 | Fólios compactos, material do shell e reflexão local exclusiva | Integrado | 7 | shell | NEX-028 |
 | NEX-030 | Mesa circular e profundidade contida dos materiais | Integrado | 7 | tabletop | NEX-029 |
 | NEX-031 | Mesa espacial: composição, conjuntos e edição 3D | Integrado | 7 | tabletop | NEX-030 |
+| NEX-032 | Mesa: acabamento dos instrumentos, dobras e seleção | Em andamento | 7 | tabletop | NEX-031 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -298,6 +299,17 @@ Evidências: [docs/visual-system-validation.json](../docs/visual-system-validati
 - Registrar referências oficiais Owlbear, Foundry e TaleSpire e distinguir medição local, CI, produção e hardware real.
 
 Evidências: [docs/visual-system-validation.json](../docs/visual-system-validation.json), [docs/DESIGN.md](../docs/DESIGN.md), [scripts/verify-tabletop-workspace.mjs](../scripts/verify-tabletop-workspace.mjs), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/292), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39670991307), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39672882787).
+
+## NEX-032 — Mesa: acabamento dos instrumentos, dobras e seleção
+
+- Organizar câmera, enquadramento e histórico em grupos estáveis com alvos de 44 px nas quatro larguras.
+- Usar o menu de câmera compartilhado com abertura/fechamento, retorno de foco e portal dentro de fullscreen.
+- Dar continuidade por altura às dobras de composição, com redução de movimento, interrupção e campos fora da interação quando fechadas.
+- Levar SelectionPlate às abas do editor sem duplicar preenchimento de seleção; preservar navegação por teclado e geometria local.
+- Refinar luz de contato e profundidade estática no painel e na composição, preservando o material aprovado dos botões.
+- Executar check, audit e matriz visual/funcional; distinguir fixtures, integração e produção.
+
+Evidências: [docs/tabletop-finishing-validation.json](../docs/tabletop-finishing-validation.json), [scripts/verify-tabletop-workspace.mjs](../scripts/verify-tabletop-workspace.mjs), [docs/DESIGN.md](../docs/DESIGN.md), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [.github/workflows/visual-review.yml](../.github/workflows/visual-review.yml).
 
 ## Decisões vigentes
 

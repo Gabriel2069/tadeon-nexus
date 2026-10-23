@@ -88,3 +88,8 @@ A comparação normaliza o mesmo campo e ordena chaves de objetos recursivamente
 ## Composição e modelos 3D — NEX-031
 
 A barra de visão e o painel de composição são componentes do workspace, não novos bridges. Câmera e orientação continuam no estado controlado; formações, encaixe e repetição chamam TabletopEngine. O histórico registra cada lote inteiro. A biblioteca reutiliza tabletop-visual-preset, com uma lista explícita de propriedades visuais e sem vínculos privados. O bridge nativo distingue render por demanda de animação real carregada. Portais usam o elemento fullscreen quando presente. As novas funções são locais até o salvamento canônico da cena; schema, RLS e contratos de persistência não mudam.
+
+
+## Acabamento local — NEX-032
+
+ViewBar conserva o estado controlado e usa Select para os enquadramentos. O menu pertence ao portal de popup compartilhado, inclusive em fullscreen. CompositionFold é um helper local do painel de composição: anima somente a abertura/saída do conteúdo, sem criar outro histórico ou desmontar a sessão. SelectionGroup mantém a placa das abas do inspector; teclado e estado panelTab continuam no workspace. A geometria/material das três regiões pertencem ao módulo tabletop-workspace.css existente.

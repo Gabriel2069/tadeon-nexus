@@ -56,3 +56,4 @@ Comece pelo [estado de continuidade](ai/00_ESTADO_ATUAL.md), [mapa do código](P
 | [tabletop-workspace-validation.json](tabletop-workspace-validation.json) | NEX-007/021: evidências e limites da reorganização da Mesa e do contexto Nexus → Mesa. |
 | [visual-system-validation.json](visual-system-validation.json) | NEX-022/023: cor-base da Mesa, pesquisa, primitivos materiais e cobertura real da evolução visual. |
 | [archive-composition-validation.json](archive-composition-validation.json) | NEX-024: descoberta do acervo, composição, navegação e gate de propriedade; evidência e limites. |
+| [tabletop-finishing-validation.json](tabletop-finishing-validation.json) | NEX-032: instrumentos, dobras, seleção contínua e acabamento local da Mesa, com comparação e limites de fixtures. |

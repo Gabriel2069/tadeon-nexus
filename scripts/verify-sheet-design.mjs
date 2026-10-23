@@ -91,7 +91,8 @@ const sheet = {
   power_form_data: {},
 };
 const results = [];
-const browser = await chromium.launch({
+let browser;
+const launchBrowser = () => chromium.launch({
   executablePath: process.env.NEXUS_CHROMIUM_PATH,
   args: JSON.parse(process.env.NEXUS_CHROMIUM_ARGS || "[]"),
 });
@@ -172,17 +173,40 @@ async function auditSelection(page) {
   return result;
 }
 try {
-  await new Promise((ok, fail) => {
-    server.stdout.on("data", (b) => {
-      if (b.toString().includes("Local:")) ok();
-    });
-    server.on("exit", (c) => fail(new Error("Vite exited " + c)));
-    setTimeout(() => fail(new Error("Vite timeout")), 30000).unref();
+  let serverLog = "",
+    serverExit = null;
+  const captureLog = (chunk) => {
+    serverLog = (serverLog + chunk.toString()).slice(-12000);
+  };
+  server.stdout.on("data", captureLog);
+  server.stderr.on("data", captureLog);
+  server.on("exit", (code) => {
+    serverExit = code ?? -1;
   });
+  const deadline = Date.now() + 120000;
+  let ready = false;
+  while (Date.now() < deadline && serverExit === null) {
+    try {
+      const response = await fetch(`http://127.0.0.1:${port}/`, {
+        signal: AbortSignal.timeout(5000),
+      });
+      if (response.status < 500) {
+        ready = true;
+        break;
+      }
+    } catch {
+      /* Initial optimization is still in progress. */
+    }
+    await new Promise((resolve) => setTimeout(resolve, 300));
+  }
+  if (!ready) throw new Error("Vite did not become ready. Exit: " + serverExit + "\n" + serverLog);
   for (const width of JSON.parse(process.env.NEXUS_AUDIT_WIDTHS || "[320,390,820,1440]"))
     for (const state of JSON.parse(
       process.env.NEXUS_AUDIT_STATES || '["editable","readonly","error","loading"]',
     )) {
+      // Isolate each software GPU/process lifecycle, as in the Mesa verifier.
+      if (browser) await browser.close();
+      browser = await launchBrowser();
       const context = await browser.newContext({
         viewport: { width, height: Number(process.env.NEXUS_AUDIT_HEIGHT || 1000) },
         hasTouch: width < 768,
@@ -594,14 +618,14 @@ try {
         );
         assert(
           (await collapse.getAttribute("aria-expanded")) === "true",
-          "Alegreya Sansrupted folds settle to the latest open state",
+          "Interrupted folds settle to the latest open state",
         );
         const fold = await page.locator("#sec-info .tadeon-sheet-section__body").evaluate((e) => ({
           animation: getComputedStyle(e).animationName,
           transform: getComputedStyle(e).transform,
         }));
         assert(
-          fold.animation === "tadeon-fold-open" && fold.transform === "none",
+          fold.animation === "tadeon-material-fold-open" && fold.transform === "none",
           "The shared fold owns motion without transforming text",
         );
         await page.emulateMedia({ reducedMotion: "reduce" });
@@ -839,7 +863,7 @@ try {
   writeFileSync(`${output}/results.json`, JSON.stringify({ fixtureOnly: true, results }, null, 2));
   console.log(JSON.stringify({ views: results.length, output, passed: true }));
 } finally {
-  await browser.close();
+  await browser?.close();
   try {
     process.kill(-server.pid, "SIGTERM");
   } catch {

@@ -1,0 +1,97 @@
+{
+  "task": "NEX-032",
+  "status": "local_validation_in_progress",
+  "base": "48b0a91049ef8661087c6db766b5d123c22316fc",
+  "baseTree": "99d1f927e2eef6566c3d0b6db453b7325cc4f4d0",
+  "implementation": [
+    "Grupos estáveis de câmera, enquadramento e histórico; giro 3D preserva seu lugar, desabilitado em planta.",
+    "Select de câmera usa o mesmo primitive e portal do sistema; foco retorna e menu acompanha fullscreen.",
+    "CompositionFold usa Radix Collapsible; o material de botão aprovado continua responsável por interação.",
+    "Keyframes de altura tadeon-material-fold-open/close deixam de colidir com os antigos de popup.",
+    "Abas do editor usam uma única SelectionPlate; retirado preenchimento individual de seleção.",
+    "Painel e bloco de composição recebem luz de contato e sombra de assentamento estáticas.",
+    "Redução de movimento da dobra usa a mesma especificidade das regras de estado; destino permanece imediato.",
+    "Select em fullscreen recebe também o limite explícito de colisão do tabuleiro; ancestrais de rolagem da página não escondem seu menu."
+  ],
+  "validation": {
+    "baseline": {
+      "status": "passed",
+      "states": 8,
+      "widths": [
+        320,
+        390,
+        820,
+        1440
+      ],
+      "scope": "play/edit, fixtures locais do motor real",
+      "fonts": "Repetido com as fontes oficiais Cormorant Garamond/PT Mono fornecidas como fixtures; Alegreya Sans local do app."
+    },
+    "browser": {
+      "status": "in_progress",
+      "script": "scripts/verify-tabletop-workspace.mjs",
+      "scope": "composition",
+      "widths": [
+        320,
+        390,
+        820,
+        1440
+      ],
+      "additionalSharedSheet": {
+        "status": "passed",
+        "widths": [
+          320,
+          1440
+        ],
+        "states": [
+          "editable"
+        ],
+        "checks": [
+          "dobras por teclado sem perda de valores",
+          "interrupção converge ao estado final",
+          "texto sem transform",
+          "redução de movimento",
+          "retorno de foco",
+          "seleção contínua"
+        ]
+      }
+    },
+    "quality": {
+      "status": "passed",
+      "command": "npm run check",
+      "suites": 152,
+      "tests": 619,
+      "includes": [
+        "style architecture",
+        "project continuity",
+        "lint",
+        "typecheck",
+        "unit tests",
+        "client/SSR/Worker build"
+      ],
+      "styleCheckAfterFinalMotionEdit": "passed"
+    },
+    "audit": {
+      "status": "passed_high_gate",
+      "command": "npm audit --audit-level=high",
+      "vulnerabilities": {
+        "info": 0,
+        "low": 0,
+        "moderate": 3,
+        "high": 0,
+        "critical": 0
+      },
+      "packages": [
+        "@vitest/mocker",
+        "vitest",
+        "ip-address"
+      ],
+      "scope": "Dependências de ferramenta/teste transitivas; sem atualização de dependências nesta rodada visual."
+    }
+  },
+  "limits": [
+    "Supabase interceptado e WebGL por software; não certifica hardware ou contas reais.",
+    "Sem alteração de schema, RLS, persistência ou dependências.",
+    "Não mede FPS ou INP globais; refinamento não acrescenta loops decorativos.",
+    "Sessão ao vivo conserva montagem e disclosures anteriores; animação nova pertence somente às dobras de composição."
+  ]
+}

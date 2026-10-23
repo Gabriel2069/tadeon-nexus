@@ -1,3 +1,4 @@
+import { SelectionGroup } from "@/components/selection-plate";
 import { TabletopCompositionPanel } from "@/components/tabletop/tabletop-composition-panel";
 import { TabletopViewBar } from "@/components/tabletop/tabletop-view-bar";
 import { WorkspaceActions } from "@/components/workspace-actions";
@@ -2933,7 +2934,13 @@ export function TabletopWorkspace({
               ))}
             </select>
           </label>
-          <div className="tadeon-tabletop-panel__tabs" role="tablist" aria-label="Áreas do editor">
+          <SelectionGroup
+            className="tadeon-tabletop-panel__tabs"
+            role="tablist"
+            aria-label="Áreas do editor"
+            activeKey={panelTab}
+            selector='button[aria-selected="true"]'
+          >
             {panelTabs.map(([tab, label, badge, accessibleLabel]) => (
               <button
                 key={tab}
@@ -2961,6 +2968,7 @@ export function TabletopWorkspace({
                 aria-selected={panelTab === tab}
                 aria-label={accessibleLabel}
                 className="tadeon-tabletop-panel__tab"
+                data-material-surface="tab"
                 onClick={() => setPanelTab(tab)}
               >
                 {tab === "library" ? (
@@ -2982,7 +2990,7 @@ export function TabletopWorkspace({
                 )}
               </button>
             ))}
-          </div>
+          </SelectionGroup>
 
           {panelTab === "library" && (
             <div
