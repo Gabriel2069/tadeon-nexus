@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-22; referência de runtime: `0318936b38c8a1e3a24b1f858cd95c60048cc976`. PR #292 em `feat/nex-031-tabletop-composition`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-22; referência de runtime: `e88f75d2de197ca525e7e1716da61a460efc35cd`. PR #294 em `feat/nex-032-tabletop-finish`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -41,7 +41,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-029 | Fólios compactos, material do shell e reflexão local exclusiva | Integrado | 7 | shell | NEX-028 |
 | NEX-030 | Mesa circular e profundidade contida dos materiais | Integrado | 7 | tabletop | NEX-029 |
 | NEX-031 | Mesa espacial: composição, conjuntos e edição 3D | Integrado | 7 | tabletop | NEX-030 |
-| NEX-032 | Mesa: acabamento dos instrumentos, dobras e seleção | Em andamento | 7 | tabletop | NEX-031 |
+| NEX-032 | Mesa: acabamento dos instrumentos, dobras e seleção | Integrado | 7 | tabletop | NEX-031 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -309,7 +309,7 @@ Evidências: [docs/visual-system-validation.json](../docs/visual-system-validati
 - Refinar luz de contato e profundidade estática no painel e na composição, preservando o material aprovado dos botões.
 - Executar check, audit e matriz visual/funcional; distinguir fixtures, integração e produção.
 
-Evidências: [docs/tabletop-finishing-validation.json](../docs/tabletop-finishing-validation.json), [scripts/verify-tabletop-workspace.mjs](../scripts/verify-tabletop-workspace.mjs), [docs/DESIGN.md](../docs/DESIGN.md), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [.github/workflows/visual-review.yml](../.github/workflows/visual-review.yml).
+Evidências: [docs/tabletop-finishing-validation.json](../docs/tabletop-finishing-validation.json), [scripts/verify-tabletop-workspace.mjs](../scripts/verify-tabletop-workspace.mjs), [docs/DESIGN.md](../docs/DESIGN.md), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [.github/workflows/visual-review.yml](../.github/workflows/visual-review.yml), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/294), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39877504251), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39879914021).
 
 ## Decisões vigentes
 

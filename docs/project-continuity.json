@@ -1,23 +1,23 @@
 {
   "version": 1,
   "checkedAt": "2026-10-22",
-  "runtimeReference": "0318936b38c8a1e3a24b1f858cd95c60048cc976",
+  "runtimeReference": "e88f75d2de197ca525e7e1716da61a460efc35cd",
   "integration": {
-    "pr": 292,
-    "branch": "feat/nex-031-tabletop-composition",
+    "pr": 294,
+    "branch": "feat/nex-032-tabletop-finish",
     "base": "main",
-    "baseCommit": "d050946adb0580cf1335db1499cda050e8fc49d7",
-    "sourceCommit": "242a9e3abc1967f0934f52f560d89056fd3d6563",
-    "headCommit": "242a9e3abc1967f0934f52f560d89056fd3d6563",
+    "baseCommit": "48b0a91049ef8661087c6db766b5d123c22316fc",
+    "sourceCommit": "6e14fd18185cca24a0685cc3e0e29f9823afdd32",
+    "headCommit": "6e14fd18185cca24a0685cc3e0e29f9823afdd32",
     "state": "integrated",
-    "mergeCommit": "0318936b38c8a1e3a24b1f858cd95c60048cc976",
-    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39670991294",
-    "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39670991307",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39672882831",
+    "mergeCommit": "e88f75d2de197ca525e7e1716da61a460efc35cd",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39877503943",
+    "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39877504251",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39879914150",
     "production": "confirmed",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39672882787",
-    "productionCommit": "0318936b38c8a1e3a24b1f858cd95c60048cc976",
-    "productionVerifiedAt": "2026-10-21T20:47:01.2142326Z",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39879914021",
+    "productionCommit": "e88f75d2de197ca525e7e1716da61a460efc35cd",
+    "productionVerifiedAt": "2026-10-23T00:47:09.9520928Z",
     "productionHttpStatus": 200
   },
   "domains": [
@@ -1069,7 +1069,7 @@
       "id": "NEX-032",
       "title": "Mesa: acabamento dos instrumentos, dobras e seleção",
       "domain": "tabletop",
-      "status": "active",
+      "status": "integrated",
       "priority": 7,
       "dependsOn": [
         "NEX-031"
@@ -1087,9 +1087,12 @@
         "scripts/verify-tabletop-workspace.mjs",
         "docs/DESIGN.md",
         "scripts/verify-sheet-design.mjs",
-        ".github/workflows/visual-review.yml"
+        ".github/workflows/visual-review.yml",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/294",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39877504251",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39879914021"
       ],
-      "checkpoint": "Refinamento local em implementação sobre a árvore publicada 99d1f927, main 48b0a910. Baseline em oito estados de mestre (320/390/820/1440). Validação do acabamento em andamento; publicação da rodada ainda não confirmada."
+      "checkpoint": "Integrado pela PR #294, fonte 6e14fd1, merge e88f75d. Quality do HEAD/main aprovados: 152 suítes/619 testes. Visual review final: 31 estados de composição em 320/390/820/1440, dois estados de edição da Ficha, baseline de oito vistas da Mesa e superfícies compartilhadas. Alvos de 44 px sem sobreposição, dobras por altura, interrupção, movimento reduzido, foco/portal em fullscreen e placa do editor alinhada por teclado. Capturas finais inspecionadas com fontes declaradas carregadas. Produção confirmou HTTP 200/SHA exato em 2026-10-23T00:47:09.9520928Z. Auditoria sem altos/críticos; três moderados em ferramentas dev/teste. NEX-009/010/011 mantidos. Fechamento documental registra sua própria integração/publicação na PR correspondente."
     }
   ],
   "decisions": [
@@ -1773,6 +1776,24 @@
       "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39575515416",
       "productionCommit": "d050946adb0580cf1335db1499cda050e8fc49d7",
       "productionVerifiedAt": "2026-10-21T09:17:51.8018329Z",
+      "productionHttpStatus": 200
+    },
+    {
+      "pr": 292,
+      "branch": "feat/nex-031-tabletop-composition",
+      "base": "main",
+      "baseCommit": "d050946adb0580cf1335db1499cda050e8fc49d7",
+      "sourceCommit": "242a9e3abc1967f0934f52f560d89056fd3d6563",
+      "headCommit": "242a9e3abc1967f0934f52f560d89056fd3d6563",
+      "state": "integrated",
+      "mergeCommit": "0318936b38c8a1e3a24b1f858cd95c60048cc976",
+      "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39670991294",
+      "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39670991307",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39672882831",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39672882787",
+      "productionCommit": "0318936b38c8a1e3a24b1f858cd95c60048cc976",
+      "productionVerifiedAt": "2026-10-21T20:47:01.2142326Z",
       "productionHttpStatus": 200
     }
   ]
