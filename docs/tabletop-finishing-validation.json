@@ -1,6 +1,6 @@
 {
   "task": "NEX-032",
-  "status": "local_validation_in_progress",
+  "status": "published",
   "base": "48b0a91049ef8661087c6db766b5d123c22316fc",
   "baseTree": "99d1f927e2eef6566c3d0b6db453b7325cc4f4d0",
   "implementation": [
@@ -27,7 +27,7 @@
       "fonts": "Repetido com as fontes oficiais Cormorant Garamond/PT Mono fornecidas como fixtures; Alegreya Sans local do app."
     },
     "browser": {
-      "status": "in_progress",
+      "status": "passed",
       "script": "scripts/verify-tabletop-workspace.mjs",
       "scope": "composition",
       "widths": [
@@ -53,6 +53,25 @@
           "retorno de foco",
           "seleção contínua"
         ]
+      },
+      "states": 31,
+      "run": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39877504251",
+      "fonts": "Cormorant Garamond 600, Alegreya Sans 400 e PT Mono 400 carregadas por document.fonts.load com faces registradas; falha se restar apenas fallback.",
+      "manualInspection": {
+        "status": "passed",
+        "source": "Visual review39877504251, exact source6e14",
+        "views": [
+          "320-fullscreen-camera-menu",
+          "1440-model-copies",
+          "820-model-editor"
+        ],
+        "scope": "Menu visible in fullscreen, font identity, panel material, native models and inspector. Local390 menu/320 workbench and desktop prior body inspected additionally."
+      },
+      "artifact": {
+        "id": 12470210634,
+        "sha256": "91638a94a6ac63e6def403cc289be5cda029f133a77aac27dc0d9eaaa15d3f19",
+        "createdAt": "2026-10-23T00:41:43Z",
+        "expiresAt": "2026-10-30T00:41:40Z"
       }
     },
     "quality": {
@@ -68,7 +87,9 @@
         "unit tests",
         "client/SSR/Worker build"
       ],
-      "styleCheckAfterFinalMotionEdit": "passed"
+      "styleCheckAfterFinalMotionEdit": "passed",
+      "sourceRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39877503943",
+      "mainRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39879914150"
     },
     "audit": {
       "status": "passed_high_gate",
@@ -86,6 +107,48 @@
         "ip-address"
       ],
       "scope": "Dependências de ferramenta/teste transitivas; sem atualização de dependências nesta rodada visual."
+    },
+    "local": {
+      "baseline": {
+        "states": 8,
+        "fonts": "Oficiais em fixtures, Alegreya Sans local",
+        "widths": [
+          320,
+          390,
+          820,
+          1440
+        ]
+      },
+      "compact": {
+        "states": 22,
+        "widths": [
+          320,
+          390,
+          820
+        ]
+      },
+      "desktopBody": {
+        "states": 5,
+        "widths": [
+          1440
+        ],
+        "scope": "Corpo, placa de seleção, formações, 3D; anterior à correção de clipping de fullscreen."
+      },
+      "fullscreenAfterCorrection": {
+        "states": 5,
+        "widths": [
+          320,
+          1440
+        ],
+        "scope": "Portal/colisão do menu, roda e editor; depois da correção de Select."
+      },
+      "sheetShared": {
+        "states": 2,
+        "widths": [
+          320,
+          1440
+        ]
+      }
     }
   },
   "limits": [
@@ -93,5 +156,82 @@
     "Sem alteração de schema, RLS, persistência ou dependências.",
     "Não mede FPS ou INP globais; refinamento não acrescenta loops decorativos.",
     "Sessão ao vivo conserva montagem e disclosures anteriores; animação nova pertence somente às dobras de composição."
-  ]
+  ],
+  "sourceCommit": "6e14fd18185cca24a0685cc3e0e29f9823afdd32",
+  "sourceTree": "e18310e1ba9b0fccab59bb3a206e94f3ed6311a8",
+  "mergeCommit": "e88f75d2de197ca525e7e1716da61a460efc35cd",
+  "performance": {
+    "scope": "Somente a camada nativa de modelos; sem afirmação de FPS, INP ou hardware físico.",
+    "sampleMs": 400,
+    "staticIdleDraws": {
+      "320": 0,
+      "390": 0,
+      "820": 0,
+      "1440": 0
+    },
+    "decorativeLoopsAdded": false
+  },
+  "production": {
+    "status": "confirmed",
+    "commit": "e88f75d2de197ca525e7e1716da61a460efc35cd",
+    "run": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39879914021",
+    "httpStatus": 200,
+    "verifiedAt": "2026-10-23T00:47:09.9520928Z",
+    "proof": "Marcador controlado tadeon-build-sha confirmado no HTML servido."
+  },
+  "layoutComparison": {
+    "scope": "Estágios em CSS px, viewport 1000 px de altura. Mesmas fontes declaradas; largura e altura do mapa preservadas. Não é ganho de FPS.",
+    "baseline": {
+      "320": {
+        "x": 22.796875,
+        "y": 462.546875,
+        "width": 274.40625,
+        "height": 580
+      },
+      "390": {
+        "x": 22.796875,
+        "y": 414.546875,
+        "width": 335.40625,
+        "height": 580
+      },
+      "820": {
+        "x": 284.46875,
+        "y": 432.125,
+        "width": 498.0625,
+        "height": 720
+      },
+      "1440": {
+        "x": 299.34375,
+        "y": 379.015625,
+        "width": 1088.3125,
+        "height": 720
+      }
+    },
+    "current": {
+      "320": {
+        "x": 22.796875,
+        "y": 464.140625,
+        "width": 274.40625,
+        "height": 580
+      },
+      "390": {
+        "x": 22.796875,
+        "y": 415.34375,
+        "width": 335.40625,
+        "height": 580
+      },
+      "820": {
+        "x": 284.46875,
+        "y": 432.125,
+        "width": 498.0625,
+        "height": 720
+      },
+      "1440": {
+        "x": 299.34375,
+        "y": 379.015625,
+        "width": 1088.3125,
+        "height": 720
+      }
+    }
+  }
 }
