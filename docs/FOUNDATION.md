@@ -255,3 +255,10 @@ TabletopNativeModelRenderer avisa quando um modelo termina de carregar e informa
 usePopupPortalContainer, no proprietário route-popup-frame, acompanha fullscreenchange e fornece o mesmo host para Dialog, AlertDialog, Popover, Dropdown e Select. A moldura de colisão usa o elemento fullscreen. A roda usa esse host e conserva coordenadas de viewport. Fora da tela inteira, o destino continua o body. A geometria do cabeçalho permanece em page-hero-parity; a estrutura e o material dos instrumentos pertencem a tabletop-workspace e os limites do canvas a tabletop-route-experience.
 
 Em fullscreen, os fallbacks de movimento global respeitam o material do radial e seus botões: não podem reatribuir position:relative aos alvos que o proprietário circular posiciona em viewport. Enquadramento da seleção passa pelo CameraController e inclui o envelope normalizado de modelos, sem câmera paralela.
+
+
+## Instrumentos e dobras da Mesa — NEX-032
+
+TabletopViewBar agrupa os controles sem criar estado de câmera paralelo. O Select existente conserva semântica, colisão e portal; controles de giro têm posição estável. TabletopCompositionPanel usa as primitivas Collapsible existentes em duas dobras locais. Gatilhos data-tabletop-fold-trigger deixam os escritores genéricos de deslocamento/rotação; somente a seta decorativa gira no proprietário tabletop-workspace.css.
+
+button.css renomeia os keyframes de altura para tadeon-material-fold-open/close, evitando a colisão com os antigos keyframes de popup em motion-composition.css. Conteúdo fold já tinha exclusão explícita dos escritores globais de animação. O novo verificador registra abertura/fechamento reais, altura e ausência de transformação/filtro, interrupção e redução de movimento. Abas do editor passam por SelectionGroup; geometria continua em tabletop-workspace, material da placa em button.css. Sem novo módulo CSS, observer global ou loop permanente.

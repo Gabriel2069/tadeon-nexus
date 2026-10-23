@@ -182,7 +182,7 @@ const launchBrowser = () =>
     executablePath: process.env.NEXUS_CHROMIUM_PATH,
     args: JSON.parse(process.env.NEXUS_CHROMIUM_ARGS || "[]"),
   });
-const port = 6135,
+const port = Number(process.env.NEXUS_AUDIT_PORT || 6135),
   server = spawn(
     "npm",
     ["run", "dev", "--", "--host", "127.0.0.1", "--strictPort", "--port", String(port)],
@@ -576,6 +576,21 @@ try {
         throw error;
       });
     await page.waitForTimeout(2000);
+    const loadedFonts = await page.evaluate(async () => {
+      await document.fonts.ready;
+      return Promise.all(
+        ['600 16px "Cormorant Garamond"', '400 16px "Alegreya Sans"', '400 16px "PT Mono"'].map(
+          async (font) => ({
+            font,
+            faces: (await document.fonts.load(font, "Visão · peças 123")).length,
+          }),
+        ),
+      );
+    });
+    assert(
+      loadedFonts.every((font) => font.faces > 0),
+      "Declared typography is loaded, rather than a fallback",
+    );
     const pixels = await page.evaluate(() => {
       const rt = window.__tadeonTabletopRuntime,
         canvas = rt.host.querySelector('canvas[aria-label="Canvas da Mesa Nexus"]'),
@@ -656,6 +671,7 @@ try {
         state,
         ...metrics,
         pixelMetrics: pixels,
+        loadedFonts,
         errors: [...errors],
         writes: [...writes],
         operations: structuredClone(operations),
@@ -846,6 +862,19 @@ try {
           .getByRole("button", { name: "Expandir tabuleiro em tela inteira", exact: true })
           .click();
         await page.waitForFunction(() => !!document.fullscreenElement);
+        await bar.getByRole("combobox", { name: "Enquadramento da câmera" }).click();
+        const cameraList = page.getByRole("listbox");
+        await cameraList.waitFor();
+        assert(
+          await cameraList.evaluate((e) => document.fullscreenElement.contains(e)),
+          "Camera menu portal belongs to fullscreen workbench",
+        );
+        await page.keyboard.press("Escape");
+        await cameraList.waitFor({ state: "hidden" });
+        assert(
+          await page.evaluate(() => !!document.fullscreenElement),
+          "Closing camera menu preserves fullscreen",
+        );
         const radial = page.locator(".tadeon-radial-trigger");
         console.log(
           "Fullscreen geometry",
@@ -912,12 +941,57 @@ try {
       const bar = page.locator(".tadeon-tabletop-viewbar");
       await bar.waitFor();
       await capture("workbench");
+      const instruments = await bar.locator("button").evaluateAll((buttons) =>
+        buttons.map((e) => {
+          const r = e.getBoundingClientRect();
+          return {
+            label: e.getAttribute("aria-label") || e.textContent,
+            x: r.x,
+            y: r.y,
+            width: r.width,
+            height: r.height,
+          };
+        }),
+      );
+      console.log("Toolbar targets", width, JSON.stringify(instruments));
+      assert(
+        instruments.every(
+          (b) => b.width >= 43.5 && b.height >= 43.5 && b.x >= 0 && b.x + b.width <= width + 1,
+        ),
+        "Every toolbar control keeps a 44px target in the viewport",
+      );
+      for (let i = 0; i < instruments.length; i++)
+        for (let j = i + 1; j < instruments.length; j++) {
+          const a = instruments[i],
+            b = instruments[j];
+          assert(
+            Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x) <= 0.5 ||
+              Math.min(a.y + a.height, b.y + b.height) - Math.max(a.y, b.y) <= 0.5,
+            "Toolbar targets do not overlap",
+          );
+        }
+      operations.push({ kind: "toolbar-layout", controls: instruments });
       const opening = await page.locator("[data-page-header]").boundingBox();
       assert(opening.height < 110, "Operational header stays compact");
       await bar.getByRole("button", { name: "3D", exact: true }).click();
-      await bar
-        .getByRole("combobox", { name: "Enquadramento da câmera" })
-        .selectOption("cinematic");
+      const cameraPreset = bar.getByRole("combobox", { name: "Enquadramento da câmera" });
+      await cameraPreset.click();
+      const cameraMenu = page.getByRole("listbox");
+      await cameraMenu.waitFor();
+      const menuBounds = await cameraMenu.boundingBox();
+      assert(
+        menuBounds.x >= 0 && menuBounds.x + menuBounds.width <= width + 1,
+        "Camera menu fits viewport",
+      );
+      await capture("camera-menu");
+      await page.keyboard.press("Escape");
+      await cameraMenu.waitFor({ state: "hidden" });
+      assert(
+        await cameraPreset.evaluate((e) => e === document.activeElement),
+        "Camera menu returns focus",
+      );
+      await cameraPreset.click();
+      await page.getByRole("option", { name: "Cinemático", exact: true }).click();
       await bar.getByRole("button", { name: "Girar câmera 90 graus", exact: true }).click();
       await page.waitForFunction(
         () =>
@@ -931,6 +1005,27 @@ try {
       await bar.getByRole("button", { name: "Editar seleção", exact: true }).click();
       const composition = page.getByRole("region", { name: "Montagem e encaixe" });
       await composition.waitFor();
+      if (width >= 1200) {
+        const tabs = page.getByRole("tablist", { name: "Áreas do editor" });
+        await tabs.getByRole("tab", { name: "Ambiente", exact: true }).click();
+        await page.keyboard.press("End");
+        await page.waitForTimeout(400);
+        const plate = await tabs.evaluate((e) => {
+          const a = e.querySelector('[aria-selected="true"]').getBoundingClientRect(),
+            b = e.querySelector(".tadeon-selection-plate").getBoundingClientRect();
+          return {
+            dx: Math.abs(a.x - b.x),
+            dy: Math.abs(a.y - b.y),
+            dw: Math.abs(a.width - b.width),
+            dh: Math.abs(a.height - b.height),
+          };
+        });
+        assert(
+          Object.values(plate).every((v) => v < 1.5),
+          "Editor plate follows keyboard selection after entrance settles",
+        );
+        operations.push({ kind: "editor-selection-plate", ...plate });
+      }
       for (const formation of ["fileira", "coluna", "grade", "círculo"]) {
         await composition
           .getByRole("button", { name: `Organizar em ${formation}`, exact: true })
@@ -962,7 +1057,79 @@ try {
         snapped.every((e) => e.x % 64 === 0 && e.y % 64 === 0),
         "Explicit fitting snaps all editable pieces",
       );
-      await composition.locator("summary").filter({ hasText: "Repetir conjunto" }).click();
+      const repeatFold = composition.getByRole("button", { name: /^Repetir conjunto/ });
+      await page.emulateMedia({ reducedMotion: "no-preference" });
+      await page.evaluate(() => {
+        window.__foldMotion = [];
+        document.addEventListener("animationstart", (event) => {
+          if (
+            event.pseudoElement ||
+            !event.target.matches?.('.tadeon-composition [data-motion-surface="fold"]')
+          )
+            return;
+          window.__foldMotion.push({
+            name: event.animationName,
+            frames: event.target
+              .getAnimations()
+              .flatMap((a) => a.effect.getKeyframes())
+              .map((f) => ({ height: f.height, transform: f.transform, filter: f.filter })),
+          });
+        });
+      });
+      await repeatFold.click();
+      await composition.getByLabel("Cópias adicionais", { exact: true }).waitFor();
+      await page.waitForFunction(() =>
+        window.__foldMotion.some((a) => a.name === "tadeon-material-fold-open"),
+      );
+      await page.waitForTimeout(300);
+      await repeatFold.click();
+      await page.waitForTimeout(250);
+      await composition
+        .getByLabel("Cópias adicionais", { exact: true })
+        .waitFor({ state: "hidden" });
+      const foldMotion = await page.evaluate(() => window.__foldMotion);
+      console.log("Fold motion", width, JSON.stringify(foldMotion));
+      assert(
+        foldMotion.some((a) => a.name === "tadeon-material-fold-open") &&
+          foldMotion.some((a) => a.name === "tadeon-material-fold-close"),
+        "Height folds have distinct opening and closing animation owners",
+      );
+      assert(
+        foldMotion.every((a) =>
+          a.frames.every(
+            (f) => f.height !== undefined && f.transform === undefined && f.filter === undefined,
+          ),
+        ),
+        "Fold animates height without moving or blurring fields",
+      );
+      await repeatFold.click();
+      await repeatFold.click();
+      await repeatFold.click();
+      await composition.getByLabel("Cópias adicionais", { exact: true }).waitFor();
+      await page.waitForTimeout(300);
+      assert(
+        (await repeatFold.getAttribute("aria-expanded")) === "true",
+        "Rapid folding settles to latest open state",
+      );
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await repeatFold.click();
+      await repeatFold.click();
+      assert(
+        await composition
+          .locator('[data-motion-surface="fold"]')
+          .last()
+          .evaluate((e) => getComputedStyle(e).animationName === "none"),
+        "Reduced motion keeps fold content immediate",
+      );
+      if (width === 1440) await page.emulateMedia({ reducedMotion: "no-preference" });
+      operations.push({
+        kind: "fold-motion",
+        open: true,
+        close: true,
+        rapidToggle: true,
+        reducedMotion: true,
+        measured: foldMotion,
+      });
       await composition.getByLabel("Altura por cópia", { exact: true }).fill("0.5");
       await composition
         .getByRole("button", { name: "Inserir 3 cópias do conjunto", exact: true })
@@ -978,7 +1145,10 @@ try {
       );
       await capture("composition");
       if (width < 1200) await page.keyboard.press("Escape");
-      assert(await page.locator(".tadeon-tabletop-selection-actions").isVisible(), "Collective selection retains its action rail");
+      assert(
+        await page.locator(".tadeon-tabletop-selection-actions").isVisible(),
+        "Collective selection retains its action rail",
+      );
       await bar.getByRole("button", { name: "Desfazer edição da cena", exact: true }).click();
       assert(
         (await page.evaluate(
@@ -1112,8 +1282,18 @@ try {
       );
       await page.getByRole("button", { name: "Fechar biblioteca criativa", exact: true }).click();
       await page.evaluate(() => window.__tadeonTabletopRuntime.engine.focusSelection());
-      assert(await page.locator(".tadeon-tabletop-selection-actions,.tadeon-tabletop-selection-dock[aria-label='Ações rápidas da seleção']").count() === 0, "Single master selection uses the radial without duplicated rails over the model");
-      assert(await page.locator(".tadeon-radial-trigger").isVisible(), "Single selection retains its circular actions");
+      assert(
+        (await page
+          .locator(
+            ".tadeon-tabletop-selection-actions,.tadeon-tabletop-selection-dock[aria-label='Ações rápidas da seleção']",
+          )
+          .count()) === 0,
+        "Single master selection uses the radial without duplicated rails over the model",
+      );
+      assert(
+        await page.locator(".tadeon-radial-trigger").isVisible(),
+        "Single selection retains its circular actions",
+      );
       await capture("model-copies");
       operations.push({
         kind: "composition",

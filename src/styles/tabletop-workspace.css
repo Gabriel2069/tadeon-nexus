@@ -1644,11 +1644,15 @@
   padding: 1rem;
   border: 1px solid rgb(146 181 202 / 22%);
   border-radius: 1rem 0.4rem 1rem 0.4rem;
-  background: linear-gradient(145deg, rgb(84 123 148 / 7%), transparent 25rem), #10151b;
+  background:
+    radial-gradient(ellipse at 0 0, rgb(146 181 202 / 9%), transparent 24rem),
+    linear-gradient(110deg, rgb(255 255 255 / 2%), transparent 30%), #10151b;
   color: var(--foreground);
   box-shadow:
-    inset 0 1px rgb(255 255 255 / 6%),
-    0 16px 44px rgb(0 0 0 / 20%);
+    inset 1px 1px rgb(255 255 255 / 10%),
+    inset -1px -2px rgb(0 0 0 / 28%),
+    0 3px 6px -3px rgb(0 0 0 / 60%),
+    0 18px 40px -16px rgb(0 0 0 / 45%);
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -1687,6 +1691,7 @@
   align-items: center;
 }
 .tadeon-tabletop-panel__tabs {
+  position: relative;
   display: flex;
   gap: 0.3rem;
   overflow-x: auto;
@@ -1715,9 +1720,6 @@
 }
 .tadeon-tabletop-panel__tab[aria-selected="true"] {
   color: #dcebf3;
-  border-color: rgb(146 181 202 / 38%);
-  background: linear-gradient(140deg, rgb(84 123 148 / 25%), rgb(84 123 148 / 8%));
-  box-shadow: inset 0 1px rgb(255 255 255 / 8%);
 }
 .tadeon-tabletop-panel__tab-badge {
   position: absolute;
@@ -1865,16 +1867,19 @@ html[data-tadeon-tabletop-clean="true"] .tadeon-tabletop-toolbar {
   grid-column: 1 / -1; grid-row: 1; display: flex; flex-wrap: wrap; align-items: center; gap: .35rem;
   min-width: 0; padding: .4rem; border: 1px solid rgb(146 181 202 / 22%); border-radius: .85rem .35rem;
   background: radial-gradient(ellipse at 20% 0%, rgb(146 181 202 / 10%), transparent 65%), #10151b;
-  box-shadow: inset 0 1px rgb(255 255 255 / 9%), 0 8px 22px -16px #000;
+  box-shadow: inset 0 1px rgb(255 255 255 / 12%), inset 0 -2px rgb(0 0 0 / 25%), 0 8px 22px -16px #000;
 }
-.tadeon-tabletop-viewbar :is(button,select) { min-height: 44px; font-size: .8125rem; }
+.tadeon-tabletop-viewbar button { min-width: 44px; min-height: 44px; font-size: .8125rem; }
+.tadeon-tabletop-viewbar__camera, .tadeon-tabletop-viewbar__framing, .tadeon-tabletop-viewbar__actions { display: flex; min-width: 0; align-items: center; gap: .3rem; }
+.tadeon-tabletop-viewbar__actions { margin-left: auto; }
 .tadeon-tabletop-viewbar__projection { position: relative; display: flex; gap: 2px; padding: 2px; border: 1px solid rgb(146 181 202 / 18%); border-radius: .7rem; background: #080d12; }
 .tadeon-tabletop-viewbar__projection button { display: flex; align-items: center; justify-content: center; gap: .3rem; min-width: 44px; padding: .35rem .55rem; border-radius: .5rem; color: var(--muted-foreground); transition: background-color 160ms ease, color 160ms ease; }
 .tadeon-tabletop-viewbar__projection button[aria-pressed="true"] { color: #dcebf3; }
 .tadeon-tabletop-viewbar svg { width: 16px; height: 16px; }
-.tadeon-tabletop-viewbar__preset { min-width: 0; }
-.tadeon-tabletop-viewbar__preset select { width: 8.5rem; max-width: 100%; border: 1px solid var(--border); border-radius: .6rem; padding: .4rem; background: #10171f; }
-.tadeon-tabletop-viewbar__history { display: flex; margin-left: auto; border-left: 1px solid var(--border); padding-left: .35rem; }
+.tadeon-tabletop-viewbar__preset { min-width: 0; width: 8.5rem; padding-inline: .6rem; gap: .35rem; }
+.tadeon-tabletop-camera-menu { min-width: 11rem; }
+.tadeon-tabletop-camera-menu [data-slot="select-item"] { min-height: 44px; }
+.tadeon-tabletop-viewbar__history { display: flex; border-right: 1px solid var(--border); padding-right: .3rem; }
 .tadeon-tabletop-viewbar button:focus-visible { outline: 2px solid #b1d2e6; outline-offset: 2px; }
 .tadeon-tabletop-scene-commands, .tadeon-tabletop-session-disclosure { margin-top: .5rem; border-top: 1px solid var(--studio-line); }
 :is(.tadeon-tabletop-scene-commands,.tadeon-tabletop-session-disclosure) > summary { min-height: 44px; align-content: center; cursor: pointer; color: var(--muted-foreground); font-size: .8125rem; }
@@ -1882,7 +1887,7 @@ html[data-tadeon-tabletop-clean="true"] .tadeon-tabletop-toolbar {
 .tadeon-tabletop-workbench:fullscreen { width: 100%; height: 100%; padding: max(.5rem,env(safe-area-inset-top)) .5rem max(.5rem,env(safe-area-inset-bottom)); background: #080c11; }
 .tadeon-tabletop-workbench:fullscreen .tadeon-tabletop-stage { height: 100%; }
 .tadeon-tabletop-workbench:fullscreen .tadeon-tabletop-panel { max-height: 100%; }
-.tadeon-composition { min-width: 0; border: 1px solid rgb(146 181 202 / 25%); border-radius: .9rem .35rem; padding: .75rem; background: linear-gradient(145deg, rgb(146 181 202 / 8%), transparent 75%), #101821; }
+.tadeon-composition { min-width: 0; border: 1px solid rgb(146 181 202 / 25%); border-radius: .9rem .35rem; padding: .75rem; background: radial-gradient(ellipse at 0 0, rgb(146 181 202 / 10%), transparent 70%), #101821; box-shadow: inset 1px 1px rgb(255 255 255 / 8%), inset 0 -2px rgb(0 0 0 / 25%), 0 6px 14px -9px #000; }
 .tadeon-composition > header { display: flex; align-items: center; gap: .6rem; margin-bottom: .75rem; }
 .tadeon-composition > header svg { width: 22px; color: #a7c8dc; }
 .tadeon-composition strong { font: 600 1.25rem/1.1 var(--font-cinzel); }
@@ -1890,8 +1895,13 @@ html[data-tadeon-tabletop-clean="true"] .tadeon-tabletop-toolbar {
 .tadeon-composition fieldset:disabled { opacity: .5; }
 .tadeon-composition__quick { display: flex; flex-wrap: wrap; gap: .35rem; }
 .tadeon-composition__quick > button { flex: 1 1 auto; min-height: 44px; padding: .4rem; }
-.tadeon-composition details { margin-top: .65rem; border-top: 1px solid var(--border); padding-top: .35rem; }
-.tadeon-composition summary { cursor: pointer; min-height: 44px; font-size: .875rem; align-content: center; }
+.tadeon-composition__fold { margin-top: .65rem; border-top: 1px solid var(--border); padding-top: .35rem; }
+.tadeon-composition__fold-trigger { width: 100%; min-height: 52px; height: auto; padding: .45rem .25rem; justify-content: space-between; text-align: left; white-space: normal; }
+.tadeon-composition__fold-trigger > span { min-width: 0; font-size: .875rem; }
+.tadeon-composition__fold-trigger small { font-weight: 400; }
+.tadeon-composition__fold-trigger > svg { width: 16px; height: 16px; flex: 0 0 auto; color: #a7c8dc; transition: transform 220ms cubic-bezier(.22,1,.36,1); }
+.tadeon-composition__fold-trigger[data-state="open"] > svg { transform: rotate(180deg); }
+.tadeon-composition__fold-body { padding-bottom: .15rem; }
 .tadeon-composition__fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .6rem; margin-block: .65rem; }
 .tadeon-composition__fields label { display: grid; gap: .3rem; min-width: 0; }
 .tadeon-composition__fields label > span { color: var(--muted-foreground); font-size: .75rem; }
@@ -1905,11 +1915,21 @@ html[data-tadeon-tabletop-clean="true"] .tadeon-tabletop-toolbar {
 .tadeon-composition__model h3 { display: flex; align-items: center; gap: .4rem; }
 .tadeon-composition p { margin-block: .65rem; color: var(--muted-foreground); }
 @media (max-width: 639px) {
-  .tadeon-tabletop-viewbar { gap: .25rem; padding: .35rem; }
+  .tadeon-tabletop-viewbar { display: grid; grid-template-columns: auto minmax(0,1fr); gap: .3rem; padding: .35rem; }
+  .tadeon-tabletop-viewbar__camera { grid-column: 1 / -1; }
   .tadeon-tabletop-viewbar__preset { flex: 1; min-width: 6.5rem; }
-  .tadeon-tabletop-viewbar__preset select { width: 100%; }
-  .tadeon-tabletop-viewbar__history { margin-left: 0; }
-  .tadeon-tabletop-viewbar__snap span { display: none; }
+  .tadeon-tabletop-viewbar__framing, .tadeon-tabletop-viewbar__actions { gap: 2px; }
+  .tadeon-tabletop-viewbar__actions { justify-content: end; }
+  .tadeon-tabletop-viewbar__history { gap: 0; padding-right: 0; border-right: 0; }
+  .tadeon-tabletop-viewbar__snap, .tadeon-tabletop-viewbar__editor { width: 44px; min-width: 44px; padding-inline: 0; }
+  .tadeon-tabletop-viewbar__snap span, .tadeon-tabletop-viewbar__editor span { display: none; }
   .tadeon-tabletop-scene-commands summary small { display: none; }
 }
-@media (prefers-reduced-motion: reduce) { .tadeon-tabletop-viewbar__projection button { transition: none; } }
+@media (max-width: 359px) {
+  .tadeon-tabletop-viewbar__framing { grid-column: 1 / -1; }
+  .tadeon-tabletop-viewbar__framing > button { flex: 1; }
+  .tadeon-tabletop-viewbar__actions { grid-column: 1 / -1; width: 100%; }
+  .tadeon-tabletop-viewbar__editor { flex: 1; }
+  .tadeon-tabletop-viewbar__editor span { display: inline; }
+}
+@media (prefers-reduced-motion: reduce) { .tadeon-tabletop-viewbar__projection button, .tadeon-composition__fold-trigger > svg { transition: none; } }

@@ -724,12 +724,12 @@
 [data-material-surface="tab"][data-state="active"] { color: var(--foreground); border-color: transparent; background: transparent; box-shadow: none; }
 [data-material-surface="tab"]::before, [data-material-surface="tab"]::after { content: none; }
 [data-motion-surface="fold"] { overflow: hidden; }
-[data-motion-surface="fold"][data-state="open"] { animation: tadeon-fold-open 240ms cubic-bezier(.22,1,.36,1); }
-[data-motion-surface="fold"][data-state="closed"] { animation: tadeon-fold-close 180ms cubic-bezier(.4,0,.2,1); }
-@keyframes tadeon-fold-open { from { height: 0; opacity: 0; } to { height: var(--radix-collapsible-content-height); opacity: 1; } }
-@keyframes tadeon-fold-close { from { height: var(--radix-collapsible-content-height); opacity: 1; } to { height: 0; opacity: 0; } }
+[data-motion-surface="fold"][data-state="open"] { animation: tadeon-material-fold-open 240ms cubic-bezier(.22,1,.36,1); }
+[data-motion-surface="fold"][data-state="closed"] { animation: tadeon-material-fold-close 180ms cubic-bezier(.4,0,.2,1); }
+@keyframes tadeon-material-fold-open { from { height: 0; opacity: 0; } to { height: var(--radix-collapsible-content-height); opacity: 1; } }
+@keyframes tadeon-material-fold-close { from { height: var(--radix-collapsible-content-height); opacity: 1; } to { height: 0; opacity: 0; } }
 
-@media (prefers-reduced-motion: reduce) { [data-material-surface="tab"], [data-motion-surface="fold"] { animation: none; transition: none; } }
+@media (prefers-reduced-motion: reduce) { [data-material-surface="tab"], [data-motion-surface="fold"][data-state] { animation: none; transition: none; } }
 
 /* A single contact-lit plate travels between stable controls in tabs and navigation. */
 [data-selection-rail] { isolation: isolate; }

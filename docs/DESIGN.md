@@ -339,3 +339,12 @@ Formações conservam tipos, dimensões e propriedades; mantêm o conjunto dentr
 Modelos estáticos e pausados desenham sob demanda. Só modelos com animação carregada mantêm o ciclo; aba oculta suspende o trabalho. O perfil econômico preserva a camada 3D e reduz efeitos, resolução e orçamento de animação (20 FPS; equilibrado 30; alto/cinemático 60). Pausar, retomar ou mudar a velocidade preserva a fase do clipe. Medições e limites ficam em spatialWorkbenchRevision de visual-system-validation.json.
 
 Na seleção única do mestre, a roda é a ação rápida canônica; barras duplicadas deixam de encobrir a peça. A seleção coletiva conserva o trilho e os jogadores mantêm seus instrumentos. Ficha, arquivo, camadas e demais propriedades continuam no inspetor e nos comandos existentes.
+
+
+## Acabamento dos instrumentos da Mesa — NEX-032
+
+A câmera, o enquadramento/grade e o histórico/editor formam grupos visuais estáveis. O celular recompõe esses grupos segundo a largura útil, mantendo alvos de 44 px. A ação de giro conserva o lugar em planta e fica desabilitada. O menu de enquadramentos usa o Select do sistema, com foco e portal herdados inclusive em tela inteira.
+
+As formações e a repetição abrem por altura, com fechamento correspondente e seta decorativa isolada; movimento reduzido mostra o destino imediatamente. Keyframes do material deixam de compartilhar nomes com popups legados. A sessão ao vivo mantém sua montagem anterior. As abas do editor recebem o plano contínuo de SelectionPlate, sem preenchimentos individuais concorrentes.
+
+A profundidade dos painéis vem de luz de contato no topo/lateral e sombra de assentamento, sem inclinar textos ou animar superfícies paradas. Botões, rodas, paleta e fontes aprovadas conservam seus proprietários. Evidência em tabletop-finishing-validation.json; a fila continua somente em project-continuity.json.

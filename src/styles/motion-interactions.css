@@ -147,12 +147,12 @@
 }
 
 .tadeon-shell [data-slot="accordion-trigger"] :where(svg.lucide),
-.tadeon-shell [data-slot="collapsible-trigger"]:not([data-sheet-fold-trigger]) :where(svg.lucide) {
+.tadeon-shell [data-slot="collapsible-trigger"]:not([data-sheet-fold-trigger], [data-tabletop-fold-trigger]) :where(svg.lucide) {
   transition: transform 320ms var(--tadeon-visible-ease-in) !important;
 }
 
 .tadeon-shell [data-state="open"] > [data-slot="accordion-trigger"] :where(svg.lucide),
-.tadeon-shell [data-state="open"] > [data-slot="collapsible-trigger"]:not([data-sheet-fold-trigger]) :where(svg.lucide) {
+.tadeon-shell [data-state="open"] > [data-slot="collapsible-trigger"]:not([data-sheet-fold-trigger], [data-tabletop-fold-trigger]) :where(svg.lucide) {
   transform: rotate(180deg) scale(1.12) !important;
 }
 
@@ -715,11 +715,11 @@
 @keyframes tui-menu-item{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
 
 /* Real accordion/collapsible content and trigger. */
-.tadeon-shell [data-slot="accordion-trigger"],.tadeon-shell [data-slot="collapsible-trigger"]:not([data-sheet-fold-trigger]){transition:color 180ms ease,background-color 220ms ease,transform 260ms var(--tui-spring),box-shadow 300ms var(--tui-soft)}
-.tadeon-shell [data-slot="accordion-trigger"]:hover,.tadeon-shell [data-slot="collapsible-trigger"]:not([data-sheet-fold-trigger]):hover{transform:translateX(6px);color:var(--primary)}
+.tadeon-shell [data-slot="accordion-trigger"],.tadeon-shell [data-slot="collapsible-trigger"]:not([data-sheet-fold-trigger], [data-tabletop-fold-trigger]){transition:color 180ms ease,background-color 220ms ease,transform 260ms var(--tui-spring),box-shadow 300ms var(--tui-soft)}
+.tadeon-shell [data-slot="accordion-trigger"]:hover,.tadeon-shell [data-slot="collapsible-trigger"]:not([data-sheet-fold-trigger], [data-tabletop-fold-trigger]):hover{transform:translateX(6px);color:var(--primary)}
 .tadeon-shell [data-slot="accordion-content"][data-state="open"],.tadeon-shell [data-slot="collapsible-content"]:not([data-motion-surface="fold"])[data-state="open"]{animation:tui-expand-in 430ms var(--tui-in) both!important}
 .tadeon-shell [data-slot="accordion-content"][data-state="closed"],.tadeon-shell [data-slot="collapsible-content"]:not([data-motion-surface="fold"])[data-state="closed"]{animation:tui-expand-out 220ms var(--tui-out) both!important}
-.tadeon-shell [data-slot="accordion-trigger"] svg,.tadeon-shell [data-slot="collapsible-trigger"]:not([data-sheet-fold-trigger]) svg{transition:transform 360ms var(--tui-spring)}
+.tadeon-shell [data-slot="accordion-trigger"] svg,.tadeon-shell [data-slot="collapsible-trigger"]:not([data-sheet-fold-trigger], [data-tabletop-fold-trigger]) svg{transition:transform 360ms var(--tui-spring)}
 @keyframes tui-expand-in{from{opacity:0;transform:translateY(-10px) scaleY(.82);filter:blur(3px)}55%{opacity:1;transform:translateY(2px) scaleY(1.02);filter:blur(0)}to{transform:none}}
 @keyframes tui-expand-out{to{opacity:0;transform:translateY(-7px) scaleY(.9);filter:blur(2px)}}
 

@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import {
   Box,
   Circle,
+  ChevronDown,
   Columns3,
   CopyPlus,
   Grid2X2,
@@ -12,6 +13,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import type { TabletopEngine } from "@/lib/tabletop/tabletop-engine";
 import type { TabletopSnapshot } from "@/lib/tabletop/types";
 import {
@@ -21,6 +23,39 @@ import {
 } from "@/lib/tabletop/tabletop-media";
 import type { TabletopFormation } from "@/lib/tabletop/tabletop-arrangement";
 import { LayerManager } from "@/lib/tabletop/layer-manager";
+
+function CompositionFold({
+  title,
+  hint,
+  defaultOpen = false,
+  children,
+}: {
+  title: string;
+  hint: string;
+  defaultOpen?: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <Collapsible className="tadeon-composition__fold" defaultOpen={defaultOpen}>
+      <CollapsibleTrigger asChild>
+        <Button
+          variant="ghost"
+          data-tabletop-fold-trigger=""
+          className="tadeon-composition__fold-trigger"
+        >
+          <span>
+            {title}
+            <small>{hint}</small>
+          </span>
+          <ChevronDown aria-hidden="true" />
+        </Button>
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <div className="tadeon-composition__fold-body">{children}</div>
+      </CollapsibleContent>
+    </Collapsible>
+  );
+}
 
 export function TabletopCompositionPanel({
   snapshot,
@@ -114,7 +149,7 @@ export function TabletopCompositionPanel({
                 [
                   ["model_scale", "Escala do modelo", 1, 0.05, 20, 0.05],
                   ["model_yaw", "Giro do modelo (°)", 0, -360, 360, 15],
-                ["model_elevation_offset", "Altura da base (px)", 0, -4096, 4096, 8],
+                  ["model_elevation_offset", "Altura da base (px)", 0, -4096, 4096, 8],
                   ["model_animation_speed", "Velocidade da animação", 1, 0.05, 4, 0.05],
                 ] as const
               ).map(([key, label, fallback, min, max, step]) => (
@@ -184,10 +219,12 @@ export function TabletopCompositionPanel({
             </div>
           </div>
         )}
-        <details open={selected.length > 1}>
-          <summary>
-            Formações <small>alinhar sem perder o conjunto</small>
-          </summary>
+        <CompositionFold
+          key={selected.length > 1 ? "group" : "single"}
+          title="Formações"
+          hint="alinhar sem perder o conjunto"
+          defaultOpen={selected.length > 1}
+        >
           <div className="tadeon-composition__fields">
             {field("Intervalo", gap, setGap, 0, 16, 0.25)}
             {field("Colunas", columns, setColumns, 1, 24)}
@@ -213,11 +250,8 @@ export function TabletopCompositionPanel({
               </button>
             ))}
           </div>
-        </details>
-        <details>
-          <summary>
-            Repetir conjunto <small>fileiras, escadas e padrões</small>
-          </summary>
+        </CompositionFold>
+        <CompositionFold title="Repetir conjunto" hint="fileiras, escadas e padrões">
           <div className="tadeon-composition__fields">
             {field("Cópias adicionais", copies, setCopies, 1, 24)}
             {field("Passo horizontal", stepX, setStepX, -32, 32, 0.25)}
@@ -251,7 +285,7 @@ export function TabletopCompositionPanel({
             <CopyPlus aria-hidden="true" />
             Inserir {copies} cópias do conjunto
           </Button>
-        </details>
+        </CompositionFold>
       </fieldset>
     </section>
   );
