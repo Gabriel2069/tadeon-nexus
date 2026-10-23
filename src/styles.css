@@ -1046,8 +1046,8 @@
   [data-slot="menubar-sub-content"],
   [data-slot="popover-content"],
   [data-slot="hover-card-content"]
-)[data-state="open"],
-  [data-slot="tooltip-content"]:is([data-state="instant-open"], [data-state="delayed-open"]) {
+)[data-state="open"]:not([data-motion-surface]),
+  [data-slot="tooltip-content"]:not([data-motion-surface]):is([data-state="instant-open"], [data-state="delayed-open"]) {
   animation: tadeon-popup-in 240ms var(--ease-out) both !important;
 }
 
@@ -1062,7 +1062,7 @@
   [data-slot="popover-content"],
   [data-slot="hover-card-content"],
   [data-slot="tooltip-content"]
-)[data-state="closed"] {
+)[data-state="closed"]:not([data-motion-surface]) {
   animation: tadeon-popup-out 160ms var(--ease-in-out) both !important;
 }
 
@@ -1070,7 +1070,7 @@
     [data-slot="dropdown-menu-content"],
     [data-slot="context-menu-content"],
     [data-slot="menubar-content"]
-  )[data-state="open"]
+  )[data-state="open"]:not([data-motion-surface])
   :where([data-slot$="-item"], [data-slot$="-sub-trigger"]) {
   animation: tadeon-popup-item-in 210ms var(--ease-out) backwards;
 }
@@ -1079,7 +1079,7 @@
     [data-slot="dropdown-menu-content"],
     [data-slot="context-menu-content"],
     [data-slot="menubar-content"]
-  )[data-state="open"]
+  )[data-state="open"]:not([data-motion-surface])
   :where([data-slot$="-item"], [data-slot$="-sub-trigger"]):nth-child(2) {
   animation-delay: 25ms;
 }
@@ -1088,7 +1088,7 @@
     [data-slot="dropdown-menu-content"],
     [data-slot="context-menu-content"],
     [data-slot="menubar-content"]
-  )[data-state="open"]
+  )[data-state="open"]:not([data-motion-surface])
   :where([data-slot$="-item"], [data-slot$="-sub-trigger"]):nth-child(n + 3) {
   animation-delay: 45ms;
 }
@@ -1098,7 +1098,7 @@
   [data-slot="alert-dialog-overlay"],
   [data-slot="sheet-overlay"],
   [data-slot="drawer-overlay"]
-)[data-state="open"] {
+)[data-state="open"]:not([data-motion-surface]) {
   animation: tadeon-overlay-in 230ms var(--ease-out) both !important;
 }
 
@@ -1107,7 +1107,7 @@
   [data-slot="alert-dialog-overlay"],
   [data-slot="sheet-overlay"],
   [data-slot="drawer-overlay"]
-)[data-state="closed"] {
+)[data-state="closed"]:not([data-motion-surface]) {
   animation: tadeon-overlay-out 180ms var(--ease-in-out) both !important;
 }
 
@@ -1318,22 +1318,22 @@ body
 
   :where(
     [data-slot="tabs-content"],
-    [data-slot="dialog-overlay"],
-    [data-slot="alert-dialog-overlay"],
-    [data-slot="sheet-overlay"],
+    [data-slot="dialog-overlay"]:not([data-motion-surface]),
+    [data-slot="alert-dialog-overlay"]:not([data-motion-surface]),
+    [data-slot="sheet-overlay"]:not([data-motion-surface]),
     [data-slot="drawer-overlay"],
-    [data-slot="dialog-content"],
-    [data-slot="alert-dialog-content"],
+    [data-slot="dialog-content"]:not([data-motion-surface]),
+    [data-slot="alert-dialog-content"]:not([data-motion-surface]),
     [data-slot="sheet-content"]:not([data-motion-surface]),
     [data-slot="drawer-content"],
-    [data-slot="select-content"],
-    [data-slot="dropdown-menu-content"],
-    [data-slot="dropdown-menu-sub-content"],
+    [data-slot="select-content"]:not([data-motion-surface]),
+    [data-slot="dropdown-menu-content"]:not([data-motion-surface]),
+    [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface]),
     [data-slot="context-menu-content"],
     [data-slot="context-menu-sub-content"],
     [data-slot="menubar-content"],
     [data-slot="menubar-sub-content"],
-    [data-slot="popover-content"],
+    [data-slot="popover-content"]:not([data-motion-surface]),
     [data-slot="hover-card-content"],
     [data-slot="tooltip-content"],
     [data-slot="collapsible-content"]:not([data-motion-surface="fold"])
@@ -1356,19 +1356,19 @@ body
   :where(
     [data-slot="tabs-content"],
     [data-slot="tabs-trigger"] > *,
-    [data-slot="dialog-overlay"],
-    [data-slot="alert-dialog-overlay"],
-    [data-slot="sheet-overlay"],
+    [data-slot="dialog-overlay"]:not([data-motion-surface]),
+    [data-slot="alert-dialog-overlay"]:not([data-motion-surface]),
+    [data-slot="sheet-overlay"]:not([data-motion-surface]),
     [data-slot="drawer-overlay"],
-    [data-slot="dialog-content"],
-    [data-slot="alert-dialog-content"],
+    [data-slot="dialog-content"]:not([data-motion-surface]),
+    [data-slot="alert-dialog-content"]:not([data-motion-surface]),
     [data-slot="sheet-content"]:not([data-motion-surface]),
     [data-slot="drawer-content"],
-    [data-slot="select-content"],
-    [data-slot="dropdown-menu-content"],
+    [data-slot="select-content"]:not([data-motion-surface]),
+    [data-slot="dropdown-menu-content"]:not([data-motion-surface]),
     [data-slot="context-menu-content"],
     [data-slot="menubar-content"],
-    [data-slot="popover-content"],
+    [data-slot="popover-content"]:not([data-motion-surface]),
     [data-slot="hover-card-content"],
     [data-slot="tooltip-content"]
   ) {
@@ -3723,6 +3723,12 @@ legend {
   :where(.tadeon-shell, .tadeon-auth-page, .tadeon-consent-page)
     button:not([data-slot]):not(:has(span, strong, small)) {
     min-width: 2.75rem;
+  }
+
+  /* Keep the expanded touch target local; a static control otherwise covers
+     its positioned dialog and intercepts unrelated menu/input clicks. */
+  :where([data-slot="checkbox"], [data-slot="radio-group-item"], [data-slot="switch"]) {
+    position: relative;
   }
 
   :where([data-slot="checkbox"], [data-slot="radio-group-item"], [data-slot="switch"])::before {

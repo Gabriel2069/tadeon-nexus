@@ -43,14 +43,14 @@ const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 >(({ className, children, style, onOpenAutoFocus, onCloseAutoFocus, ...props }, ref) => {
-  const routeFrame = useRoutePopupFrame();
+  const routeFrame = useRoutePopupFrame(ref);
   const returnFocusRef = React.useRef<HTMLElement | null>(null);
   return (
     <DialogPortal container={routeFrame.portalContainer}>
       <DialogOverlay />
       <div data-slot="dialog-positioner" style={routeFrame.style}>
         <DialogPrimitive.Content
-          ref={ref}
+          ref={routeFrame.contentRef}
           data-slot="dialog-content"
           data-motion-surface="popup"
           data-popup-contained="true"

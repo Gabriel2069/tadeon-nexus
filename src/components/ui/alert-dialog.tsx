@@ -35,13 +35,13 @@ const AlertDialogContent = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
 >(({ className, style, ...props }, ref) => {
-  const routeFrame = useRoutePopupFrame();
+  const routeFrame = useRoutePopupFrame(ref);
   return (
     <AlertDialogPortal container={routeFrame.portalContainer}>
       <AlertDialogOverlay />
       <div data-slot="alert-dialog-positioner" style={routeFrame.style}>
         <AlertDialogPrimitive.Content
-          ref={ref}
+          ref={routeFrame.contentRef}
           data-slot="alert-dialog-content"
           data-motion-surface="popup"
           data-popup-contained="true"

@@ -40,11 +40,11 @@ const PopoverContent = React.forwardRef<
     },
     ref,
   ) => {
-    const routeFrame = useRoutePopupFrame();
+    const routeFrame = useRoutePopupFrame(ref);
     return (
       <PopoverPrimitive.Portal container={routeFrame.portalContainer}>
         <PopoverPrimitive.Content
-          ref={ref}
+          ref={routeFrame.contentRef}
           data-slot="popover-content"
           data-motion-surface="popup"
           align={align}

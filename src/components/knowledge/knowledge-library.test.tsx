@@ -3,7 +3,11 @@ import { act, cleanup, fireEvent, render, waitFor, within } from "@testing-libra
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 const m = vi.hoisted(() => ({ search: vi.fn() }));
 vi.mock("@/components/ui/route-popup-frame", () => ({
-  useRoutePopupFrame: () => ({ boundary: null, style: {} }),
+  useRoutePopupFrame: (ref: import("react").ForwardedRef<HTMLDivElement>) => ({
+    contentRef: ref,
+    boundary: null,
+    style: {},
+  }),
   usePopupPortalContainer: () => undefined,
 }));
 vi.mock("@/lib/knowledge/knowledge-service", () => ({

@@ -4550,7 +4550,7 @@ html body .tadeon-shell .tadeon-route-offline > main {
 /* -------------------------------------------------------------------------- */
 
 [data-state="open"][data-slot="dialog-overlay"]:not([data-motion-surface]),
-[data-state="open"][data-slot="sheet-overlay"] {
+[data-state="open"][data-slot="sheet-overlay"]:not([data-motion-surface]) {
   animation: tadeon-suspense-overlay 360ms var(--t-ease-suspense) both;
 }
 

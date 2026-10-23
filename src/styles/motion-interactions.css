@@ -160,7 +160,7 @@
    DIALOGS - larger travel, scale, blur, and content cascade.
    -------------------------------------------------------------------------- */
 .tadeon-shell [data-slot="dialog-overlay"]:not([data-motion-surface]),
-.tadeon-shell [data-slot="sheet-overlay"] {
+.tadeon-shell [data-slot="sheet-overlay"]:not([data-motion-surface]) {
   transition:
     opacity 420ms var(--tadeon-visible-ease-in),
     backdrop-filter 520ms var(--tadeon-visible-ease-in) !important;
@@ -679,8 +679,8 @@
 @keyframes tui-tab-land{0%{transform:translateY(4px) scale(.94)}58%{transform:translateY(-3px) scale(1.035)}100%{transform:none}}
 
 /* Actual Radix dialogs. */
-.tadeon-shell [data-slot="dialog-overlay"][data-state="open"],.tadeon-shell [data-slot="sheet-overlay"][data-state="open"]{opacity:1;backdrop-filter:blur(10px) saturate(78%)}
-.tadeon-shell [data-slot="dialog-overlay"][data-state="closed"],.tadeon-shell [data-slot="sheet-overlay"][data-state="closed"]{opacity:0;backdrop-filter:blur(0) saturate(100%)}
+.tadeon-shell [data-slot="dialog-overlay"]:not([data-motion-surface])[data-state="open"],.tadeon-shell [data-slot="sheet-overlay"]:not([data-motion-surface])[data-state="open"]{opacity:1;backdrop-filter:blur(10px) saturate(78%)}
+.tadeon-shell [data-slot="dialog-overlay"]:not([data-motion-surface])[data-state="closed"],.tadeon-shell [data-slot="sheet-overlay"]:not([data-motion-surface])[data-state="closed"]{opacity:0;backdrop-filter:blur(0) saturate(100%)}
 .tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface])[data-state="open"]{animation:tui-dialog-in 620ms var(--tui-in) both!important;transform-origin:50% 44%!important;will-change:transform,opacity,filter}
 .tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface])[data-state="closed"]{animation:tui-dialog-out 230ms var(--tui-out) both!important}
 @keyframes tui-dialog-in{0%{opacity:0;transform:translateY(72px) scale(.82) rotateX(-8deg);filter:blur(12px)}52%{opacity:1;transform:translateY(-8px) scale(1.035) rotateX(1deg);filter:blur(0)}78%{transform:translateY(2px) scale(.995)}100%{opacity:1;transform:none}}
@@ -1267,20 +1267,20 @@
 
 /* Overlays: the room dims and gains depth with the surface. */
 [data-slot="dialog-overlay"]:not([data-motion-surface]),
-[data-slot="sheet-overlay"] {
+[data-slot="sheet-overlay"]:not([data-motion-surface]) {
   animation-duration: 420ms !important;
   animation-timing-function: var(--tadeon-portal-enter) !important;
   transition: opacity 420ms var(--tadeon-portal-enter), backdrop-filter 420ms var(--tadeon-portal-enter) !important;
 }
 
-[data-slot="dialog-overlay"][data-state="open"],
-[data-slot="sheet-overlay"][data-state="open"] {
+[data-slot="dialog-overlay"]:not([data-motion-surface])[data-state="open"],
+[data-slot="sheet-overlay"]:not([data-motion-surface])[data-state="open"] {
   opacity: 1 !important;
   backdrop-filter: blur(8px) saturate(.82) !important;
 }
 
-[data-slot="dialog-overlay"][data-state="closed"],
-[data-slot="sheet-overlay"][data-state="closed"] {
+[data-slot="dialog-overlay"]:not([data-motion-surface])[data-state="closed"],
+[data-slot="sheet-overlay"]:not([data-motion-surface])[data-state="closed"] {
   opacity: 0 !important;
   backdrop-filter: blur(0) saturate(1) !important;
 }
@@ -1481,7 +1481,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   [data-slot="dialog-overlay"]:not([data-motion-surface]),
-  [data-slot="sheet-overlay"],
+  [data-slot="sheet-overlay"]:not([data-motion-surface]),
   [data-slot="dialog-content"]:not([data-motion-surface]),
   [data-slot="dialog-content"]:not([data-motion-surface]) > *,
   [data-slot="sheet-content"]:not([data-motion-surface]),

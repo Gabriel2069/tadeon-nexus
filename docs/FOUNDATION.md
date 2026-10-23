@@ -264,3 +264,11 @@ TabletopViewBar agrupa os controles sem criar estado de câmera paralelo. O Sele
 button.css renomeia os keyframes de altura para tadeon-material-fold-open/close, evitando a colisão com os antigos keyframes de popup em motion-composition.css. Conteúdo fold já tinha exclusão explícita dos escritores globais de animação. O novo verificador registra abertura/fechamento reais, altura e ausência de transformação/filtro, interrupção e redução de movimento. Abas do editor passam por SelectionGroup; geometria continua em tabletop-workspace, material da placa em button.css. Sem novo módulo CSS, observer global ou loop permanente.
 
 Select passa o elemento fullscreen como collisionBoundary, além de usá-lo como portal. Essa fronteira explícita impede que o cálculo de referência oculta herde os ancestrais de rolagem da página, que ficam fora do plano expandido. Sem fullscreen, a fronteira padrão e os limites explícitos de cada chamador permanecem.
+
+## Presença e custo dos pop-ups — NEX-033
+
+useRoutePopupFrame acompanha o nó real do conteúdo Radix, incluindo sua saída finita. Componentes de Content montados sem DOM não instalam ResizeObserver nem listeners de scroll/resize para geometria. Ref do consumidor continua encaminhado, incluindo sua limpeza. Eventos de viewport/resize são agrupados em um frame; rolagem dentro da moldura é ignorada e medidas idênticas conservam o estado anterior. Fullscreen mantém o limite e o portal existentes. A preferência de movimento reduzido tem especificidade suficiente para remover as animações de abertura e saída. Comparação e limites pertencem a shared-motion-validation.json; não encerram NEX-009.
+
+O laboratório também registra a alcançabilidade por ponteiro do Select de Nova ficha. Na referência móvel, a área de toque de checkbox tomava o diálogo como bloco de posição; styles.css agora prende essa área ao controle. A referência registra o bloqueio e abre o menu por teclado para comparar seus contratos; a versão atual exige clique real bem-sucedido.
+
+Se a preferência mudar durante a saída, o nome da animação é conservado com duração zero: Radix recebe sua conclusão e desmonta presença/scroll lock. Aberturas com movimento reduzido continuam sem animação. Não se usa temporizador global de desbloqueio.

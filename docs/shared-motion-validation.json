@@ -1,0 +1,14 @@
+{
+  "task": "NEX-033",
+  "status": "in-progress",
+  "baseline": {
+    "remoteCommit": "f18ecaeabf4ca563ce343fbec9017be3d80fe463",
+    "tree": "4d755498a8c3c0b0127d2a63df2dcc80326825d6"
+  },
+  "scope": "Presença e movimento dos pop-ups compartilhados; sem mudanças de dados ou autenticação.",
+  "method": "Chromium com fixtures de cliente sem escritas reais; 12 eventos de scroll separados por dois frames. Contagem de leituras da moldura, não benchmark de FPS/INP.",
+  "limits": [
+    "NEX-009 mantém hardware físico e métricas de campo.",
+    "Fixtures não certificam autorização real ou restauração."
+  ]
+}

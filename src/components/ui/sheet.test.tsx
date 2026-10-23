@@ -3,7 +3,11 @@ import { useState } from "react";
 import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 vi.mock("./route-popup-frame", () => ({
-  useRoutePopupFrame: () => ({ boundary: null, style: {} }),
+  useRoutePopupFrame: (ref: import("react").ForwardedRef<HTMLDivElement>) => ({
+    contentRef: ref,
+    boundary: null,
+    style: {},
+  }),
   usePopupPortalContainer: () => undefined,
 }));
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "./sheet";
