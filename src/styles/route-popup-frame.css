@@ -203,13 +203,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* Preserve the exit name with zero duration. Cancelling it with `none`
-     during a preference change can strand Radix Presence and its scroll lock. */
+  /* Reduced exits leave layout immediately. Keep the exit name so Radix can
+     also recognize cancellation when the preference changes during an exit. */
   [data-motion-surface="backdrop"][data-state="closed"],
   [data-motion-surface="popup"]:not([data-popup-contained])[data-state="closed"],
   [data-slot="dialog-positioner"] > [data-slot="dialog-content"][data-popup-contained="true"][data-state="closed"],
   [data-slot="alert-dialog-positioner"] > [data-slot="alert-dialog-content"][data-popup-contained="true"][data-state="closed"] {
-    animation-duration: 0s;
-    animation-delay: 0s;
+    display: none;
   }
 }

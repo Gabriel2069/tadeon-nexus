@@ -2,10 +2,14 @@ import * as React from "react";
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 
 import { cn } from "@/lib/utils";
+import { createPopupRoot } from "@/components/ui/popup-presence";
 import { buttonVariants } from "@/components/ui/button";
 import { useRoutePopupFrame } from "@/components/ui/route-popup-frame";
 
-const AlertDialog = AlertDialogPrimitive.Root;
+const [AlertDialog, useAlertDialogPresence] = createPopupRoot(
+  AlertDialogPrimitive.Root,
+  "AlertDialog",
+);
 
 const AlertDialogTrigger = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Trigger>,
@@ -35,7 +39,9 @@ const AlertDialogContent = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
 >(({ className, style, ...props }, ref) => {
+  const present = useAlertDialogPresence(props.forceMount);
   const routeFrame = useRoutePopupFrame(ref);
+  if (!present) return null;
   return (
     <AlertDialogPortal container={routeFrame.portalContainer}>
       <AlertDialogOverlay />

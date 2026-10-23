@@ -122,15 +122,20 @@ try {
       const more = page.getByRole("button", { name: "Mais", exact: true });
       await more.click();
       await page.locator(".tadeon-mobile-more").waitFor();
+      await page.waitForTimeout(250);
       await page.screenshot({ path: `${output}/${width}-more.png` });
       await page.keyboard.press("ArrowDown");
       await page.keyboard.press("Escape");
-      await page.locator(".tadeon-mobile-more").waitFor({ state: "detached" });
+      if (!baseline) await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.locator(".tadeon-mobile-more").waitFor({ state: "detached", timeout: 1500 });
+      if (!baseline) await page.emulateMedia({ reducedMotion: "no-preference" });
       assert(await more.evaluate(element => element === document.activeElement), "Radial focus return");
       await page.getByRole("button", { name: "Abrir menu", exact: true }).click();
       await page.locator(".tadeon-mobile-drawer").waitFor();
       await page.keyboard.press("Escape");
-      await page.locator(".tadeon-mobile-drawer").waitFor({ state: "detached" });
+      if (!baseline) await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.locator(".tadeon-mobile-drawer").waitFor({ state: "detached", timeout: 1500 });
+      if (!baseline) await page.emulateMedia({ reducedMotion: "no-preference" });
     }
     await page.emulateMedia({ reducedMotion: "reduce" });
     await account.click();
@@ -140,20 +145,23 @@ try {
     await page.keyboard.press("Escape");
     await page.locator('[data-slot="dialog-content"]').waitFor({ state: "detached" });
     await page.locator('[data-slot="dialog-overlay"]').waitFor({ state: "detached", timeout: 1000 }).catch(error => { if (!baseline) throw error; });
-    // Change the preference while an exit is actually running, not only at rest.
-    await page.emulateMedia({ reducedMotion: "no-preference" });
-    await account.click();
-    await page.waitForTimeout(300);
-    await page.keyboard.press("Escape");
-    await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.locator('[data-slot="dialog-content"]').waitFor({ state: "detached", timeout: 1000 }).catch(error => { if (!baseline) throw error; });
-    await page.locator('[data-slot="dialog-overlay"]').waitFor({ state: "detached", timeout: 1000 }).catch(error => { if (!baseline) throw error; });
+    // Repeat the preference change during an actual exit to catch event races.
+    const preferenceExitRepeats = 5;
+    for (let repeat = 0; repeat < preferenceExitRepeats; repeat++) {
+      await page.emulateMedia({ reducedMotion: "no-preference" });
+      await account.click();
+      await page.waitForTimeout(300);
+      await page.keyboard.press("Escape");
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.locator('[data-slot="dialog-content"]').waitFor({ state: "detached", timeout: 1000 }).catch(error => { if (!baseline) throw error; });
+      await page.locator('[data-slot="dialog-overlay"]').waitFor({ state: "detached", timeout: 1000 }).catch(error => { if (!baseline) throw error; });
+    }
     const retiredBackdrops = await page.locator('[data-slot="dialog-overlay"]').count();
     const scrollLocked = await page.evaluate(() => document.body.hasAttribute("data-scroll-locked"));
     if (!baseline) assert(!scrollLocked && retiredBackdrops === 0, "Preference change retained modal presence or scroll lock");
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
     assert(!overflow && errors.length === 0, `${width}: overflow/errors ${JSON.stringify(errors)}`);
-    rows.push({ width, closedScroll, openScroll, backdrop, menu, selectPointerReachable, retiredBackdrops, scrollLocked, rapidReopen: true, focusReturn: true, reducedMotion: true, overflow, errors });
+    rows.push({ width, closedScroll, openScroll, backdrop, menu, selectPointerReachable, retiredBackdrops, scrollLocked, preferenceExitRepeats, mobilePreferenceExit: width < 768 && !baseline, rapidReopen: true, focusReturn: true, reducedMotion: true, overflow, errors });
     writeFileSync(`${output}/results.json`, JSON.stringify(rows, null, 2));
     console.log(JSON.stringify({ width, closedScroll, openScroll, backdrop: backdrop.animation, menu: menu.animation, selectPointerReachable, errors }));
     await browser.close(); browser = null;

@@ -6,9 +6,10 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { createPopupRoot } from "@/components/ui/popup-presence";
 import "@/styles/route-popup-frame.css";
 
-const Sheet = SheetPrimitive.Root;
+const [Sheet, useSheetPresence] = createPopupRoot(SheetPrimitive.Root, "Sheet");
 
 const SheetTrigger = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Trigger>,
@@ -33,10 +34,7 @@ const SheetOverlay = React.forwardRef<
   <SheetPrimitive.Overlay
     data-slot="sheet-overlay"
     data-motion-surface="backdrop"
-    className={cn(
-      "fixed inset-0 z-50 bg-black/78",
-      className,
-    )}
+    className={cn("fixed inset-0 z-50 bg-black/78", className)}
     {...props}
     ref={ref}
   />
@@ -85,7 +83,9 @@ const SheetContent = React.forwardRef<
     },
     ref,
   ) => {
+    const present = useSheetPresence(props.forceMount);
     const returnFocusRef = React.useRef<HTMLElement | null>(null);
+    if (!present) return null;
     return (
       <SheetPortal>
         <SheetOverlay className={overlayClassName} />

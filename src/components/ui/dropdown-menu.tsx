@@ -8,8 +8,12 @@ import { Check, ChevronRight, Circle } from "lucide-react";
 
 import { useMaterialToneStyle } from "@/lib/use-material-light";
 import { cn } from "@/lib/utils";
+import { createPopupRoot } from "@/components/ui/popup-presence";
 
-const DropdownMenu = DropdownMenuPrimitive.Root;
+const [DropdownMenu, useDropdownMenuPresence] = createPopupRoot(
+  DropdownMenuPrimitive.Root,
+  "DropdownMenu",
+);
 
 const DropdownMenuTrigger = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Trigger>,
@@ -106,6 +110,8 @@ const DropdownMenuContent = React.forwardRef<
   ) => {
     const materialStyle = useMaterialToneStyle();
     const portalContainer = usePopupPortalContainer();
+    const present = useDropdownMenuPresence(props.forceMount);
+    if (!present) return null;
     return (
       <DropdownMenuPrimitive.Portal container={portalContainer}>
         <DropdownMenuPrimitive.Content

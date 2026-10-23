@@ -127,7 +127,8 @@
 @keyframes tadeon-navigation-enter { from { transform: translateX(-100%); } to { transform: none; } }
 @keyframes tadeon-navigation-exit { from { transform: none; } to { transform: translateX(-100%); } }
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-mobile-drawer[data-motion-surface] { animation: none; }
+  .tadeon-mobile-drawer[data-motion-surface][data-state="open"] { animation: none; }
+  .tadeon-mobile-drawer[data-motion-surface][data-state="closed"] { display: none; }
   :is(.tadeon-nav-item, .tadeon-mobile-dock__item, .tadeon-sidebar-collapse, .tadeon-mobile-header__control, .tadeon-desktop-toolbar__account) { transition: none; }
 }
 /* A retired backdrop must never retain hit testing or a scroll lock after resize. */

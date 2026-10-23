@@ -2,9 +2,10 @@ import * as React from "react";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 
 import { cn } from "@/lib/utils";
+import { createPopupRoot } from "@/components/ui/popup-presence";
 import { useRoutePopupFrame } from "@/components/ui/route-popup-frame";
 
-const Popover = PopoverPrimitive.Root;
+const [Popover, usePopoverPresence] = createPopupRoot(PopoverPrimitive.Root, "Popover");
 
 const PopoverTrigger = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Trigger>,
@@ -40,7 +41,9 @@ const PopoverContent = React.forwardRef<
     },
     ref,
   ) => {
+    const present = usePopoverPresence(props.forceMount);
     const routeFrame = useRoutePopupFrame(ref);
+    if (!present) return null;
     return (
       <PopoverPrimitive.Portal container={routeFrame.portalContainer}>
         <PopoverPrimitive.Content

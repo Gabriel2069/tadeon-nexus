@@ -355,4 +355,4 @@ Pop-ups ancorados conservam a dobradiça óptica e a abertura de 210 ms, com sa�
 
 A ampliação de toque de checkbox, radio e switch permanece presa ao próprio controle por posicionamento relativo. Sem essa contenção, o pseudo-elemento absoluto tomava a moldura do diálogo como referência e interceptava cliques de campos e seletores vizinhos no celular.
 
-Se a preferência mudar durante a saída, o nome da animação é conservado com duração zero: Radix recebe sua conclusão e desmonta presença/scroll lock. Aberturas com movimento reduzido continuam sem animação. Não se usa temporizador global de desbloqueio.
+O estado aberto dos primitivos e a presença usam a mesma autoridade React em popup-presence.tsx. Com movimento reduzido, fechar ou mudar a preferência durante a saída remove o portal fechado sem aguardar eventos de animação; isso libera foco e scroll lock mesmo quando o navegador cancela a saída. forceMount explícito é preservado. Aberturas reduzidas continuam sem animação; display: none é o fallback CSS da saída. O contrato inclui a roda do Mais e o drawer móvel e não usa timer global, observer ou remoção imperativa de nós.

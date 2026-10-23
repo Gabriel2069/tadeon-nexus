@@ -5,9 +5,10 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { createPopupRoot } from "@/components/ui/popup-presence";
 import { useRoutePopupFrame } from "@/components/ui/route-popup-frame";
 
-const Dialog = DialogPrimitive.Root;
+const [Dialog, useDialogPresence] = createPopupRoot(DialogPrimitive.Root, "Dialog");
 
 const DialogTrigger = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Trigger>,
@@ -43,8 +44,10 @@ const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 >(({ className, children, style, onOpenAutoFocus, onCloseAutoFocus, ...props }, ref) => {
+  const present = useDialogPresence(props.forceMount);
   const routeFrame = useRoutePopupFrame(ref);
   const returnFocusRef = React.useRef<HTMLElement | null>(null);
+  if (!present) return null;
   return (
     <DialogPortal container={routeFrame.portalContainer}>
       <DialogOverlay />
