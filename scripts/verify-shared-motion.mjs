@@ -32,6 +32,12 @@ try {
   for (const width of JSON.parse(process.env.NEXUS_AUDIT_WIDTHS || "[320,390,820,1440]")) {
     browser = await chromium.launch({ executablePath: process.env.NEXUS_CHROMIUM_PATH, args: JSON.parse(process.env.NEXUS_CHROMIUM_ARGS || "[]") });
     const page = await browser.newPage({ viewport: { width, height: 1000 }, hasTouch: width < 768, reducedMotion: "no-preference" });
+    const setMotion = async reducedMotion => {
+      await page.emulateMedia({ reducedMotion });
+      // CDP updates matching before delivering MediaQueryList change events.
+      // Let the browser apply that change before asserting React presence.
+      await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    };
     const errors = [];
     page.on("pageerror", error => errors.push(error.message));
     await page.addInitScript(({ user, token }) => localStorage.setItem("sb-nkxpstyfrzufsnowjrdi-auth-token", JSON.stringify({ access_token: token, refresh_token: "fixture", expires_at: 2000000000, user })), { user, token });
@@ -126,18 +132,18 @@ try {
       await page.screenshot({ path: `${output}/${width}-more.png` });
       await page.keyboard.press("ArrowDown");
       await page.keyboard.press("Escape");
-      if (!baseline) await page.emulateMedia({ reducedMotion: "reduce" });
+      if (!baseline) await setMotion("reduce");
       await page.locator(".tadeon-mobile-more").waitFor({ state: "detached", timeout: 1500 });
-      if (!baseline) await page.emulateMedia({ reducedMotion: "no-preference" });
+      if (!baseline) await setMotion("no-preference");
       assert(await more.evaluate(element => element === document.activeElement), "Radial focus return");
       await page.getByRole("button", { name: "Abrir menu", exact: true }).click();
       await page.locator(".tadeon-mobile-drawer").waitFor();
       await page.keyboard.press("Escape");
-      if (!baseline) await page.emulateMedia({ reducedMotion: "reduce" });
+      if (!baseline) await setMotion("reduce");
       await page.locator(".tadeon-mobile-drawer").waitFor({ state: "detached", timeout: 1500 });
-      if (!baseline) await page.emulateMedia({ reducedMotion: "no-preference" });
+      if (!baseline) await setMotion("no-preference");
     }
-    await page.emulateMedia({ reducedMotion: "reduce" });
+    await setMotion("reduce");
     await account.click();
     const reducedBackdrop = await sampleMotion('[data-slot="dialog-overlay"][data-state="open"]');
     const reducedDialog = await sampleMotion('[data-slot="dialog-content"][data-state="open"]');
@@ -148,11 +154,11 @@ try {
     // Repeat the preference change during an actual exit to catch event races.
     const preferenceExitRepeats = 5;
     for (let repeat = 0; repeat < preferenceExitRepeats; repeat++) {
-      await page.emulateMedia({ reducedMotion: "no-preference" });
+      await setMotion("no-preference");
       await account.click();
       await page.waitForTimeout(300);
       await page.keyboard.press("Escape");
-      await page.emulateMedia({ reducedMotion: "reduce" });
+      await setMotion("reduce");
       await page.locator('[data-slot="dialog-content"]').waitFor({ state: "detached", timeout: 1000 }).catch(error => { if (!baseline) throw error; });
       await page.locator('[data-slot="dialog-overlay"]').waitFor({ state: "detached", timeout: 1000 }).catch(error => { if (!baseline) throw error; });
     }
