@@ -70,7 +70,7 @@
         "src/styles/visual-viewport-popup.css",
         "src/styles/route-popup-frame.css"
       ],
-      "boundary": "Medidas do viewport pertencem ao bridge único do root; primitivos mantêm foco e portais."
+      "boundary": "Medidas do viewport pertencem ao bridge único do root; primitivos mantêm foco e portais. NEX-032: Select usa o elemento fullscreen também como limite de colisão; portal e geometria compartilham a fronteira expandida."
     },
     {
       "id": "dashboard",

@@ -869,6 +869,7 @@ try {
           await cameraList.evaluate((e) => document.fullscreenElement.contains(e)),
           "Camera menu portal belongs to fullscreen workbench",
         );
+        await capture("fullscreen-camera-menu");
         await page.keyboard.press("Escape");
         await cameraList.waitFor({ state: "hidden" });
         assert(
@@ -932,6 +933,8 @@ try {
         rt.engine.selectEntityById(rt.snapshot().scene.entities.find((e) => e.type === "token").id);
         rt.engine.focusSelection();
       });
+      if (width >= 1200)
+        await bar.getByRole("button", { name: "Editar seleção", exact: true }).click();
       await verifyFullscreen(bar);
       await context.close();
       continue;

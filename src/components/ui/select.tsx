@@ -87,6 +87,7 @@ const SelectContent = React.forwardRef<
   ) => {
     const materialStyle = useMaterialToneStyle();
     const portalContainer = usePopupPortalContainer();
+    // Native fullscreen escapes the page's scroll-clipping ancestors.
     return (
       <SelectPrimitive.Portal container={portalContainer}>
         <SelectPrimitive.Content
@@ -94,6 +95,7 @@ const SelectContent = React.forwardRef<
           data-slot="select-content"
           data-motion-surface="popup"
           style={{ ...materialStyle, ...style }}
+          collisionBoundary={portalContainer}
           collisionPadding={collisionPadding}
           sideOffset={sideOffset}
           avoidCollisions={avoidCollisions}

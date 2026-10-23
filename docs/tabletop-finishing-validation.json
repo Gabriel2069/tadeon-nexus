@@ -10,7 +10,8 @@
     "Keyframes de altura tadeon-material-fold-open/close deixam de colidir com os antigos de popup.",
     "Abas do editor usam uma única SelectionPlate; retirado preenchimento individual de seleção.",
     "Painel e bloco de composição recebem luz de contato e sombra de assentamento estáticas.",
-    "Redução de movimento da dobra usa a mesma especificidade das regras de estado; destino permanece imediato."
+    "Redução de movimento da dobra usa a mesma especificidade das regras de estado; destino permanece imediato.",
+    "Select em fullscreen recebe também o limite explícito de colisão do tabuleiro; ancestrais de rolagem da página não escondem seu menu."
   ],
   "validation": {
     "baseline": {
@@ -22,7 +23,8 @@
         820,
         1440
       ],
-      "scope": "play/edit, fixtures locais do motor real"
+      "scope": "play/edit, fixtures locais do motor real",
+      "fonts": "Repetido com as fontes oficiais Cormorant Garamond/PT Mono fornecidas como fixtures; Alegreya Sans local do app."
     },
     "browser": {
       "status": "in_progress",
@@ -33,7 +35,25 @@
         390,
         820,
         1440
-      ]
+      ],
+      "additionalSharedSheet": {
+        "status": "passed",
+        "widths": [
+          320,
+          1440
+        ],
+        "states": [
+          "editable"
+        ],
+        "checks": [
+          "dobras por teclado sem perda de valores",
+          "interrupção converge ao estado final",
+          "texto sem transform",
+          "redução de movimento",
+          "retorno de foco",
+          "seleção contínua"
+        ]
+      }
     },
     "quality": {
       "status": "passed",

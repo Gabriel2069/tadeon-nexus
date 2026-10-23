@@ -14,7 +14,7 @@ Estilos: [src/styles/desktop-shell.css](../src/styles/desktop-shell.css), [src/s
 
 ## Busca, dialogs e viewport
 
-Medidas do viewport pertencem ao bridge único do root; primitivos mantêm foco e portais.
+Medidas do viewport pertencem ao bridge único do root; primitivos mantêm foco e portais. NEX-032: Select usa o elemento fullscreen também como limite de colisão; portal e geometria compartilham a fronteira expandida.
 
 Código: [src/components/global-search.tsx](../src/components/global-search.tsx), [src/components/visual-viewport-popup-bridge.tsx](../src/components/visual-viewport-popup-bridge.tsx), [src/components/ui/dialog.tsx](../src/components/ui/dialog.tsx), [src/components/ui/route-popup-frame.ts](../src/components/ui/route-popup-frame.ts).
 
