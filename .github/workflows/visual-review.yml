@@ -5,6 +5,8 @@ on:
     paths:
       - "src/**"
       - "scripts/**"
+      - "package.json"
+      - "package-lock.json"
       - "docs/DESIGN.md"
       - ".github/workflows/visual-review.yml"
 
