@@ -1,14 +1,672 @@
 {
   "task": "NEX-033",
-  "status": "in-progress",
-  "baseline": {
-    "remoteCommit": "f18ecaeabf4ca563ce343fbec9017be3d80fe463",
-    "tree": "4d755498a8c3c0b0127d2a63df2dcc80326825d6"
+  "status": "published",
+  "baseCommit": "f18ecaeabf4ca563ce343fbec9017be3d80fe463",
+  "baseTree": "4d755498a8c3c0b0127d2a63df2dcc80326825d6",
+  "sourceCommit": "153e0ff476e2ba283ee0125d8242569bdcf9dd90",
+  "sourceTree": "cb9c0470c2ba02a04139ce97c5d63a8420868e9f",
+  "mergeCommit": "0b6513d0a75d8087179cf7c5b2a151e3e8f46aee",
+  "implementation": [
+    "Geometria acompanha o nó real do conteúdo; componentes fechados não mantêm ResizeObserver ou listeners de scroll/resize para medições.",
+    "Eventos agrupados por frame; rolagem interna ignorada e medidas iguais conservam estado.",
+    "Um proprietário de movimento para pop-ups e backdrops; itens não esperam cascatas, fundo anima só opacidade e menu fechado deixa a captura de ponteiro.",
+    "Estado de abertura e presença compartilham autoridade React; redução de movimento desmonta portais fechados sem depender de animationend/cancel; forceMount explícito preservado.",
+    "Roda do Mais e drawer recebem o mesmo contrato de saída reduzida; foco e materiais aprovados preservados.",
+    "Ampliação de toque de checkbox/radio/switch presa ao controle, corrigindo interceptação de outros campos no celular.",
+    "Select conserva ItemText em fragmento, rótulo e valor nativo com redução de movimento; dois testes de regressão falhavam antes da correção."
+  ],
+  "validation": {
+    "quality": {
+      "status": "passed",
+      "suites": 154,
+      "tests": 625,
+      "sourceRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40055705022",
+      "mainRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40056793963",
+      "localCheck": "npm run check",
+      "cssModules": 57,
+      "globalLinks": 12,
+      "newImportant": 0
+    },
+    "browser": {
+      "status": "passed",
+      "widths": [
+        320,
+        390,
+        820,
+        1440
+      ],
+      "script": "scripts/verify-shared-motion.mjs",
+      "sourceRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40055704967",
+      "current": [
+        {
+          "width": 320,
+          "closedScroll": {
+            "events": 12,
+            "frameReads": 0
+          },
+          "openScroll": {
+            "events": 12,
+            "frameReads": 12
+          },
+          "backdrop": {
+            "animation": "tadeon-backdrop-in",
+            "duration": "0.18s",
+            "keyframes": [
+              {
+                "offset": 0,
+                "easing": "ease-out",
+                "composite": "auto",
+                "opacity": "0",
+                "computedOffset": 0
+              },
+              {
+                "offset": 1,
+                "easing": "ease-out",
+                "composite": "auto",
+                "opacity": "1",
+                "computedOffset": 1
+              }
+            ]
+          },
+          "menu": {
+            "animation": "tadeon-popup-anchored-in",
+            "duration": "0.21s",
+            "keyframes": [
+              {
+                "offset": 0,
+                "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+                "composite": "auto",
+                "transform": "perspective(1000px) rotateX(-1.5deg)",
+                "scale": "0.985",
+                "opacity": "0",
+                "translate": "0px -6px",
+                "computedOffset": 0
+              },
+              {
+                "offset": 1,
+                "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+                "composite": "auto",
+                "transform": "none",
+                "scale": "none",
+                "opacity": "1",
+                "translate": "none",
+                "computedOffset": 1
+              }
+            ]
+          },
+          "selectPointerReachable": true,
+          "selectedLabelPreserved": true,
+          "retiredBackdrops": 0,
+          "scrollLocked": false,
+          "preferenceExitRepeats": 5,
+          "mobilePreferenceExit": true,
+          "rapidReopen": true,
+          "focusReturn": true,
+          "reducedMotion": true,
+          "overflow": false,
+          "errors": []
+        },
+        {
+          "width": 390,
+          "closedScroll": {
+            "events": 12,
+            "frameReads": 0
+          },
+          "openScroll": {
+            "events": 12,
+            "frameReads": 12
+          },
+          "backdrop": {
+            "animation": "tadeon-backdrop-in",
+            "duration": "0.18s",
+            "keyframes": [
+              {
+                "offset": 0,
+                "easing": "ease-out",
+                "composite": "auto",
+                "opacity": "0",
+                "computedOffset": 0
+              },
+              {
+                "offset": 1,
+                "easing": "ease-out",
+                "composite": "auto",
+                "opacity": "1",
+                "computedOffset": 1
+              }
+            ]
+          },
+          "menu": {
+            "animation": "tadeon-popup-anchored-in",
+            "duration": "0.21s",
+            "keyframes": [
+              {
+                "offset": 0,
+                "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+                "composite": "auto",
+                "transform": "perspective(1000px) rotateX(-1.5deg)",
+                "scale": "0.985",
+                "opacity": "0",
+                "translate": "0px -6px",
+                "computedOffset": 0
+              },
+              {
+                "offset": 1,
+                "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+                "composite": "auto",
+                "transform": "none",
+                "scale": "none",
+                "opacity": "1",
+                "translate": "none",
+                "computedOffset": 1
+              }
+            ]
+          },
+          "selectPointerReachable": true,
+          "selectedLabelPreserved": true,
+          "retiredBackdrops": 0,
+          "scrollLocked": false,
+          "preferenceExitRepeats": 5,
+          "mobilePreferenceExit": true,
+          "rapidReopen": true,
+          "focusReturn": true,
+          "reducedMotion": true,
+          "overflow": false,
+          "errors": []
+        },
+        {
+          "width": 820,
+          "closedScroll": {
+            "events": 12,
+            "frameReads": 0
+          },
+          "openScroll": {
+            "events": 12,
+            "frameReads": 12
+          },
+          "backdrop": {
+            "animation": "tadeon-backdrop-in",
+            "duration": "0.18s",
+            "keyframes": [
+              {
+                "offset": 0,
+                "easing": "ease-out",
+                "composite": "auto",
+                "opacity": "0",
+                "computedOffset": 0
+              },
+              {
+                "offset": 1,
+                "easing": "ease-out",
+                "composite": "auto",
+                "opacity": "1",
+                "computedOffset": 1
+              }
+            ]
+          },
+          "menu": {
+            "animation": "tadeon-popup-anchored-in",
+            "duration": "0.21s",
+            "keyframes": [
+              {
+                "offset": 0,
+                "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+                "composite": "auto",
+                "transform": "perspective(1000px) rotateX(-1.5deg)",
+                "scale": "0.985",
+                "opacity": "0",
+                "translate": "0px -6px",
+                "computedOffset": 0
+              },
+              {
+                "offset": 1,
+                "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+                "composite": "auto",
+                "transform": "none",
+                "scale": "none",
+                "opacity": "1",
+                "translate": "none",
+                "computedOffset": 1
+              }
+            ]
+          },
+          "selectPointerReachable": true,
+          "selectedLabelPreserved": true,
+          "retiredBackdrops": 0,
+          "scrollLocked": false,
+          "preferenceExitRepeats": 5,
+          "mobilePreferenceExit": false,
+          "rapidReopen": true,
+          "focusReturn": true,
+          "reducedMotion": true,
+          "overflow": false,
+          "errors": []
+        },
+        {
+          "width": 1440,
+          "closedScroll": {
+            "events": 12,
+            "frameReads": 0
+          },
+          "openScroll": {
+            "events": 12,
+            "frameReads": 12
+          },
+          "backdrop": {
+            "animation": "tadeon-backdrop-in",
+            "duration": "0.18s",
+            "keyframes": [
+              {
+                "offset": 0,
+                "easing": "ease-out",
+                "composite": "auto",
+                "opacity": "0",
+                "computedOffset": 0
+              },
+              {
+                "offset": 1,
+                "easing": "ease-out",
+                "composite": "auto",
+                "opacity": "1",
+                "computedOffset": 1
+              }
+            ]
+          },
+          "menu": {
+            "animation": "tadeon-popup-anchored-in",
+            "duration": "0.21s",
+            "keyframes": [
+              {
+                "offset": 0,
+                "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+                "composite": "auto",
+                "transform": "perspective(1000px) rotateX(-1.5deg)",
+                "scale": "0.985",
+                "opacity": "0",
+                "translate": "0px -6px",
+                "computedOffset": 0
+              },
+              {
+                "offset": 1,
+                "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+                "composite": "auto",
+                "transform": "none",
+                "scale": "none",
+                "opacity": "1",
+                "translate": "none",
+                "computedOffset": 1
+              }
+            ]
+          },
+          "selectPointerReachable": true,
+          "selectedLabelPreserved": true,
+          "retiredBackdrops": 0,
+          "scrollLocked": false,
+          "preferenceExitRepeats": 5,
+          "mobilePreferenceExit": false,
+          "rapidReopen": true,
+          "focusReturn": true,
+          "reducedMotion": true,
+          "overflow": false,
+          "errors": []
+        }
+      ],
+      "baseline": [
+        {
+          "width": 320,
+          "closedScroll": {
+            "events": 12,
+            "frameReads": 72
+          },
+          "openScroll": {
+            "events": 12,
+            "frameReads": 72
+          },
+          "backdrop": {
+            "animation": "tadeon-overlay-in",
+            "duration": "0.23s",
+            "keyframes": [
+              {
+                "offset": 0,
+                "easing": "cubic-bezier(0.23, 1, 0.32, 1)",
+                "composite": "auto",
+                "opacity": "0",
+                "backdropFilter": "blur(0px)",
+                "computedOffset": 0
+              },
+              {
+                "offset": 1,
+                "easing": "cubic-bezier(0.23, 1, 0.32, 1)",
+                "composite": "auto",
+                "opacity": "1",
+                "backdropFilter": "none",
+                "computedOffset": 1
+              }
+            ]
+          },
+          "menu": {
+            "animation": "tadeon-popup-in",
+            "duration": "0.24s",
+            "keyframes": [
+              {
+                "offset": 0,
+                "easing": "cubic-bezier(0.23, 1, 0.32, 1)",
+                "composite": "auto",
+                "opacity": "0",
+                "transform": "translate3d(0px, -9.6px, 0px) scale(0.955)",
+                "computedOffset": 0
+              },
+              {
+                "offset": 1,
+                "easing": "cubic-bezier(0.23, 1, 0.32, 1)",
+                "composite": "auto",
+                "opacity": "1",
+                "transform": "translate3d(0px, 0px, 0px) scale(1)",
+                "computedOffset": 1
+              }
+            ]
+          },
+          "selectPointerReachable": false,
+          "selectedLabelPreserved": null,
+          "retiredBackdrops": 1,
+          "scrollLocked": true,
+          "preferenceExitRepeats": 5,
+          "mobilePreferenceExit": false,
+          "rapidReopen": true,
+          "focusReturn": true,
+          "reducedMotion": true,
+          "overflow": false,
+          "errors": []
+        },
+        {
+          "width": 390,
+          "closedScroll": {
+            "events": 12,
+            "frameReads": 72
+          },
+          "openScroll": {
+            "events": 12,
+            "frameReads": 72
+          },
+          "backdrop": {
+            "animation": "tadeon-overlay-in",
+            "duration": "0.23s",
+            "keyframes": [
+              {
+                "offset": 0,
+                "easing": "cubic-bezier(0.23, 1, 0.32, 1)",
+                "composite": "auto",
+                "opacity": "0",
+                "backdropFilter": "blur(0px)",
+                "computedOffset": 0
+              },
+              {
+                "offset": 1,
+                "easing": "cubic-bezier(0.23, 1, 0.32, 1)",
+                "composite": "auto",
+                "opacity": "1",
+                "backdropFilter": "none",
+                "computedOffset": 1
+              }
+            ]
+          },
+          "menu": {
+            "animation": "tadeon-popup-in",
+            "duration": "0.24s",
+            "keyframes": [
+              {
+                "offset": 0,
+                "easing": "cubic-bezier(0.23, 1, 0.32, 1)",
+                "composite": "auto",
+                "opacity": "0",
+                "transform": "translate3d(0px, -9.6px, 0px) scale(0.955)",
+                "computedOffset": 0
+              },
+              {
+                "offset": 1,
+                "easing": "cubic-bezier(0.23, 1, 0.32, 1)",
+                "composite": "auto",
+                "opacity": "1",
+                "transform": "translate3d(0px, 0px, 0px) scale(1)",
+                "computedOffset": 1
+              }
+            ]
+          },
+          "selectPointerReachable": false,
+          "selectedLabelPreserved": null,
+          "retiredBackdrops": 1,
+          "scrollLocked": true,
+          "preferenceExitRepeats": 5,
+          "mobilePreferenceExit": false,
+          "rapidReopen": true,
+          "focusReturn": true,
+          "reducedMotion": true,
+          "overflow": false,
+          "errors": []
+        },
+        {
+          "width": 820,
+          "closedScroll": {
+            "events": 12,
+            "frameReads": 72
+          },
+          "openScroll": {
+            "events": 12,
+            "frameReads": 72
+          },
+          "backdrop": {
+            "animation": "tadeon-overlay-in",
+            "duration": "0.23s",
+            "keyframes": [
+              {
+                "offset": 0,
+                "easing": "cubic-bezier(0.23, 1, 0.32, 1)",
+                "composite": "auto",
+                "opacity": "0",
+                "backdropFilter": "blur(0px)",
+                "computedOffset": 0
+              },
+              {
+                "offset": 1,
+                "easing": "cubic-bezier(0.23, 1, 0.32, 1)",
+                "composite": "auto",
+                "opacity": "1",
+                "backdropFilter": "none",
+                "computedOffset": 1
+              }
+            ]
+          },
+          "menu": {
+            "animation": "tadeon-popup-in",
+            "duration": "0.24s",
+            "keyframes": [
+              {
+                "offset": 0,
+                "easing": "cubic-bezier(0.23, 1, 0.32, 1)",
+                "composite": "auto",
+                "opacity": "0",
+                "transform": "translate3d(0px, -9.6px, 0px) scale(0.955)",
+                "computedOffset": 0
+              },
+              {
+                "offset": 1,
+                "easing": "cubic-bezier(0.23, 1, 0.32, 1)",
+                "composite": "auto",
+                "opacity": "1",
+                "transform": "translate3d(0px, 0px, 0px) scale(1)",
+                "computedOffset": 1
+              }
+            ]
+          },
+          "selectPointerReachable": true,
+          "selectedLabelPreserved": null,
+          "retiredBackdrops": 1,
+          "scrollLocked": true,
+          "preferenceExitRepeats": 5,
+          "mobilePreferenceExit": false,
+          "rapidReopen": true,
+          "focusReturn": true,
+          "reducedMotion": true,
+          "overflow": false,
+          "errors": []
+        },
+        {
+          "width": 1440,
+          "closedScroll": {
+            "events": 12,
+            "frameReads": 72
+          },
+          "openScroll": {
+            "events": 12,
+            "frameReads": 72
+          },
+          "backdrop": {
+            "animation": "tadeon-overlay-in",
+            "duration": "0.23s",
+            "keyframes": [
+              {
+                "offset": 0,
+                "easing": "cubic-bezier(0.23, 1, 0.32, 1)",
+                "composite": "auto",
+                "opacity": "0",
+                "backdropFilter": "blur(0px)",
+                "computedOffset": 0
+              },
+              {
+                "offset": 1,
+                "easing": "cubic-bezier(0.23, 1, 0.32, 1)",
+                "composite": "auto",
+                "opacity": "1",
+                "backdropFilter": "none",
+                "computedOffset": 1
+              }
+            ]
+          },
+          "menu": {
+            "animation": "tadeon-popup-in",
+            "duration": "0.24s",
+            "keyframes": [
+              {
+                "offset": 0,
+                "easing": "cubic-bezier(0.23, 1, 0.32, 1)",
+                "composite": "auto",
+                "opacity": "0",
+                "transform": "translate3d(0px, -9.6px, 0px) scale(0.955)",
+                "computedOffset": 0
+              },
+              {
+                "offset": 1,
+                "easing": "cubic-bezier(0.23, 1, 0.32, 1)",
+                "composite": "auto",
+                "opacity": "1",
+                "transform": "translate3d(0px, 0px, 0px) scale(1)",
+                "computedOffset": 1
+              }
+            ]
+          },
+          "selectPointerReachable": true,
+          "selectedLabelPreserved": null,
+          "retiredBackdrops": 1,
+          "scrollLocked": true,
+          "preferenceExitRepeats": 5,
+          "mobilePreferenceExit": false,
+          "rapidReopen": true,
+          "focusReturn": true,
+          "reducedMotion": true,
+          "overflow": false,
+          "errors": []
+        }
+      ],
+      "additionalMesaStates": 31,
+      "additionalEditableSheetViews": 2,
+      "manualInspection": {
+        "status": "passed",
+        "sourceCommit": "153e0ff476e2ba283ee0125d8242569bdcf9dd90",
+        "run": 40055704967,
+        "views": [
+          "motion-current/320-more.png",
+          "motion-current/1440-account.png",
+          "composition/320-fullscreen-camera-menu.png"
+        ]
+      },
+      "artifact": {
+        "id": 12545432704,
+        "name": "visual-review",
+        "bytes": 37537832,
+        "sha256": "8347344226e54392a851e77e8dda6a23437d4e5b34e76b85fafb4e49b3118c98",
+        "createdAt": "2026-10-24T03:00:36Z",
+        "expiresAt": "2026-10-31T03:00:34Z",
+        "head": "153e0ff476e2ba283ee0125d8242569bdcf9dd90",
+        "pngs": 89
+      }
+    },
+    "local": {
+      "isolatedInstall": true,
+      "checks": "154 suítes/625 testes; lint, typecheck, builds de cliente/SSR/Worker",
+      "additionalPreferenceStress": {
+        "repetitions": 20,
+        "width": 1440,
+        "status": "passed",
+        "scope": "Fechamento de Dialog em código equivalente, anterior à revisão específica de Select e às atualizações de dependências; emulação sincronizada com frames."
+      },
+      "emulationSynchronization": "O laboratório observou matches atualizado antes da entrega de change a MediaQueryList. A auditoria aguarda dois frames após emulateMedia antes de afirmar o resultado React; não despacha eventos sintéticos de preferência."
+    }
   },
-  "scope": "Presença e movimento dos pop-ups compartilhados; sem mudanças de dados ou autenticação.",
-  "method": "Chromium com fixtures de cliente sem escritas reais; 12 eventos de scroll separados por dois frames. Contagem de leituras da moldura, não benchmark de FPS/INP.",
+  "performance": {
+    "method": "12 eventos de scroll separados por dois frames; contagem das leituras getBoundingClientRect da moldura, em condições equivalentes e fixtures sem escritas reais.",
+    "closedFrameReads": {
+      "before": 72,
+      "after": 0
+    },
+    "oneOpenFrameReads": {
+      "before": 72,
+      "after": 12
+    },
+    "menuEnterMs": {
+      "before": 240,
+      "after": 210
+    },
+    "backdropEnterMs": {
+      "before": 230,
+      "after": 180
+    },
+    "scope": "Contagem de trabalho e contratos CSS; não mede FPS, INP ou desempenho em aparelhos físicos."
+  },
+  "dependencyGate": {
+    "advisory": "https://github.com/advisories/GHSA-mrhx-c7xc-m3w5",
+    "updatedAt": "2026-10-23",
+    "supersededFailedRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40023817393",
+    "additionalSupersededFailedRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40054864215",
+    "package": "zod",
+    "before": "4.6.5",
+    "after": "4.6.7",
+    "otherDependenciesChanged": true,
+    "compatibleUpdates": {
+      "vitest": "4.1.12",
+      "body-parser": "2.4.0",
+      "fast-uri": "3.1.9",
+      "ip-address": "10.7.4",
+      "undici7": "7.30.1",
+      "undici8": "8.12.2"
+    },
+    "scopedOverrides": "Somente as faixas vulneráveis de Undici 7 e 8; majors de Cloudflare/Miniflare/Nitro preservadas, sem force.",
+    "finalAudit": {
+      "high": 0,
+      "critical": 0,
+      "moderate": 0,
+      "total": 0
+    }
+  },
+  "production": {
+    "status": "confirmed",
+    "commit": "0b6513d0a75d8087179cf7c5b2a151e3e8f46aee",
+    "run": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40056793969",
+    "httpStatus": 200,
+    "verifiedAt": "2026-10-24T03:07:00.6784920Z",
+    "proof": "Marcador controlado tadeon-build-sha confirmado no HTML servido."
+  },
   "limits": [
-    "NEX-009 mantém hardware físico e métricas de campo.",
-    "Fixtures não certificam autorização real ou restauração."
+    "NEX-009 mantém hardware físico e métricas de campo; não inferir FPS/INP das contagens.",
+    "Fixtures não certificam autorização de contas reais ou restauração; NEX-010/011 mantidos."
   ]
 }
