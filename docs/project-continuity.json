@@ -1,23 +1,23 @@
 {
   "version": 1,
   "checkedAt": "2026-10-24",
-  "runtimeReference": "0b6513d0a75d8087179cf7c5b2a151e3e8f46aee",
+  "runtimeReference": "4d553741b136b77d9d27ca419c4efad786580a2a",
   "integration": {
-    "pr": 296,
-    "branch": "feat/nex-033-shared-motion",
+    "pr": 298,
+    "branch": "feat/nex-034-adaptive-dossier",
     "base": "main",
-    "baseCommit": "f18ecaeabf4ca563ce343fbec9017be3d80fe463",
-    "sourceCommit": "153e0ff476e2ba283ee0125d8242569bdcf9dd90",
-    "headCommit": "153e0ff476e2ba283ee0125d8242569bdcf9dd90",
+    "baseCommit": "6adba01fcc0e8719ff9ce0c2a160e324c53be8c4",
+    "sourceCommit": "e9180d945d1de5de43110040fdccedd62f8a434c",
+    "headCommit": "e9180d945d1de5de43110040fdccedd62f8a434c",
     "state": "integrated",
-    "mergeCommit": "0b6513d0a75d8087179cf7c5b2a151e3e8f46aee",
-    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40055705022",
-    "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40055704967",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40056793963",
+    "mergeCommit": "4d553741b136b77d9d27ca419c4efad786580a2a",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40060516290",
+    "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40060516314",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40062046613",
     "production": "confirmed",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40056793969",
-    "productionCommit": "0b6513d0a75d8087179cf7c5b2a151e3e8f46aee",
-    "productionVerifiedAt": "2026-10-24T03:07:00.6784920Z",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40062046584",
+    "productionCommit": "4d553741b136b77d9d27ca419c4efad786580a2a",
+    "productionVerifiedAt": "2026-10-24T04:24:32.2049085Z",
     "productionHttpStatus": 200
   },
   "domains": [
@@ -1127,7 +1127,7 @@
       "id": "NEX-034",
       "title": "Ficha e celular: hierarquia, instrumentos e composição adaptável",
       "domain": "sheet",
-      "status": "active",
+      "status": "integrated",
       "priority": 7,
       "dependsOn": [
         "NEX-033"
@@ -1140,9 +1140,13 @@
         "Validar comparação renderizada, fluxos editáveis/somente leitura, foco, movimento reduzido, check e audit; publicar após gates."
       ],
       "evidence": [
-        "scripts/verify-sheet-design.mjs"
+        "scripts/verify-sheet-design.mjs",
+        "docs/adaptive-layout-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/298",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40060516314",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40062046584"
       ],
-      "checkpoint": "Implementação concluída sobre main 6adba01: cabeçalho relativo/compacto, títulos e ações sem compressão, vínculos multilinha, instrumentos rotulados e grades adaptáveis. 154 suítes/625 testes aprovados; fluxos completos em 320/1440 passaram com edição, autosave, portais, teclado e modo Jogo. Conferência visual final em andamento; publicação depende dos gates do fonte."
+      "checkpoint": "Integrado pela PR #298, fonte e9180d9, merge 4d55374. Ficha com cabeçalho relativo/compacto, títulos íntegros e ações sem sobreposição, vínculos multilinha e estado legível, radar menor e instrumentos rotulados. Quality do fonte/main: 154 suítes/625 testes; audit zero. Oito vistas da Ficha com três abas em 320/390/820/1440, dois fluxos completos, 28 vistas compartilhadas e 31 estados da Mesa aprovados; nove estados locais das utilidades e 40 estados das abas/fluxos do Mestre. Capturas do fonte final inspecionadas; rótulos Presente/Tensionado verificados por geometria. HTTP 200/SHA exato em 2026-10-24T04:24:32.2049085Z. NEX-009/010/011 preservam hardware físico, contas reais e restauração. Fechamento documental confirma sua própria publicação na PR correspondente."
     }
   ],
   "decisions": [
@@ -1534,6 +1538,10 @@
     {
       "path": "docs/shared-motion-validation.json",
       "purpose": "NEX-033: presença e movimento dos menus; comparação laboratorial, CI e publicação."
+    },
+    {
+      "path": "docs/adaptive-layout-validation.json",
+      "purpose": "NEX-034: composição adaptável da Ficha e celular, regressão do estado dos vínculos, gates e publicação confirmada."
     }
   ],
   "integrationHistory": [
@@ -1871,6 +1879,24 @@
       "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39879914021",
       "productionCommit": "e88f75d2de197ca525e7e1716da61a460efc35cd",
       "productionVerifiedAt": "2026-10-23T00:47:09.9520928Z",
+      "productionHttpStatus": 200
+    },
+    {
+      "pr": 296,
+      "branch": "feat/nex-033-shared-motion",
+      "base": "main",
+      "baseCommit": "f18ecaeabf4ca563ce343fbec9017be3d80fe463",
+      "sourceCommit": "153e0ff476e2ba283ee0125d8242569bdcf9dd90",
+      "headCommit": "153e0ff476e2ba283ee0125d8242569bdcf9dd90",
+      "state": "integrated",
+      "mergeCommit": "0b6513d0a75d8087179cf7c5b2a151e3e8f46aee",
+      "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40055705022",
+      "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40055704967",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40056793963",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40056793969",
+      "productionCommit": "0b6513d0a75d8087179cf7c5b2a151e3e8f46aee",
+      "productionVerifiedAt": "2026-10-24T03:07:00.6784920Z",
       "productionHttpStatus": 200
     }
   ]

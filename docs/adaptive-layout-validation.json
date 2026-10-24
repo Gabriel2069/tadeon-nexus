@@ -1,0 +1,116 @@
+{
+  "task": "NEX-034",
+  "status": "published",
+  "baseCommit": "6adba01fcc0e8719ff9ce0c2a160e324c53be8c4",
+  "sourceCommit": "e9180d945d1de5de43110040fdccedd62f8a434c",
+  "sourceTree": "69ea1270cd08e6c9ffc687f97e06188382293d8d",
+  "mergeCommit": "4d553741b136b77d9d27ca419c4efad786580a2a",
+  "implementation": [
+    "Cabeçalho grande relativo e compacto em todas as larguras; índice preserva offsets medidos do shell.",
+    "Título e recolhimento separados das ações, com fluxo flexível próprio para os extras e sem sobreposição no inventário.",
+    "Identidade reorganiza ocupação/origem/marca; vínculos multilinha em fólios com largura reservada para o estado.",
+    "Atributos usam a sexta célula para orçamento restante e radar menor, sem mudar regras.",
+    "Equilíbrio agrupa estado, benefício e penalidade; Equilíbrio/Exposição conservam entradas diretas e faixas rotuladas com alvos de 44px.",
+    "História abrevia a abertura e mantém escrita de 16px; biblioteca/offline distribuem colunas por largura disponível e utilidades reduzem preenchimento móvel."
+  ],
+  "validation": {
+    "quality": {
+      "status": "passed",
+      "suites": 154,
+      "tests": 625,
+      "sourceRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40060516290",
+      "mainRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40062046613",
+      "cssModules": 57,
+      "globalLinks": 12,
+      "importantRemoved": 8
+    },
+    "audit": {
+      "high": 0,
+      "critical": 0,
+      "moderate": 0,
+      "total": 0
+    },
+    "browser": {
+      "status": "passed",
+      "widths": [
+        320,
+        390,
+        820,
+        1440
+      ],
+      "sourceRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40060516314",
+      "adaptiveSheetViews": 8,
+      "tabsPerView": [
+        "Ficha",
+        "Maestria",
+        "História"
+      ],
+      "completeEditableFlows": 2,
+      "sharedAreaViews": 28,
+      "additionalTabletopStates": 31,
+      "localUtilityStates": 9,
+      "localMasterStates": 40,
+      "manualInspection": {
+        "status": "passed",
+        "sourceCommit": "e9180d945d1de5de43110040fdccedd62f8a434c",
+        "run": 40060516314,
+        "views": [
+          "sheet-adaptive/links-editable-390.png",
+          "sheet-adaptive/top-readonly-320.png",
+          "sheet-adaptive/exposure-editable-820.png",
+          "sheet-adaptive/attributes-editable-1440.png"
+        ]
+      },
+      "artifact": {
+        "id": 12547464044,
+        "name": "visual-review",
+        "bytes": 70979976,
+        "sha256": "79a43046a57788cf1ac5ffe005319bced513c9180802731222189a5e4e8e030a",
+        "createdAt": "2026-10-24T04:20:55Z",
+        "expiresAt": "2026-10-31T04:20:52Z",
+        "head": "e9180d945d1de5de43110040fdccedd62f8a434c",
+        "pngs": 169
+      },
+      "assertions": [
+        "Identidade relativa e rolando com o dossiê em todas as larguras.",
+        "Títulos de Atributos, Equilíbrio e Exposição permanecem em linha legível.",
+        "Controles de estado e atributos mantêm alvos de 44px e contenção.",
+        "Vínculos exibem Presente/Tensionado dentro da largura visível do controle.",
+        "Três abas da ficha sem overflow; fluxos completos preservam edição, autosave, foco, inventário e Jogo.",
+        "Portais, redução de movimento, reabertura e rodas preservados."
+      ]
+    },
+    "linkLabelRegression": {
+      "before": "O teste reproduziu o corte: Presente tinha 76,8px de texto e somente 2px disponíveis.",
+      "after": "Grade reserva largura para o estado e usa cartões com largura mínima compatível. Presente/Tensionado foram medidos dentro do controle nas quatro larguras, com seleção real por ponteiro.",
+      "supersededSource": "9a306e59ca994dadac5e8d0fac688b14325aca1d",
+      "supersededArtifact": 12547137479
+    },
+    "comparison": {
+      "scope": "Comparação local, mesmas fixtures e fontes no Chromium 153. Alturas externas de cartões esticados não equivalem ao tamanho do conteúdo interno.",
+      "compact320": {
+        "attributeHeightApproxPx": {
+          "before": 804,
+          "after": 640
+        },
+        "equilibriumHeightApproxPx": {
+          "before": 690,
+          "after": 540
+        }
+      },
+      "performance": "Nenhum ganho global de FPS/INP inferido destas medidas; a verificação compartilhada de movimento foi repetida no fonte final."
+    }
+  },
+  "production": {
+    "status": "confirmed",
+    "commit": "4d553741b136b77d9d27ca419c4efad786580a2a",
+    "run": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40062046584",
+    "httpStatus": 200,
+    "verifiedAt": "2026-10-24T04:24:32.2049085Z",
+    "proof": "Marcador controlado tadeon-build-sha confirmado no HTML servido."
+  },
+  "limits": [
+    "Fixtures não certificam contas reais, autorização ou restauração (NEX-010/011).",
+    "FPS, INP e teclado em aparelhos físicos permanecem com NEX-009."
+  ]
+}
