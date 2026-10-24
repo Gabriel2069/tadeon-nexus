@@ -58,3 +58,4 @@ Comece pelo [estado de continuidade](ai/00_ESTADO_ATUAL.md), [mapa do código](P
 | [archive-composition-validation.json](archive-composition-validation.json) | NEX-024: descoberta do acervo, composição, navegação e gate de propriedade; evidência e limites. |
 | [tabletop-finishing-validation.json](tabletop-finishing-validation.json) | NEX-032: instrumentos, dobras, seleção contínua e acabamento local da Mesa, com comparação e limites de fixtures. |
 | [shared-motion-validation.json](shared-motion-validation.json) | NEX-033: presença e movimento dos menus; comparação laboratorial, CI e publicação. |
+| [adaptive-layout-validation.json](adaptive-layout-validation.json) | NEX-034: composição adaptável da Ficha e celular, regressão do estado dos vínculos, gates e publicação confirmada. |

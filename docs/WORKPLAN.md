@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-24; referência de runtime: `0b6513d0a75d8087179cf7c5b2a151e3e8f46aee`. PR #296 em `feat/nex-033-shared-motion`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-24; referência de runtime: `4d553741b136b77d9d27ca419c4efad786580a2a`. PR #298 em `feat/nex-034-adaptive-dossier`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -43,7 +43,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-031 | Mesa espacial: composição, conjuntos e edição 3D | Integrado | 7 | tabletop | NEX-030 |
 | NEX-032 | Mesa: acabamento dos instrumentos, dobras e seleção | Integrado | 7 | tabletop | NEX-031 |
 | NEX-033 | Fluidez: presença e movimento dos menus compartilhados | Integrado | 7 | popup | NEX-032 |
-| NEX-034 | Ficha e celular: hierarquia, instrumentos e composição adaptável | Em andamento | 7 | sheet | NEX-033 |
+| NEX-034 | Ficha e celular: hierarquia, instrumentos e composição adaptável | Integrado | 7 | sheet | NEX-033 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -332,7 +332,7 @@ Evidências: [docs/shared-motion-validation.json](../docs/shared-motion-validati
 - Preservar cálculos, dados, permissões, autosave, botões aprovados, portais e rodas circulares.
 - Validar comparação renderizada, fluxos editáveis/somente leitura, foco, movimento reduzido, check e audit; publicar após gates.
 
-Evidências: [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs).
+Evidências: [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [docs/adaptive-layout-validation.json](../docs/adaptive-layout-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/298), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40060516314), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40062046584).
 
 ## Decisões vigentes
 
