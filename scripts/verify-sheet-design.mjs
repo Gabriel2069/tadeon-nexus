@@ -455,6 +455,26 @@ try {
         const narrative = page.locator(".tadeon-identity-narrative__trigger");
         if ((await narrative.getAttribute("data-state")) === "closed") await narrative.click();
         await page.locator(".tadeon-link-panel").scrollIntoViewIfNeeded();
+        const linkLabels = [];
+        if (process.env.NEXUS_EXPECT_ADAPTIVE === "1") {
+          const trigger = page.getByRole("combobox", { name: "Estado do vínculo 1", exact: true });
+          const checkLinkLabel = async () => {
+            const result = await trigger.evaluate(e => {
+              const value=e.querySelector("span"), icon=e.querySelector("svg"), range=document.createRange();
+              range.selectNodeContents(value);
+              const text=range.getBoundingClientRect(), box=value.getBoundingClientRect();
+              return {text:e.textContent.trim(),textWidth:text.width,available:box.width,inside:text.width>0 && text.width<=box.width+1 && text.right<=icon.getBoundingClientRect().left+1};
+            });
+            linkLabels.push(result);
+            assert(result.inside, "Link state text remains visible: " + JSON.stringify(result));
+          };
+          await checkLinkLabel();
+          if (state === "editable") {
+            await trigger.click();
+            await page.getByRole("option", {name:"Tensionado",exact:true}).click();
+            await checkLinkLabel();
+          }
+        }
         await captureAdaptive({ path: `${output}/links-${state}-${width}.png` });
         for (const tab of ["descricao", "arvore"]) {
           await page.locator(`.tadeon-sheet-tabs-list [data-tab-value="${tab}"]`).click();
@@ -482,7 +502,7 @@ try {
           );
         }
         assert(errors.length === 0, JSON.stringify(errors));
-        results.push({ width, state, initial, scrolled, errors });
+        results.push({ width, state, initial, scrolled, linkLabels, errors });
         writeFileSync(
           `${output}/results.json`,
           JSON.stringify({ fixtureOnly: true, results }, null, 2),
