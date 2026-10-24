@@ -1,23 +1,23 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-22",
-  "runtimeReference": "e88f75d2de197ca525e7e1716da61a460efc35cd",
+  "checkedAt": "2026-10-24",
+  "runtimeReference": "0b6513d0a75d8087179cf7c5b2a151e3e8f46aee",
   "integration": {
-    "pr": 294,
-    "branch": "feat/nex-032-tabletop-finish",
+    "pr": 296,
+    "branch": "feat/nex-033-shared-motion",
     "base": "main",
-    "baseCommit": "48b0a91049ef8661087c6db766b5d123c22316fc",
-    "sourceCommit": "6e14fd18185cca24a0685cc3e0e29f9823afdd32",
-    "headCommit": "6e14fd18185cca24a0685cc3e0e29f9823afdd32",
+    "baseCommit": "f18ecaeabf4ca563ce343fbec9017be3d80fe463",
+    "sourceCommit": "153e0ff476e2ba283ee0125d8242569bdcf9dd90",
+    "headCommit": "153e0ff476e2ba283ee0125d8242569bdcf9dd90",
     "state": "integrated",
-    "mergeCommit": "e88f75d2de197ca525e7e1716da61a460efc35cd",
-    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39877503943",
-    "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39877504251",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39879914150",
+    "mergeCommit": "0b6513d0a75d8087179cf7c5b2a151e3e8f46aee",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40055705022",
+    "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40055704967",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40056793963",
     "production": "confirmed",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39879914021",
-    "productionCommit": "e88f75d2de197ca525e7e1716da61a460efc35cd",
-    "productionVerifiedAt": "2026-10-23T00:47:09.9520928Z",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40056793969",
+    "productionCommit": "0b6513d0a75d8087179cf7c5b2a151e3e8f46aee",
+    "productionVerifiedAt": "2026-10-24T03:07:00.6784920Z",
     "productionHttpStatus": 200
   },
   "domains": [
@@ -1099,7 +1099,7 @@
       "id": "NEX-033",
       "title": "Fluidez: presença e movimento dos menus compartilhados",
       "domain": "popup",
-      "status": "active",
+      "status": "integrated",
       "priority": 7,
       "dependsOn": [
         "NEX-032"
@@ -1116,9 +1116,12 @@
         "docs/shared-motion-validation.json",
         "scripts/verify-shared-motion.mjs",
         "docs/DESIGN.md",
-        "src/components/ui/select-presence.test.tsx"
+        "src/components/ui/select-presence.test.tsx",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/296",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40055704967",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40056793969"
       ],
-      "checkpoint": "Implementação e comparação laboratorial em andamento; hardware físico e métricas de campo permanecem em NEX-009."
+      "checkpoint": "Integrado pela PR #296, fonte 153e0ff, merge 0b6513d. Quality do HEAD/main aprovados: 154 suítes/625 testes. Comparação em 320/390/820/1440: 12 eventos de scroll, leituras 72→0 sem pop-up e 72→12 com um aberto. Sem backdrop ou scroll lock retido após cinco trocas de preferência por largura; foco, reabertura, clique móvel e rodas preservados. Visual inclui 31 estados da Mesa e duas vistas editáveis da Ficha; capturas do fonte final inspecionadas. Zod e dependências transitivas corrigidos sem downgrade forçado; auditoria completa zerada. HTTP 200/SHA exato em 2026-10-24T03:07:00.6784920Z. NEX-009/010/011 preservam hardware físico, autorização e restauração. Fechamento documental confirma sua própria publicação na PR correspondente."
     }
   ],
   "decisions": [
@@ -1824,6 +1827,24 @@
       "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39672882787",
       "productionCommit": "0318936b38c8a1e3a24b1f858cd95c60048cc976",
       "productionVerifiedAt": "2026-10-21T20:47:01.2142326Z",
+      "productionHttpStatus": 200
+    },
+    {
+      "pr": 294,
+      "branch": "feat/nex-032-tabletop-finish",
+      "base": "main",
+      "baseCommit": "48b0a91049ef8661087c6db766b5d123c22316fc",
+      "sourceCommit": "6e14fd18185cca24a0685cc3e0e29f9823afdd32",
+      "headCommit": "6e14fd18185cca24a0685cc3e0e29f9823afdd32",
+      "state": "integrated",
+      "mergeCommit": "e88f75d2de197ca525e7e1716da61a460efc35cd",
+      "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39877503943",
+      "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39877504251",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39879914150",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39879914021",
+      "productionCommit": "e88f75d2de197ca525e7e1716da61a460efc35cd",
+      "productionVerifiedAt": "2026-10-23T00:47:09.9520928Z",
       "productionHttpStatus": 200
     }
   ]

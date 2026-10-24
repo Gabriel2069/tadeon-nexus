@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-22; referência de runtime: `e88f75d2de197ca525e7e1716da61a460efc35cd`. PR #294 em `feat/nex-032-tabletop-finish`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-24; referência de runtime: `0b6513d0a75d8087179cf7c5b2a151e3e8f46aee`. PR #296 em `feat/nex-033-shared-motion`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -42,7 +42,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-030 | Mesa circular e profundidade contida dos materiais | Integrado | 7 | tabletop | NEX-029 |
 | NEX-031 | Mesa espacial: composição, conjuntos e edição 3D | Integrado | 7 | tabletop | NEX-030 |
 | NEX-032 | Mesa: acabamento dos instrumentos, dobras e seleção | Integrado | 7 | tabletop | NEX-031 |
-| NEX-033 | Fluidez: presença e movimento dos menus compartilhados | Em andamento | 7 | popup | NEX-032 |
+| NEX-033 | Fluidez: presença e movimento dos menus compartilhados | Integrado | 7 | popup | NEX-032 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -321,7 +321,7 @@ Evidências: [docs/tabletop-finishing-validation.json](../docs/tabletop-finishin
 - Comparar trabalho de layout em condições equivalentes e publicar somente após check, audit e gates; não inferir FPS/INP físicos.
 - Preservar valor, rótulo e coleção oculta do Select com redução de movimento, inclusive após fechar e trocar a preferência.
 
-Evidências: [docs/shared-motion-validation.json](../docs/shared-motion-validation.json), [scripts/verify-shared-motion.mjs](../scripts/verify-shared-motion.mjs), [docs/DESIGN.md](../docs/DESIGN.md), [src/components/ui/select-presence.test.tsx](../src/components/ui/select-presence.test.tsx).
+Evidências: [docs/shared-motion-validation.json](../docs/shared-motion-validation.json), [scripts/verify-shared-motion.mjs](../scripts/verify-shared-motion.mjs), [docs/DESIGN.md](../docs/DESIGN.md), [src/components/ui/select-presence.test.tsx](../src/components/ui/select-presence.test.tsx), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/296), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40055704967), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40056793969).
 
 ## Decisões vigentes
 
