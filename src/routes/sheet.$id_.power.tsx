@@ -1,6 +1,6 @@
 import { PageHeader } from "@/components/page-header";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ProtectedShell } from "@/components/protected-shell";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -48,7 +48,7 @@ import { can } from "@/lib/permissions";
 import { SaveStatus } from "@/components/save-status";
 import { ResistanceDtCalculator } from "@/components/master/resistance-dt-calculator";
 import "@/styles/sheet-premium.css";
-const AttributeRadar = lazy(() => import("@/components/sheet/attribute-radar"));
+import AttributeRadar from "@/components/sheet/attribute-radar";
 
 export const Route = createFileRoute("/sheet/$id_/power")({
   head: () => ({
@@ -401,14 +401,14 @@ function PowerFormPage() {
 
   const groups = skillGroups.length ? skillGroups : SKILL_GROUPS;
 
-  const radarData = useMemo(() => {
-    const attrs = vp.attributes ?? base?.attributes;
-    if (!attrs) return [];
-    return (Object.keys(attrs) as (keyof Attributes)[]).map((k) => ({
-      attr: k,
-      value: attrs[k],
-    }));
-  }, [vp.attributes, base]);
+  const radarAttributes = vp.attributes ?? base?.attributes;
+  const radarData = useMemo(
+    () =>
+      radarAttributes
+        ? Object.entries(radarAttributes).map(([attr, value]) => ({ attr, value }))
+        : [],
+    [radarAttributes],
+  );
 
   if (loading || !base) {
     return (
@@ -650,18 +650,12 @@ function PowerFormPage() {
                   ))}
                 </div>
                 <div className="h-48 sm:h-56">
-                  <Suspense
-                    fallback={
-                      <Loader2 className="w-6 h-6 animate-spin text-orange-300 mx-auto mt-20" />
-                    }
-                  >
-                    <AttributeRadar
-                      data={radarData}
-                      color="#fb923c"
-                      tickColor="#fdba74"
-                      fillOpacity={0.45}
-                    />
-                  </Suspense>
+                  <AttributeRadar
+                    data={radarData}
+                    color="#fb923c"
+                    tickColor="#fdba74"
+                    fillOpacity={0.45}
+                  />
                 </div>
               </div>
             </VPCard>

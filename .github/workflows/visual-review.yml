@@ -96,6 +96,21 @@ jobs:
           NEXUS_ADAPTIVE_ONLY: "1"
           NEXUS_EXPECT_ADAPTIVE: "1"
         run: node scripts/verify-sheet-design.mjs
+      - name: Conferir radar vetorial na Ficha
+        env:
+          NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/radar-base
+          NEXUS_AUDIT_STATES: '["editable","readonly"]'
+          NEXUS_RADAR_ONLY: "1"
+          NEXUS_EXPECT_LIGHT_RADAR: "1"
+        run: node scripts/verify-sheet-design.mjs
+      - name: Conferir radar vetorial na Forma de Poder
+        env:
+          NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/radar-power
+          NEXUS_AUDIT_STATES: '["editable","readonly"]'
+          NEXUS_RADAR_ONLY: "1"
+          NEXUS_EXPECT_LIGHT_RADAR: "1"
+          NEXUS_POWER_HEADER: "1"
+        run: node scripts/verify-sheet-design.mjs
       - name: Conferir dobras compartilhadas na Ficha
         env:
           NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/sheet-folds

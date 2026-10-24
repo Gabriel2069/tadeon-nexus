@@ -301,6 +301,31 @@ try {
           waitUntil: "domcontentloaded",
         },
       );
+      if (process.env.NEXUS_RADAR_ONLY === "1") {
+        const radar = page.locator(".tadeon-attribute-radar-svg, .recharts-surface").first();
+        await radar.waitFor({timeout:60000});
+        await page.evaluate(()=>document.fonts.ready);
+        const measure = () => radar.evaluate(e=>{
+          const r=e.getBoundingClientRect();
+          return {nodes:e.querySelectorAll('*').length,width:r.width,height:r.height,x:r.x,right:r.right,viewBox:e.getAttribute('viewBox'),accessibleName:e.querySelector('title')?.textContent??null,description:e.querySelector('desc')?.textContent??null,labelsFit:[...e.querySelectorAll('text')].every(t=>{const b=t.getBoundingClientRect();return b.left>=r.left-1 && b.right<=r.right+1 && b.top>=r.top-1 && b.bottom<=r.bottom+1;})};
+        });
+        const initial=await measure();
+        await radar.scrollIntoViewIfNeeded();
+        if(process.env.NEXUS_SKIP_SCREENSHOTS!=="1") await radar.screenshot({path:`${output}/radar-${width}-${process.env.NEXUS_POWER_HEADER==='1'?'power':'base'}.png`});
+        if(process.env.NEXUS_EXPECT_LIGHT_RADAR==='1') {
+          assert(initial.description?.includes('COR: 1') && initial.nodes<50 && initial.labelsFit,'Native radar describes values with a bounded SVG');
+          if(state==='editable') {
+            await page.getByRole('button',{name:'Aumentar COR',exact:true}).click();
+            await page.waitForFunction(()=>document.querySelector('.tadeon-attribute-radar-svg desc')?.textContent.includes('COR: 2'));
+          }
+        }
+        const current=await measure();
+        assert(current.width>0 && current.x>=0 && current.right<=width+1,'Radar stays inside the viewport');
+        assert(!errors.length,JSON.stringify(errors));
+        results.push({width,state,power:process.env.NEXUS_POWER_HEADER==='1',initial,current,errors});
+        writeFileSync(`${output}/results.json`,JSON.stringify({fixtureOnly:true,results},null,2));
+        await context.close();console.log(`Radar verified ${width}`);continue;
+      }
       if (process.env.NEXUS_POWER_HEADER === "1" || process.env.NEXUS_HEADER_ONLY === "1") {
         await page.locator("[data-page-header=sheet]").waitFor({ timeout: 60000 });
         const header = await page.locator("[data-page-header=sheet]").evaluate((e) => {

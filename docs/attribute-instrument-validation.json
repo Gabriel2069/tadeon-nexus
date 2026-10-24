@@ -1,0 +1,78 @@
+{
+  "task": "NEX-035",
+  "status": "validated-local",
+  "baseCommit": "ba073d59b72d95acf3b1454426b8528337a8cc9d",
+  "implementation": [
+    "Radar SVG local sem Recharts/ResponsiveContainer e sem carregamento adiado do componente.",
+    "Escala mínima de 0 a 5, ampliada para extremos; valores e amplitude na descrição acessível, referências únicas por instância.",
+    "Dados derivados somente do objeto de atributos na Ficha e Forma de Poder; memoização do componente.",
+    "Cores, tipografia, medidas dos cartões e controles existentes preservados."
+  ],
+  "localValidation": {
+    "quality": {
+      "suites": 155,
+      "tests": 629,
+      "status": "passed"
+    },
+    "audit": {
+      "total": 0,
+      "high": 0,
+      "critical": 0
+    },
+    "browser": {
+      "widths": [
+        320,
+        390,
+        820,
+        1440
+      ],
+      "views": 16,
+      "routes": [
+        "Ficha",
+        "Forma de Poder"
+      ],
+      "states": [
+        "editable",
+        "readonly"
+      ],
+      "checks": [
+        "Valor COR 1→2 atualiza descrição do gráfico",
+        "Siglas, valores e amplitude contidos no SVG",
+        "Valores e controle acessíveis",
+        "Sem overflow e sem erros de renderização"
+      ]
+    },
+    "bundle": {
+      "before": {
+        "files": 61,
+        "bytes": 3281756,
+        "gzipBytes": 997243,
+        "chartVendor": [
+          {
+            "name": "vendor-charts-DoM91dMK.js",
+            "bytes": 282823,
+            "gzip": 84343
+          }
+        ]
+      },
+      "after": {
+        "files": 59,
+        "bytes": 2995890,
+        "gzipBytes": 911749,
+        "chartVendor": []
+      }
+    },
+    "structure": {
+      "scope": "Descendentes dentro do SVG do radar, mesmas fixtures",
+      "before": 57,
+      "after": 41
+    }
+  },
+  "publication": {
+    "status": "pending"
+  },
+  "limits": [
+    "Comparação de build local e estrutura não mede FPS/INP nem desempenho em hardware físico.",
+    "Fixtures não certificam autorização em contas reais ou restauração; NEX-009/010/011 preservados."
+  ]
+}

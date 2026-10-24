@@ -59,3 +59,4 @@ Comece pelo [estado de continuidade](ai/00_ESTADO_ATUAL.md), [mapa do código](P
 | [tabletop-finishing-validation.json](tabletop-finishing-validation.json) | NEX-032: instrumentos, dobras, seleção contínua e acabamento local da Mesa, com comparação e limites de fixtures. |
 | [shared-motion-validation.json](shared-motion-validation.json) | NEX-033: presença e movimento dos menus; comparação laboratorial, CI e publicação. |
 | [adaptive-layout-validation.json](adaptive-layout-validation.json) | NEX-034: composição adaptável da Ficha e celular, regressão do estado dos vínculos, gates e publicação confirmada. |
+| [attribute-instrument-validation.json](attribute-instrument-validation.json) | NEX-035: comparação de build, radar SVG, estados da Ficha/Forma de Poder e publicação. |
