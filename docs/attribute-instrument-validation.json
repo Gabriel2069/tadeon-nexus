@@ -1,6 +1,6 @@
 {
   "task": "NEX-035",
-  "status": "validated-local",
+  "status": "published",
   "baseCommit": "ba073d59b72d95acf3b1454426b8528337a8cc9d",
   "implementation": [
     "Radar SVG local sem Recharts/ResponsiveContainer e sem carregamento adiado do componente.",
@@ -69,10 +69,243 @@
     }
   },
   "publication": {
-    "status": "pending"
+    "status": "confirmed",
+    "commit": "2068aee18164e3272a4e938a42b2f7f8b73260a7",
+    "run": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40085253889",
+    "httpStatus": 200,
+    "verifiedAt": "2026-10-24T10:18:44.9941387Z"
   },
   "limits": [
     "Comparação de build local e estrutura não mede FPS/INP nem desempenho em hardware físico.",
     "Fixtures não certificam autorização em contas reais ou restauração; NEX-009/010/011 preservados."
-  ]
+  ],
+  "sourceCommit": "3d42601ad484222f1e15abb016603c445f68681e",
+  "sourceTree": "43d48f8ff655568ed4d457d08e4ad6d71572535c",
+  "mergeCommit": "2068aee18164e3272a4e938a42b2f7f8b73260a7",
+  "remoteValidation": {
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40083897263",
+    "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40083897202",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40085253941",
+    "suites": 155,
+    "tests": 629,
+    "radarViews": [
+      {
+        "width": 320,
+        "state": "editable",
+        "power": false,
+        "svgNodes": 41,
+        "widthPx": 248,
+        "heightPx": 174,
+        "labelsFit": true,
+        "initialValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "currentValues": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "errors": []
+      },
+      {
+        "width": 320,
+        "state": "readonly",
+        "power": false,
+        "svgNodes": 41,
+        "widthPx": 248,
+        "heightPx": 174,
+        "labelsFit": true,
+        "initialValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "currentValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "errors": []
+      },
+      {
+        "width": 390,
+        "state": "editable",
+        "power": false,
+        "svgNodes": 41,
+        "widthPx": 309,
+        "heightPx": 174,
+        "labelsFit": true,
+        "initialValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "currentValues": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "errors": []
+      },
+      {
+        "width": 390,
+        "state": "readonly",
+        "power": false,
+        "svgNodes": 41,
+        "widthPx": 309,
+        "heightPx": 174,
+        "labelsFit": true,
+        "initialValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "currentValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "errors": []
+      },
+      {
+        "width": 820,
+        "state": "editable",
+        "power": false,
+        "svgNodes": 41,
+        "widthPx": 459.59375,
+        "heightPx": 174,
+        "labelsFit": true,
+        "initialValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "currentValues": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "errors": []
+      },
+      {
+        "width": 820,
+        "state": "readonly",
+        "power": false,
+        "svgNodes": 41,
+        "widthPx": 459.59375,
+        "heightPx": 174,
+        "labelsFit": true,
+        "initialValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "currentValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "errors": []
+      },
+      {
+        "width": 1440,
+        "state": "editable",
+        "power": false,
+        "svgNodes": 41,
+        "widthPx": 433.34375,
+        "heightPx": 174,
+        "labelsFit": true,
+        "initialValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "currentValues": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "errors": []
+      },
+      {
+        "width": 1440,
+        "state": "readonly",
+        "power": false,
+        "svgNodes": 41,
+        "widthPx": 433.34375,
+        "heightPx": 174,
+        "labelsFit": true,
+        "initialValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "currentValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "errors": []
+      },
+      {
+        "width": 320,
+        "state": "editable",
+        "power": true,
+        "svgNodes": 41,
+        "widthPx": 262,
+        "heightPx": 192,
+        "labelsFit": true,
+        "initialValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "currentValues": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "errors": []
+      },
+      {
+        "width": 320,
+        "state": "readonly",
+        "power": true,
+        "svgNodes": 41,
+        "widthPx": 262,
+        "heightPx": 192,
+        "labelsFit": true,
+        "initialValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "currentValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "errors": []
+      },
+      {
+        "width": 390,
+        "state": "editable",
+        "power": true,
+        "svgNodes": 41,
+        "widthPx": 323,
+        "heightPx": 192,
+        "labelsFit": true,
+        "initialValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "currentValues": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "errors": []
+      },
+      {
+        "width": 390,
+        "state": "readonly",
+        "power": true,
+        "svgNodes": 41,
+        "widthPx": 323,
+        "heightPx": 192,
+        "labelsFit": true,
+        "initialValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "currentValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "errors": []
+      },
+      {
+        "width": 820,
+        "state": "editable",
+        "power": true,
+        "svgNodes": 41,
+        "widthPx": 234.828125,
+        "heightPx": 224,
+        "labelsFit": true,
+        "initialValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "currentValues": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "errors": []
+      },
+      {
+        "width": 820,
+        "state": "readonly",
+        "power": true,
+        "svgNodes": 41,
+        "widthPx": 234.828125,
+        "heightPx": 224,
+        "labelsFit": true,
+        "initialValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "currentValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "errors": []
+      },
+      {
+        "width": 1440,
+        "state": "editable",
+        "power": true,
+        "svgNodes": 41,
+        "widthPx": 529.953125,
+        "heightPx": 224,
+        "labelsFit": true,
+        "initialValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "currentValues": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "errors": []
+      },
+      {
+        "width": 1440,
+        "state": "readonly",
+        "power": true,
+        "svgNodes": 41,
+        "widthPx": 529.953125,
+        "heightPx": 224,
+        "labelsFit": true,
+        "initialValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "currentValues": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+        "errors": []
+      }
+    ],
+    "additionalSharedViews": 28,
+    "additionalTabletopStates": 31,
+    "additionalAdaptiveSheetViews": 8,
+    "additionalCompleteEditableSheetViews": 2,
+    "artifact": {
+      "id": 12556877094,
+      "name": "visual-review",
+      "bytes": 71434366,
+      "sha256": "27061de64df32410944d7bffa4bd6bb99e2349b138ee5075c017cb11804ef1e4",
+      "createdAt": "2026-10-24T10:14:16Z",
+      "expiresAt": "2026-10-31T10:14:13Z",
+      "head": "3d42601ad484222f1e15abb016603c445f68681e",
+      "pngs": 177
+    },
+    "manualInspection": {
+      "status": "passed",
+      "sourceCommit": "3d42601ad484222f1e15abb016603c445f68681e",
+      "run": 40083897202,
+      "views": [
+        "radar-base/radar-320-base.png",
+        "radar-power/radar-390-power.png",
+        "radar-base/radar-820-base.png",
+        "sheet-adaptive/attributes-editable-1440.png"
+      ]
+    }
+  }
 }
