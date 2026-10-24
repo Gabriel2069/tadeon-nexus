@@ -319,8 +319,9 @@ Evidências: [docs/tabletop-finishing-validation.json](../docs/tabletop-finishin
 - Conservar um responsável pelo movimento de menus e fundos, com alvos estáveis e saída sem captura de cliques.
 - Preservar foco, portais em tela inteira, botões aprovados e menus circulares; testar reabertura rápida e movimento reduzido.
 - Comparar trabalho de layout em condições equivalentes e publicar somente após check, audit e gates; não inferir FPS/INP físicos.
+- Preservar valor, rótulo e coleção oculta do Select com redução de movimento, inclusive após fechar e trocar a preferência.
 
-Evidências: [docs/shared-motion-validation.json](../docs/shared-motion-validation.json), [scripts/verify-shared-motion.mjs](../scripts/verify-shared-motion.mjs), [docs/DESIGN.md](../docs/DESIGN.md).
+Evidências: [docs/shared-motion-validation.json](../docs/shared-motion-validation.json), [scripts/verify-shared-motion.mjs](../scripts/verify-shared-motion.mjs), [docs/DESIGN.md](../docs/DESIGN.md), [src/components/ui/select-presence.test.tsx](../src/components/ui/select-presence.test.tsx).
 
 ## Decisões vigentes
 

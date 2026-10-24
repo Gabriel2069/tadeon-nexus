@@ -89,10 +89,12 @@ const SelectContent = React.forwardRef<
     const portalContainer = usePopupPortalContainer();
     // Native fullscreen escapes the page's scroll-clipping ancestors.
     const present = useSelectPresence(props.forceMount);
-    if (!present) return null;
     return (
       <SelectPrimitive.Portal container={portalContainer}>
         <SelectPrimitive.Content
+          // Keep Radix's closed fragment: its ItemText portals label SelectValue.
+          // A fresh closed presence ends a cancelled exit without losing options.
+          key={present ? "motion" : "settled"}
           ref={ref}
           data-slot="select-content"
           data-motion-surface="popup"

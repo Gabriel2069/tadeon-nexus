@@ -71,7 +71,7 @@
         "src/styles/visual-viewport-popup.css",
         "src/styles/route-popup-frame.css"
       ],
-      "boundary": "Medidas do viewport pertencem ao bridge único do root; primitivos mantêm foco e portais. NEX-032: Select usa o elemento fullscreen também como limite de colisão; portal e geometria compartilham a fronteira expandida. NEX-033: createPopupRoot controla abertura e presença dos primitivos; a redução de movimento desmonta portais fechados sem depender de eventos cancelados. useRoutePopupFrame só mede enquanto existe conteúdo real."
+      "boundary": "Medidas do viewport pertencem ao bridge único do root; primitivos mantêm foco e portais. NEX-032: Select usa o elemento fullscreen também como limite de colisão; portal e geometria compartilham a fronteira expandida. NEX-033: createPopupRoot controla abertura e presença dos primitivos; a redução de movimento desmonta portais fechados sem depender de eventos cancelados. useRoutePopupFrame só mede enquanto existe conteúdo real. Select conserva a coleção em fragmento; a presença interna pode remontar para concluir saída reduzida sem apagar o rótulo selecionado."
     },
     {
       "id": "dashboard",
@@ -1109,12 +1109,14 @@
         "Coalescer resize/viewport em um frame e ignorar rolagem interna que não muda a moldura.",
         "Conservar um responsável pelo movimento de menus e fundos, com alvos estáveis e saída sem captura de cliques.",
         "Preservar foco, portais em tela inteira, botões aprovados e menus circulares; testar reabertura rápida e movimento reduzido.",
-        "Comparar trabalho de layout em condições equivalentes e publicar somente após check, audit e gates; não inferir FPS/INP físicos."
+        "Comparar trabalho de layout em condições equivalentes e publicar somente após check, audit e gates; não inferir FPS/INP físicos.",
+        "Preservar valor, rótulo e coleção oculta do Select com redução de movimento, inclusive após fechar e trocar a preferência."
       ],
       "evidence": [
         "docs/shared-motion-validation.json",
         "scripts/verify-shared-motion.mjs",
-        "docs/DESIGN.md"
+        "docs/DESIGN.md",
+        "src/components/ui/select-presence.test.tsx"
       ],
       "checkpoint": "Implementação e comparação laboratorial em andamento; hardware físico e métricas de campo permanecem em NEX-009."
     }

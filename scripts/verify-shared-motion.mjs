@@ -105,6 +105,7 @@ try {
     await page.getByRole("button", { name: "Nova ficha", exact: true }).click();
     const select = page.getByRole("combobox");
     await page.waitForTimeout(350);
+    const selectedLabel = await select.textContent();
     const selectPointerReachable = await select.evaluate(element => {
       const rect = element.getBoundingClientRect();
       return element.contains(document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2));
@@ -122,6 +123,17 @@ try {
     await page.keyboard.press("Escape");
     await page.locator('[data-slot="select-content"]').waitFor({ state: "detached" });
     assert(await select.evaluate(element => element === document.activeElement), "Select focus return");
+    if (!baseline) {
+      await setMotion("reduce");
+      assert(await select.textContent() === selectedLabel && selectedLabel.trim().length > 0, "Reduced motion erased the selected label");
+      await select.click();
+      await page.locator('[data-slot="select-content"][data-state="open"]').waitFor();
+      await page.keyboard.press("Escape");
+      await page.locator('[data-slot="select-content"]').waitFor({ state: "detached" });
+      assert(await select.textContent() === selectedLabel, "Closing the reduced Select erased its label");
+      await setMotion("no-preference");
+    }
+
     await page.keyboard.press("Escape");
     await page.locator('[data-slot="dialog-content"]').waitFor({ state: "detached" });
     if (width < 768) {
@@ -167,7 +179,7 @@ try {
     if (!baseline) assert(!scrollLocked && retiredBackdrops === 0, "Preference change retained modal presence or scroll lock");
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
     assert(!overflow && errors.length === 0, `${width}: overflow/errors ${JSON.stringify(errors)}`);
-    rows.push({ width, closedScroll, openScroll, backdrop, menu, selectPointerReachable, retiredBackdrops, scrollLocked, preferenceExitRepeats, mobilePreferenceExit: width < 768 && !baseline, rapidReopen: true, focusReturn: true, reducedMotion: true, overflow, errors });
+    rows.push({ width, closedScroll, openScroll, backdrop, menu, selectPointerReachable, selectedLabelPreserved: baseline ? null : true, retiredBackdrops, scrollLocked, preferenceExitRepeats, mobilePreferenceExit: width < 768 && !baseline, rapidReopen: true, focusReturn: true, reducedMotion: true, overflow, errors });
     writeFileSync(`${output}/results.json`, JSON.stringify(rows, null, 2));
     console.log(JSON.stringify({ width, closedScroll, openScroll, backdrop: backdrop.animation, menu: menu.animation, selectPointerReachable, errors }));
     await browser.close(); browser = null;
