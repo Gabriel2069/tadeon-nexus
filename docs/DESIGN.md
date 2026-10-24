@@ -348,3 +348,11 @@ A câmera, o enquadramento/grade e o histórico/editor formam grupos visuais est
 As formações e a repetição abrem por altura, com fechamento correspondente e seta decorativa isolada; movimento reduzido mostra o destino imediatamente. Keyframes do material deixam de compartilhar nomes com popups legados. A sessão ao vivo mantém sua montagem anterior. As abas do editor recebem o plano contínuo de SelectionPlate, sem preenchimentos individuais concorrentes.
 
 A profundidade dos painéis vem de luz de contato no topo/lateral e sombra de assentamento, sem inclinar textos ou animar superfícies paradas. Botões, rodas, paleta e fontes aprovadas conservam seus proprietários. Evidência em tabletop-finishing-validation.json; a fila continua somente em project-continuity.json.
+
+## Fluidez dos menus compartilhados — NEX-033
+
+Pop-ups ancorados conservam a dobradiça óptica e a abertura de 210 ms, com saída de 140 ms. O movimento pertence a route-popup-frame.css; regras legadas de entrada/saída e cascata de itens excluem superfícies com proprietário explícito. Os itens ficam disponíveis sem esperar revelações individuais. Fundos de Dialog, AlertDialog e Sheet usam uma presença curta por opacidade, sem animar filtro de tela inteira. O fechamento do menu ancorado desativa sua captura de ponteiro. Movimento reduzido alcança o destino diretamente, inclusive no fundo. Botões, materiais e rodas circulares conservam sua direção aprovada.
+
+A ampliação de toque de checkbox, radio e switch permanece presa ao próprio controle por posicionamento relativo. Sem essa contenção, o pseudo-elemento absoluto tomava a moldura do diálogo como referência e interceptava cliques de campos e seletores vizinhos no celular.
+
+O estado aberto dos primitivos e a presença usam a mesma autoridade React em popup-presence.tsx. Com movimento reduzido, fechar ou mudar a preferência durante a saída remove o portal fechado sem aguardar eventos de animação; isso libera foco e scroll lock mesmo quando o navegador cancela a saída. forceMount explícito é preservado. Aberturas reduzidas continuam sem animação; display: none é o fallback CSS da saída. O contrato inclui a roda do Mais e o drawer móvel e não usa timer global, observer ou remoção imperativa de nós.

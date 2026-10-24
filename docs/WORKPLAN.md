@@ -42,6 +42,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-030 | Mesa circular e profundidade contida dos materiais | Integrado | 7 | tabletop | NEX-029 |
 | NEX-031 | Mesa espacial: composição, conjuntos e edição 3D | Integrado | 7 | tabletop | NEX-030 |
 | NEX-032 | Mesa: acabamento dos instrumentos, dobras e seleção | Integrado | 7 | tabletop | NEX-031 |
+| NEX-033 | Fluidez: presença e movimento dos menus compartilhados | Em andamento | 7 | popup | NEX-032 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -310,6 +311,17 @@ Evidências: [docs/visual-system-validation.json](../docs/visual-system-validati
 - Executar check, audit e matriz visual/funcional; distinguir fixtures, integração e produção.
 
 Evidências: [docs/tabletop-finishing-validation.json](../docs/tabletop-finishing-validation.json), [scripts/verify-tabletop-workspace.mjs](../scripts/verify-tabletop-workspace.mjs), [docs/DESIGN.md](../docs/DESIGN.md), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [.github/workflows/visual-review.yml](../.github/workflows/visual-review.yml), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/294), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39877504251), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39879914021).
+
+## NEX-033 — Fluidez: presença e movimento dos menus compartilhados
+
+- Suspender medições e assinaturas de geometria quando o conteúdo do pop-up está ausente; limpar frames e observers ao sair.
+- Coalescer resize/viewport em um frame e ignorar rolagem interna que não muda a moldura.
+- Conservar um responsável pelo movimento de menus e fundos, com alvos estáveis e saída sem captura de cliques.
+- Preservar foco, portais em tela inteira, botões aprovados e menus circulares; testar reabertura rápida e movimento reduzido.
+- Comparar trabalho de layout em condições equivalentes e publicar somente após check, audit e gates; não inferir FPS/INP físicos.
+- Preservar valor, rótulo e coleção oculta do Select com redução de movimento, inclusive após fechar e trocar a preferência.
+
+Evidências: [docs/shared-motion-validation.json](../docs/shared-motion-validation.json), [scripts/verify-shared-motion.mjs](../scripts/verify-shared-motion.mjs), [docs/DESIGN.md](../docs/DESIGN.md), [src/components/ui/select-presence.test.tsx](../src/components/ui/select-presence.test.tsx).
 
 ## Decisões vigentes
 

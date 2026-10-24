@@ -41,13 +41,31 @@ export function usePopupPortalContainer() {
   return React.useSyncExternalStore(subscribeFullscreen, fullscreenContainer, noFullscreen);
 }
 
-export function useRoutePopupFrame() {
+export function useRoutePopupFrame(forwardedRef?: React.Ref<HTMLDivElement>) {
+  // Radix keeps Content components rendered while their portal DOM is absent.
+  // Subscribe only during actual presence, including the finite exit animation.
+  const [content, setContent] = React.useState<HTMLDivElement | null>(null);
+  const contentRef = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      setContent(node);
+      const release = typeof forwardedRef === "function" ? forwardedRef(node) : undefined;
+      if (forwardedRef && typeof forwardedRef !== "function") forwardedRef.current = node;
+      return () => {
+        setContent(null);
+        if (typeof release === "function") release();
+        else if (typeof forwardedRef === "function") forwardedRef(null);
+        else if (forwardedRef) forwardedRef.current = null;
+      };
+    },
+    [forwardedRef],
+  );
   const portalContainer = usePopupPortalContainer();
   const materialStyle = useMaterialToneStyle();
   const [boundary, setBoundary] = React.useState<HTMLElement | null>(null);
   const [style, setStyle] = React.useState<PopupFrameStyle>({});
 
   React.useLayoutEffect(() => {
+    if (!content) return;
     const frame = activeRouteFrame();
     if (!frame) return;
     setBoundary(frame);
@@ -65,15 +83,26 @@ export function useRoutePopupFrame() {
       const left = Math.max(viewportLeft, rect.left);
       const right = Math.min(viewportLeft + viewportWidth, rect.right);
       const boundedWidth = Math.max(0, right - left);
-      setStyle({
+      const nextStyle: PopupFrameStyle = {
         "--tadeon-popup-frame-left": `${boundedWidth > 0 ? left : viewportLeft}px`,
         "--tadeon-popup-frame-width": `${boundedWidth > 0 ? boundedWidth : viewportWidth}px`,
         "--tadeon-popup-viewport-top": `${viewportTop}px`,
         "--tadeon-popup-viewport-height": `${viewportHeight}px`,
-      });
+      };
+      setStyle((current) =>
+        Object.keys(nextStyle).every(
+          (key) =>
+            current[key as keyof PopupFrameStyle] === nextStyle[key as keyof PopupFrameStyle],
+        )
+          ? current
+          : nextStyle,
+      );
     };
 
-    const scheduleMeasure = () => {
+    const scheduleMeasure = (event?: Event) => {
+      // Scrolling a list or input inside the route does not move its frame.
+      if (event?.type === "scroll" && event.target instanceof Node && frame.contains(event.target))
+        return;
       if (animationFrame) return;
       animationFrame = window.requestAnimationFrame(() => {
         animationFrame = 0;
@@ -82,7 +111,7 @@ export function useRoutePopupFrame() {
     };
 
     measure();
-    const observer = new ResizeObserver(scheduleMeasure);
+    const observer = new ResizeObserver(() => scheduleMeasure());
     observer.observe(frame);
     window.addEventListener("resize", scheduleMeasure);
     window.addEventListener("scroll", scheduleMeasure, true);
@@ -96,7 +125,7 @@ export function useRoutePopupFrame() {
       window.visualViewport?.removeEventListener("resize", scheduleMeasure);
       window.visualViewport?.removeEventListener("scroll", scheduleMeasure);
     };
-  }, [portalContainer]);
+  }, [content, portalContainer]);
 
-  return { boundary, portalContainer, style: { ...materialStyle, ...style } };
+  return { contentRef, boundary, portalContainer, style: { ...materialStyle, ...style } };
 }

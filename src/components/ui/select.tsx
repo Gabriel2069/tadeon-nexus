@@ -2,15 +2,15 @@
 
 import { usePopupPortalContainer } from "@/components/ui/route-popup-frame";
 
-
 import * as React from "react";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { Check, ChevronDown, ChevronUp } from "lucide-react";
 
 import { useMaterialToneStyle } from "@/lib/use-material-light";
 import { cn } from "@/lib/utils";
+import { createPopupRoot } from "@/components/ui/popup-presence";
 
-const Select = SelectPrimitive.Root;
+const [Select, useSelectPresence] = createPopupRoot(SelectPrimitive.Root, "Select");
 
 const SelectGroup = SelectPrimitive.Group;
 
@@ -88,9 +88,13 @@ const SelectContent = React.forwardRef<
     const materialStyle = useMaterialToneStyle();
     const portalContainer = usePopupPortalContainer();
     // Native fullscreen escapes the page's scroll-clipping ancestors.
+    const present = useSelectPresence(props.forceMount);
     return (
       <SelectPrimitive.Portal container={portalContainer}>
         <SelectPrimitive.Content
+          // Keep Radix's closed fragment: its ItemText portals label SelectValue.
+          // A fresh closed presence ends a cancelled exit without losing options.
+          key={present ? "motion" : "settled"}
           ref={ref}
           data-slot="select-content"
           data-motion-surface="popup"

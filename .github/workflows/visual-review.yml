@@ -5,6 +5,8 @@ on:
     paths:
       - "src/**"
       - "scripts/**"
+      - "package.json"
+      - "package-lock.json"
       - "docs/DESIGN.md"
       - ".github/workflows/visual-review.yml"
 
@@ -14,7 +16,7 @@ permissions:
 jobs:
   browser:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     env:
       NEXUS_BROWSER_MODULE: file:///tmp/tadeon-browser/node_modules/playwright/index.mjs
     steps:
@@ -42,6 +44,15 @@ jobs:
           cd /tmp/tadeon-baseline
           npm ci
           node "$GITHUB_WORKSPACE/scripts/verify-dashboard-design.mjs"
+      - name: Medir presença e movimento compartilhados na referência
+        env:
+          NEXUS_AUDIT_REPO: /tmp/tadeon-baseline
+          NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/motion-baseline
+        run: node scripts/verify-shared-motion.mjs baseline
+      - name: Validar fluidez, interrupção e redução de movimento
+        env:
+          NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/motion-current
+        run: node scripts/verify-shared-motion.mjs
       - name: Validar acervo, navegação, foco e movimento
         env:
           NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/current
