@@ -23,9 +23,6 @@
   }
 }
 
-.tadeon-sheet-page :is(.tadeon-equilibrium-panel, .tadeon-exposure-panel) {
-  background: radial-gradient(circle at 92% -8%, rgb(var(--section-rgb) / 9%), transparent 30%), linear-gradient(145deg, rgb(18 21 26 / 97%), rgb(10 13 17 / 93%)) !important;
-}
 
 @media (max-width: 767px) {
   .tadeon-sheet-page .tadeon-sheet-tabs-list {

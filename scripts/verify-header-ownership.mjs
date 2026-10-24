@@ -298,6 +298,7 @@ try {
           };
           return {
             section: header.dataset.pageHeader,
+            studio: header.classList.contains('tadeon-page-header--studio'),
             rect: rect(header),
             frame: rect(frame),
             padding: [s.paddingTop, s.paddingRight, s.paddingBottom, s.paddingLeft],
@@ -469,11 +470,13 @@ try {
             reference &&
             (Math.abs(reference.rect[0] - header.rect[0]) > 0.6 ||
               Math.abs(reference.rect[2] - header.rect[2]) > 0.6 ||
-              JSON.stringify(reference.padding) !== JSON.stringify(header.padding) ||
+              (!header.studio && (JSON.stringify(reference.padding) !== JSON.stringify(header.padding) ||
               JSON.stringify(reference.titleFont) !== JSON.stringify(header.titleFont) ||
-              Math.abs(reference.mark[2] - header.mark[2]) > 0.1)
+              Math.abs(reference.mark[2] - header.mark[2]) > 0.1)))
           )
             errors.push("Page header anatomy diverges from the shared envelope");
+          if (header.studio && (Math.abs(header.mark[2]-36)>1 || parseFloat(header.titleFont[1])<22))
+            errors.push("Compact studio header loses its measured mark or readable title");
           if (header.actions.some((action) => action.rect[3] > 0 && action.rect[3] < 43.9))
             errors.push("Page action under 44px");
           if (

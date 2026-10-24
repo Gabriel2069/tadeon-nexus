@@ -356,3 +356,11 @@ Pop-ups ancorados conservam a dobradiça óptica e a abertura de 210 ms, com sa�
 A ampliação de toque de checkbox, radio e switch permanece presa ao próprio controle por posicionamento relativo. Sem essa contenção, o pseudo-elemento absoluto tomava a moldura do diálogo como referência e interceptava cliques de campos e seletores vizinhos no celular.
 
 O estado aberto dos primitivos e a presença usam a mesma autoridade React em popup-presence.tsx. Com movimento reduzido, fechar ou mudar a preferência durante a saída remove o portal fechado sem aguardar eventos de animação; isso libera foco e scroll lock mesmo quando o navegador cancela a saída. forceMount explícito é preservado. Aberturas reduzidas continuam sem animação; display: none é o fallback CSS da saída. O contrato inclui a roda do Mais e o drawer móvel e não usa timer global, observer ou remoção imperativa de nós.
+
+## NEX-034 — Fólio móvel e instrumentos adaptáveis
+
+DEC-020 substitui a fixação do cabeçalho grande da Ficha: sua identidade acompanha a rolagem em todas as larguras. Abertura compacta pertence a `page-hero-parity.css`; `sheet-premium.css` mantém somente a extensão de posição. `useSheetChrome` continua medindo o shell para os destinos do índice, sem reservar altura de uma barra que já rolou.
+
+Os títulos e o recolhimento têm uma linha própria; ações dispõem de uma linha flexível e só ficam ao lado do título quando a largura real do cartão comporta a composição. Isso impede que orçamento, tensão ou ações de inventário comprimam os títulos ou se sobreponham. Vínculos usam fólios próprios, texto multilinha e estado explícito; relação/estado compartilham a linha quando o painel comporta. Atributos usam a sexta célula para o orçamento restante, com radar menor e números estáveis. Equilíbrio agrupa estado, benefício e penalidade em leituras rotuladas, e ambos os instrumentos têm entrada direta e controle de faixa com área de toque preservada.
+
+História tem uma abertura mais breve e campos de escrita com corpo de 16px. Maestria conserva seu modelo de progressão e controles existentes. Biblioteca e fichas offline escolhem colunas pela largura disponível; utilidades reduzem o preenchimento móvel dos painéis. Nenhuma grade estreita deve ganhar colunas à custa de cortar texto ou reduzir os alvos. As rodas da Mesa e do Mais, cálculos e persistência são preservados.

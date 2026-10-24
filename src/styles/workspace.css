@@ -2249,7 +2249,8 @@
 .tadeon-nexus-document article .tadeon-nexus-reading-copy { max-width: 68ch; margin-inline: auto; font-size: 1rem; line-height: 1.8; }
 
 /* Columns depend on the result pane, which shares space with shelves and preview. */
-.tadeon-library-card-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+.tadeon-library-card-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
+.tadeon-offline-sheet-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: .75rem; }
 .tadeon-library-card__mark { flex-shrink: 0; }
 .tadeon-library-card__meta > span { white-space: nowrap; }
 .tadeon-library-card__title { white-space: normal; min-height: 2.25rem; }

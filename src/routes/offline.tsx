@@ -215,7 +215,7 @@ function OfflinePageContent() {
             {filteredSheets.length === 0 ? (
               <EmptyCard text="Nenhuma ficha encontrada nesta cópia local." />
             ) : (
-              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              <div className="tadeon-offline-sheet-grid">
                 {filteredSheets.map(({ summary, data }) => (
                   <OfflineSheetCard
                     key={summary.id}
@@ -324,7 +324,7 @@ function OfflineMaster({ cache }: { cache: NonNullable<OfflineCache["master"]> }
 
   return (
     <div className="grid gap-4 lg:grid-cols-[1.1fr_.9fr]">
-      <Card className="tadeon-surface rounded-2xl p-5 md:p-6">
+      <Card className="tadeon-surface rounded-2xl p-4 md:p-6">
         <p className="tadeon-eyebrow">Campanha</p>
         <h2 className="font-cinzel text-2xl font-semibold">{cache.campaignTitle}</h2>
         <p className="mt-1 text-sm text-muted-foreground">

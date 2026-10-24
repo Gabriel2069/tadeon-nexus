@@ -592,7 +592,7 @@ function NexusToolsPageContent() {
         </TabsList>
 
         <TabsContent value="backup" className="space-y-5">
-          <Card className="tadeon-surface rounded-2xl p-5 md:p-6">
+          <Card className="tadeon-surface rounded-2xl p-4 md:p-6">
             <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
               <div>
                 <Label htmlFor="snapshot-label">Nome do ponto de restauração</Label>
@@ -636,7 +636,7 @@ function NexusToolsPageContent() {
           </Card>
 
           <div className="grid gap-5 lg:grid-cols-[1.4fr_.6fr]">
-            <Card className="tadeon-surface rounded-2xl p-5 md:p-6">
+            <Card className="tadeon-surface rounded-2xl p-4 md:p-6">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
                   <p className="tadeon-eyebrow">Versões locais</p>
@@ -709,7 +709,7 @@ function NexusToolsPageContent() {
               )}
             </Card>
 
-            <Card className="tadeon-surface rounded-2xl p-5 md:p-6">
+            <Card className="tadeon-surface rounded-2xl p-4 md:p-6">
               <FileUp className="mb-4 h-6 w-6 text-primary" />
               <h2 className="font-cinzel text-xl font-semibold">Importar backup</h2>
               <p className="mt-2 text-sm text-muted-foreground">
@@ -737,7 +737,7 @@ function NexusToolsPageContent() {
         </TabsContent>
 
         <TabsContent value="diagnostics" className="space-y-5">
-          <Card className="tadeon-surface rounded-2xl p-5 md:p-6">
+          <Card className="tadeon-surface rounded-2xl p-4 md:p-6">
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
               <div>
                 <p className="tadeon-eyebrow">Estado atual</p>
@@ -764,7 +764,7 @@ function NexusToolsPageContent() {
           </div>
 
           {errorLogs.length > 0 && (
-            <Card className="tadeon-surface rounded-2xl p-5 md:p-6">
+            <Card className="tadeon-surface rounded-2xl p-4 md:p-6">
               <div className="mb-4 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
                 <div>
                   <p className="tadeon-eyebrow">Ocorrências abertas</p>

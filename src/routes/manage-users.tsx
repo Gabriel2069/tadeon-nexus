@@ -269,7 +269,7 @@ function ManageUsersPageContent() {
             return (
               <Card
                 key={row.id}
-                className="tadeon-user-row grid gap-4 border-border/70 bg-card/65 p-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
+                className="tadeon-user-row grid gap-4 border-border/70 bg-card/65 p-4 sm:p-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
               >
                 <div className="flex min-w-0 items-center gap-3">
                   <span className="tadeon-user-row__sigil" aria-hidden>

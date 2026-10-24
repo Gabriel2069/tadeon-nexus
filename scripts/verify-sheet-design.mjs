@@ -332,18 +332,15 @@ try {
         });
         if (process.env.NEXUS_HEADER_ONLY === "1" && width >= 768)
           assert(
-            header.position === "sticky" &&
-              Math.abs(parseFloat(header.top) - Math.max(...header.shellHeaders.map((h) => h[1]))) <
-                1,
-            "Sheet header keeps the measured shell offset",
+            header.position === "relative",
+            "Sheet identity scrolls with the folio",
           );
         assert(
           header.headingCount === 1 && !header.overflow,
           "Power header follows the shared route envelope",
         );
         assert(
-          header.font[1] === (width < 768 ? "27.2px" : width === 820 ? "32px" : "38.16px") ||
-            parseFloat(header.font[1]) >= 27,
+          parseFloat(header.font[1]) >= 24,
           "Power title is not shrunk by legacy header rules",
         );
         assert(writes.length === 0, "Read-only power header never writes");
@@ -392,6 +389,108 @@ try {
         );
         await document.fonts.ready;
       });
+      if (process.env.NEXUS_ADAPTIVE_ONLY === "1") {
+        const captureAdaptive = (options) => process.env.NEXUS_SKIP_SCREENSHOTS === "1" ? Promise.resolve() : page.screenshot(options);
+        const measure = () =>
+          page.evaluate(() => {
+            const rect = (selector) => {
+              const e = document.querySelector(selector),
+                r = e?.getBoundingClientRect();
+              return e
+                ? {
+                    x: r.x,
+                    y: r.y,
+                    width: r.width,
+                    height: r.height,
+                    position: getComputedStyle(e).position,
+                  }
+                : null;
+            };
+            return {
+              overflow: document.documentElement.scrollWidth > innerWidth,
+              header: rect(".tadeon-sheet-commandbar"),
+              identity: rect("#sec-info"),
+              attributes: rect("#sec-attr"),
+              equilibrium: rect("#equilibrio"),
+              exposure: rect("#exposicao"),
+              attributesColumns: getComputedStyle(document.querySelector(".tadeon-attribute-grid"))
+                .gridTemplateColumns,
+              headings: [...document.querySelectorAll(".tadeon-sheet-section__title-group h2")].map(
+                (e) => ({
+                  text: e.textContent,
+                  width: e.getBoundingClientRect().width,
+                  height: e.getBoundingClientRect().height,
+                  lineHeight: parseFloat(getComputedStyle(e).lineHeight),
+                }),
+              ),
+              stateTargets: [
+                ...document.querySelectorAll(
+                  ".tadeon-state-controls input, .tadeon-tension-control button",
+                ),
+              ].map((e) => {
+                const r = e.getBoundingClientRect();
+                return { width: r.width, height: r.height };
+              }),
+              targetsFit: [...document.querySelectorAll(".tadeon-attribute-tile button")].every(
+                (e) => {
+                  const r = e.getBoundingClientRect(),
+                    p = e.closest(".tadeon-attribute-tile").getBoundingClientRect();
+                  return (
+                    r.x >= p.x - 1 && r.right <= p.right + 1 && r.width >= 44 && r.height >= 44
+                  );
+                },
+              ),
+            };
+          });
+        await captureAdaptive({ path: `${output}/top-${state}-${width}.png` });
+        const initial = await measure();
+        await page.locator("#sec-attr").scrollIntoViewIfNeeded();
+        await captureAdaptive({ path: `${output}/attributes-${state}-${width}.png` });
+        const scrolled = await measure();
+        await page.locator("#equilibrio").scrollIntoViewIfNeeded();
+        await captureAdaptive({ path: `${output}/states-${state}-${width}.png` });
+        await page.locator("#exposicao").scrollIntoViewIfNeeded();
+        await captureAdaptive({ path: `${output}/exposure-${state}-${width}.png` });
+        await page.locator("#sec-info").scrollIntoViewIfNeeded();
+        const narrative = page.locator(".tadeon-identity-narrative__trigger");
+        if ((await narrative.getAttribute("data-state")) === "closed") await narrative.click();
+        await page.locator(".tadeon-link-panel").scrollIntoViewIfNeeded();
+        await captureAdaptive({ path: `${output}/links-${state}-${width}.png` });
+        for (const tab of ["descricao", "arvore"]) {
+          await page.locator(`.tadeon-sheet-tabs-list [data-tab-value="${tab}"]`).click();
+          await captureAdaptive({ path: `${output}/${tab}-${state}-${width}.png` });
+          assert(
+            await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+            `Tab ${tab} fits ${width}`,
+          );
+        }
+        assert(!initial.overflow && initial.targetsFit, "Adaptive controls fit");
+        if (process.env.NEXUS_EXPECT_ADAPTIVE === "1") {
+          assert(
+            initial.header.position === "relative" && scrolled.header.y < initial.header.y - 100,
+            "Large sheet identity scrolls away",
+          );
+          assert(
+            initial.headings
+              .filter((h) => ["Atributos", "Equilíbrio", "Exposição"].includes(h.text))
+              .every((h) => h.height < h.lineHeight * 1.5),
+            "Instrument titles remain on a readable line",
+          );
+          assert(
+            initial.stateTargets.every((t) => t.width >= 44 && t.height >= 44),
+            "State controls retain full touch targets: " + JSON.stringify(initial.stateTargets),
+          );
+        }
+        assert(errors.length === 0, JSON.stringify(errors));
+        results.push({ width, state, initial, scrolled, errors });
+        writeFileSync(
+          `${output}/results.json`,
+          JSON.stringify({ fixtureOnly: true, results }, null, 2),
+        );
+        await context.close();
+        console.log(`Adaptive sheet verified ${width} ${state}`);
+        continue;
+      }
       if (process.env.NEXUS_SELECTION_ONLY === "1") {
         const selection = await auditSelection(page);
         results.push({ width, state, selection, errors });
@@ -821,9 +920,8 @@ try {
             };
           });
           assert(
-            sticky.commandTop >= sticky.shellBottom - 1 &&
-              sticky.titleTop >= sticky.commandBottom - 1,
-            "Sticky toolbar and section targets remain below the shell header: " +
+            sticky.commandBottom < sticky.titleTop && sticky.titleTop >= sticky.shellBottom - 1,
+            "Folio header scrolls away and section targets clear the shell: " +
               JSON.stringify(sticky),
           );
         }

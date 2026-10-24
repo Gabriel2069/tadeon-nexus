@@ -61,8 +61,8 @@ jobs:
       - name: Validar superfícies compartilhadas e portais
         env:
           NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/shared
-          NEXUS_AUDIT_WIDTHS: "[320,820]"
-          NEXUS_AUDIT_ROUTES: '["/offline","/nexus"]'
+          NEXUS_AUDIT_WIDTHS: "[320,390,820,1440]"
+          NEXUS_AUDIT_ROUTES: '["/","/offline","/nexus","/master-panel","/nexus-tools","/manage-users"]'
           NEXUS_MATERIAL_AUDIT: "1"
           NEXUS_LAYOUT_AUDIT: "1"
         run: node scripts/verify-header-ownership.mjs current
@@ -88,6 +88,14 @@ jobs:
           NEXUS_AUDIT_SCOPE: composition
           NEXUS_AUDIT_WIDTHS: "[320,390,820,1440]"
         run: node scripts/verify-tabletop-workspace.mjs
+      - name: Conferir composição adaptável e abas da Ficha
+        env:
+          NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/sheet-adaptive
+          NEXUS_AUDIT_WIDTHS: "[320,390,820,1440]"
+          NEXUS_AUDIT_STATES: '["editable","readonly"]'
+          NEXUS_ADAPTIVE_ONLY: "1"
+          NEXUS_EXPECT_ADAPTIVE: "1"
+        run: node scripts/verify-sheet-design.mjs
       - name: Conferir dobras compartilhadas na Ficha
         env:
           NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/sheet-folds

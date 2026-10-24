@@ -48,11 +48,7 @@ html[data-tadeon-sheet-mode] .tadeon-sheet-frame section[id] {
     inline-size: 100%;
   }
 
-  html[data-tadeon-sheet-mode] #sec-attr .tadeon-attribute-radar {
-    inline-size: min(100%, 31rem);
-    aspect-ratio: 1;
-    margin-inline: auto;
-  }
+
 
   html[data-tadeon-sheet-mode] #sec-pontos .grid,
   html[data-tadeon-sheet-mode] #sec-pericias .grid,
