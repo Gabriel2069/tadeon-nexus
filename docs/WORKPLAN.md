@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-24; referência de runtime: `4d553741b136b77d9d27ca419c4efad786580a2a`. PR #298 em `feat/nex-034-adaptive-dossier`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-24; referência de runtime: `2068aee18164e3272a4e938a42b2f7f8b73260a7`. PR #300 em `feat/nex-035-attribute-instrument`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -44,7 +44,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-032 | Mesa: acabamento dos instrumentos, dobras e seleção | Integrado | 7 | tabletop | NEX-031 |
 | NEX-033 | Fluidez: presença e movimento dos menus compartilhados | Integrado | 7 | popup | NEX-032 |
 | NEX-034 | Ficha e celular: hierarquia, instrumentos e composição adaptável | Integrado | 7 | sheet | NEX-033 |
-| NEX-035 | Atributos: instrumento vetorial leve e leitura acessível | Validado na branch | 7 | sheet | NEX-034 |
+| NEX-035 | Atributos: instrumento vetorial leve e leitura acessível | Integrado | 7 | sheet | NEX-034 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -343,7 +343,7 @@ Evidências: [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mj
 - Comparar bytes de build e estrutura renderizada com o mesmo cenário, sem inferir FPS/INP físicos.
 - Conferir quatro larguras, edição, leitura, portais e movimento reduzido; publicar após check, audit e gates.
 
-Evidências: [src/components/sheet/attribute-radar.tsx](../src/components/sheet/attribute-radar.tsx), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [src/components/sheet/attribute-radar.test.tsx](../src/components/sheet/attribute-radar.test.tsx), [docs/attribute-instrument-validation.json](../docs/attribute-instrument-validation.json).
+Evidências: [src/components/sheet/attribute-radar.tsx](../src/components/sheet/attribute-radar.tsx), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [src/components/sheet/attribute-radar.test.tsx](../src/components/sheet/attribute-radar.test.tsx), [docs/attribute-instrument-validation.json](../docs/attribute-instrument-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/300), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40083897202), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40085253889).
 
 ## Decisões vigentes
 

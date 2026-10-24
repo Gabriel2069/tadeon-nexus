@@ -1,23 +1,23 @@
 {
   "version": 1,
   "checkedAt": "2026-10-24",
-  "runtimeReference": "4d553741b136b77d9d27ca419c4efad786580a2a",
+  "runtimeReference": "2068aee18164e3272a4e938a42b2f7f8b73260a7",
   "integration": {
-    "pr": 298,
-    "branch": "feat/nex-034-adaptive-dossier",
+    "pr": 300,
+    "branch": "feat/nex-035-attribute-instrument",
     "base": "main",
-    "baseCommit": "6adba01fcc0e8719ff9ce0c2a160e324c53be8c4",
-    "sourceCommit": "e9180d945d1de5de43110040fdccedd62f8a434c",
-    "headCommit": "e9180d945d1de5de43110040fdccedd62f8a434c",
+    "baseCommit": "ba073d59b72d95acf3b1454426b8528337a8cc9d",
+    "sourceCommit": "3d42601ad484222f1e15abb016603c445f68681e",
+    "headCommit": "3d42601ad484222f1e15abb016603c445f68681e",
     "state": "integrated",
-    "mergeCommit": "4d553741b136b77d9d27ca419c4efad786580a2a",
-    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40060516290",
-    "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40060516314",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40062046613",
+    "mergeCommit": "2068aee18164e3272a4e938a42b2f7f8b73260a7",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40083897263",
+    "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40083897202",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40085253941",
     "production": "confirmed",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40062046584",
-    "productionCommit": "4d553741b136b77d9d27ca419c4efad786580a2a",
-    "productionVerifiedAt": "2026-10-24T04:24:32.2049085Z",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40085253889",
+    "productionCommit": "2068aee18164e3272a4e938a42b2f7f8b73260a7",
+    "productionVerifiedAt": "2026-10-24T10:18:44.9941387Z",
     "productionHttpStatus": 200
   },
   "domains": [
@@ -1153,7 +1153,7 @@
       "id": "NEX-035",
       "title": "Atributos: instrumento vetorial leve e leitura acessível",
       "domain": "sheet",
-      "status": "validated",
+      "status": "integrated",
       "priority": 7,
       "dependsOn": [
         "NEX-034"
@@ -1169,9 +1169,12 @@
         "src/components/sheet/attribute-radar.tsx",
         "scripts/verify-sheet-design.mjs",
         "src/components/sheet/attribute-radar.test.tsx",
-        "docs/attribute-instrument-validation.json"
+        "docs/attribute-instrument-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/300",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40083897202",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40085253889"
       ],
-      "checkpoint": "Validado localmente sobre main ba073d5: 155 suítes/629 testes, audit zero, 16 vistas da Ficha/Forma de Poder em quatro larguras. Radar SVG com descrição de valores/amplitude e escala expandida para extremos; dados estáveis nas edições de outros campos. Build local: 285.866 bytes JS/85.494 bytes gzip a menos; chunk vendor-charts de 282.823 bytes deixa de ser gerado. Descendentes do SVG: 57→41. Não é medição de FPS/INP. Integração e publicação dependem dos gates do fonte."
+      "checkpoint": "Integrado pela PR #300, fonte 3d42601, merge 2068aee. Radar SVG na Ficha/Forma de Poder, valores/amplitude acessíveis, escala mínima 0–5 e dados estáveis nas outras edições. Build local: 285.866 bytes JS/85.494 bytes gzip a menos; vendor-charts deixa de ser gerado. SVG: 57→41 descendentes. Quality do fonte/main: 155 suítes/629 testes; audit zero. Visual final: 16 vistas do radar, oito vistas adaptáveis, dois fluxos completos, 28 vistas compartilhadas e 31 estados da Mesa. Capturas finais inspecionadas; HTTP 200/SHA exato em 2026-10-24T10:18:44.9941387Z. Não inferir FPS/INP ou autorização real; NEX-009/010/011 preservados. Fechamento documental confirma a própria publicação na PR correspondente."
     }
   ],
   "decisions": [
@@ -1926,6 +1929,24 @@
       "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40056793969",
       "productionCommit": "0b6513d0a75d8087179cf7c5b2a151e3e8f46aee",
       "productionVerifiedAt": "2026-10-24T03:07:00.6784920Z",
+      "productionHttpStatus": 200
+    },
+    {
+      "pr": 298,
+      "branch": "feat/nex-034-adaptive-dossier",
+      "base": "main",
+      "baseCommit": "6adba01fcc0e8719ff9ce0c2a160e324c53be8c4",
+      "sourceCommit": "e9180d945d1de5de43110040fdccedd62f8a434c",
+      "headCommit": "e9180d945d1de5de43110040fdccedd62f8a434c",
+      "state": "integrated",
+      "mergeCommit": "4d553741b136b77d9d27ca419c4efad786580a2a",
+      "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40060516290",
+      "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40060516314",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40062046613",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40062046584",
+      "productionCommit": "4d553741b136b77d9d27ca419c4efad786580a2a",
+      "productionVerifiedAt": "2026-10-24T04:24:32.2049085Z",
       "productionHttpStatus": 200
     }
   ]
