@@ -1404,3 +1404,12 @@ html body [data-slot="dialog-content"]:not([data-motion-surface]),
 .tadeon-page-header--studio .tadeon-page-header__eyebrow { margin-bottom: .15rem; font-size: .625rem; }
 .tadeon-page-header--studio .tadeon-page-header__actions { grid-column: 3; flex-wrap: nowrap; width: auto; }
 .tadeon-page-header--studio .tadeon-page-header__actions > [data-slot="button"] { flex: none; }
+
+/* The sheet opens as a working folio; its large identity never follows scrolling. */
+.tadeon-page-header[data-page-header="sheet"] .tadeon-page-header__main { padding: .85rem 1rem; gap: .65rem; }
+.tadeon-page-header[data-page-header="sheet"] .tadeon-page-header__title { font-size: clamp(1.5rem, 2.3vw, 2rem); }
+@media (max-width: 767px) {
+  .tadeon-page-header[data-page-header="sheet"] .tadeon-page-header__main { grid-template-columns: 2.25rem minmax(0, 1fr); padding: .65rem .75rem; gap: .5rem .65rem; }
+  .tadeon-page-header[data-page-header="sheet"] .tadeon-page-header__mark { width: 2.25rem; height: 2.25rem; }
+  .tadeon-page-header[data-page-header="sheet"] .tadeon-page-header__eyebrow { margin-bottom: .15rem; }
+}

@@ -914,14 +914,14 @@ function SheetPage() {
                 title="Equilíbrio"
                 className="tadeon-state-panel tadeon-equilibrium-panel"
                 extra={
-                  <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gradient-to-r from-amber-500/15 to-transparent border border-amber-500/40 shadow-[0_0_10px_-4px_rgba(245,158,11,0.7)]">
+                  <div className="tadeon-tension-control">
                     <span className="text-[10px] uppercase tracking-wider font-cinzel text-amber-300">
                       Tensão
                     </span>
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="h-6 w-6 p-0 text-amber-300"
+                      className="h-11 w-11 p-0 text-amber-300"
                       disabled={!canEdit}
                       aria-label="Diminuir tensão"
                       title="Diminuir tensão"
@@ -937,7 +937,7 @@ function SheetPage() {
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="h-6 w-6 p-0 text-amber-300"
+                      className="h-11 w-11 p-0 text-amber-300"
                       disabled={!canEdit}
                       aria-label="Aumentar tensão"
                       title="Aumentar tensão"
@@ -949,7 +949,7 @@ function SheetPage() {
                   </div>
                 }
               >
-                <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+                <div className="tadeon-state-reading tadeon-state-reading--equilibrium">
                   <span>-10</span>
                   <span className="font-bold text-foreground text-base">
                     {equilibrium > 0 ? `+${equilibrium}` : equilibrium}
@@ -977,13 +977,14 @@ function SheetPage() {
                     }}
                   />
                 </div>
-                <div className="flex items-center gap-3 mt-3">
+                <div className="tadeon-state-controls">
                   <Input
                     type="number"
                     min={role === "mestre" ? -10 : -5}
                     max={role === "mestre" ? 10 : 5}
                     disabled={!canEdit}
                     value={sheet.equilibrium}
+                    aria-label="Equilíbrio atual"
                     onChange={(e) =>
                       update(
                         "equilibrium",
@@ -1003,6 +1004,7 @@ function SheetPage() {
                     step={1}
                     disabled={!canEdit}
                     value={sheet.equilibrium}
+                    aria-label="Ajustar equilíbrio"
                     onChange={(e) =>
                       update(
                         "equilibrium",
@@ -1020,7 +1022,7 @@ function SheetPage() {
                   Faixa comum: −5 a +5. Valores além disso exigem fonte excepcional e ajuste do
                   mestre.
                 </p>
-                <div className="grid gap-2 sm:grid-cols-3 mt-3 rounded-lg border border-border/70 bg-secondary/25 p-3 text-xs">
+                <div className="tadeon-equilibrium-effects">
                   <div>
                     <span className="text-muted-foreground">Estado</span>
                     <p className="font-semibold text-foreground">{equilibriumEffect.state}</p>
@@ -1042,7 +1044,7 @@ function SheetPage() {
                 title="Exposição"
                 className="tadeon-state-panel tadeon-exposure-panel"
               >
-                <div className="flex items-baseline justify-between mb-1">
+                <div className="tadeon-state-reading">
                   <span className="text-xs text-muted-foreground">
                     Rank base: <strong className="text-foreground">{base.rank}</strong>
                   </span>
@@ -1064,7 +1066,7 @@ function SheetPage() {
                     />
                   ))}
                 </div>
-                <div className="flex items-center gap-3 mt-3">
+                <div className="tadeon-state-controls">
                   <Input
                     type="number"
                     min={0}
@@ -1072,6 +1074,7 @@ function SheetPage() {
                     step={5}
                     disabled={!canEdit}
                     value={sheet.exposure}
+                    aria-label="Exposição atual"
                     onChange={(e) =>
                       update("exposure", clamp(Math.round(Number(e.target.value) / 5) * 5, 0, 100))
                     }
@@ -1084,6 +1087,7 @@ function SheetPage() {
                     step={5}
                     disabled={!canEdit}
                     value={sheet.exposure}
+                    aria-label="Ajustar exposição"
                     onChange={(e) => update("exposure", Number(e.target.value))}
                     className="flex-1"
                   />
@@ -1670,8 +1674,7 @@ function SheetPage() {
                 <p className="tadeon-eyebrow">Arquivo narrativo</p>
                 <h2>Quem existe além dos números</h2>
                 <p>
-                  Registre passado, maneira de agir, desejos e detalhes de continuidade. Cada campo
-                  permanece livre, mas agora oferece uma direção clara para escrever.
+                  Passado, presença e desejos da personagem. Escreva livremente em cada registro.
                 </p>
               </div>
               <div className="tadeon-description-hero__progress">
@@ -1756,7 +1759,7 @@ function SheetPage() {
                           [key]: event.target.value,
                         })
                       }
-                      rows={8}
+                      rows={6}
                       placeholder={placeholder}
                     />
                   </Card>

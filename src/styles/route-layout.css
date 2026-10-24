@@ -2196,11 +2196,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 
 .tadeon-attributes-panel .tadeon-attribute-radar {
   isolation: isolate;
-  width: min(100%, 38rem) !important;
-  max-width: 38rem !important;
-  height: clamp(15.5rem, 30vw, 19rem) !important;
-  margin-top: .25rem !important;
-  padding: .75rem !important;
   overflow: hidden;
   border: 1px solid rgb(168 85 247 / 15%);
   border-radius: 1.15rem .42rem 1.15rem .42rem;
@@ -2320,10 +2315,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 }
 
 @media (max-width: 640px) {
-  .tadeon-attributes-panel .tadeon-attribute-radar {
-    height: 15.5rem !important;
-    padding: .45rem !important;
-  }
 
   #sec-inv .tadeon-inventory-organize-button {
     width: 2.75rem;

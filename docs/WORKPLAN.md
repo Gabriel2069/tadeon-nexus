@@ -43,6 +43,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-031 | Mesa espacial: composição, conjuntos e edição 3D | Integrado | 7 | tabletop | NEX-030 |
 | NEX-032 | Mesa: acabamento dos instrumentos, dobras e seleção | Integrado | 7 | tabletop | NEX-031 |
 | NEX-033 | Fluidez: presença e movimento dos menus compartilhados | Integrado | 7 | popup | NEX-032 |
+| NEX-034 | Ficha e celular: hierarquia, instrumentos e composição adaptável | Em andamento | 7 | sheet | NEX-033 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -323,6 +324,16 @@ Evidências: [docs/tabletop-finishing-validation.json](../docs/tabletop-finishin
 
 Evidências: [docs/shared-motion-validation.json](../docs/shared-motion-validation.json), [scripts/verify-shared-motion.mjs](../scripts/verify-shared-motion.mjs), [docs/DESIGN.md](../docs/DESIGN.md), [src/components/ui/select-presence.test.tsx](../src/components/ui/select-presence.test.tsx), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/296), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40055704967), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40056793969).
 
+## NEX-034 — Ficha e celular: hierarquia, instrumentos e composição adaptável
+
+- Retirar o cabeçalho grande fixo da Ficha e reduzir seu volume sem perder ações e estado de gravação.
+- Reorganizar Identidade e vínculos, Atributos, Equilíbrio e Exposição com títulos íntegros, leitura clara e alvos estáveis.
+- Conferir Ficha, Maestria, História e demais áreas em 320/390/820/1440; usar colunas somente quando conteúdo e controles couberem.
+- Preservar cálculos, dados, permissões, autosave, botões aprovados, portais e rodas circulares.
+- Validar comparação renderizada, fluxos editáveis/somente leitura, foco, movimento reduzido, check e audit; publicar após gates.
+
+Evidências: [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs).
+
 ## Decisões vigentes
 
 | ID | Decisão | Motivo |
@@ -346,3 +357,4 @@ Evidências: [docs/shared-motion-validation.json](../docs/shared-motion-validati
 | DEC-017 | Restaurar a roda de opções do Mais no dock inferior; personalidade e continuidade devem coexistir entre páginas. | Pedido explícito de Tadeu ao fechar NEX-026, em 19/10/2026. Substitui a apresentação em lista de NEX-016, preservando o componente React/Radix, os destinos estáveis e a dispensa acessível. Cabeçalhos, margens, materiais e movimentos compartilham regras; símbolos e instrumentos mantêm sua autoria. |
 | DEC-018 | Recompor o celular por função; retirar o cabeçalho adicional do Dashboard e adotar Alegreya Sans na interface, mantendo Cormorant Garamond editorial e PT Mono documental. | Pedido explícito de Tadeu em 19/10/2026: reduzir cards e rolagem, evitar aparência Arial/ABNT, seleção viajante e atmosfera de tecido. Dashboard é uma exceção deliberada à aplicação universal de PageHeader em DEC-016; a arte aprovada continua sendo sua abertura. Os nomes --font-inter e --font-cinzel são aliases compatíveis, não fontes adicionais. |
 | DEC-019 | A Mesa usa PageHeader em faixa operacional compacta e uma barra de visão junto ao tabuleiro. | Pedido explícito de aprimoramento da Mesa: reduzir a abertura, dar espaço ao mapa e tornar câmera, encaixe e composição acessíveis. A anatomia e as fontes continuam compartilhadas; a geometria do cabeçalho permanece em page-hero-parity.css. |
+| DEC-020 | O cabeçalho grande da Ficha rola com o dossiê em todas as larguras; instrumentos usam hierarquia adaptável pela largura do cartão. | Pedido explícito de Tadeu para retirar o topo fixo exagerado, melhorar celulares e reorganizar Identidade/vínculos, Atributos, Equilíbrio e Exposição. PageHeader preserva anatomia compartilhada; controles e regras permanecem estáveis. |

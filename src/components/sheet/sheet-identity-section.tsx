@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { BrandMark } from "@/components/brand-mark";
@@ -81,6 +80,7 @@ export function SheetIdentitySection({
           disabled={!canEdit}
         />
         <Field
+          className="tadeon-identity-field--occupation"
           label="Ocupação"
           value={sheet.occupation}
           onChange={(v) => update("occupation", v)}
@@ -261,11 +261,18 @@ export function SheetIdentitySection({
               <CollapsibleContent id={linksId}>
                 <div className="tadeon-link-list">
                   {sheet.identity_data.links.map((link, index) => (
-                    <div key={link.id} className="tadeon-link-row">
+                    <div
+                      key={link.id}
+                      className="tadeon-link-row"
+                      role="group"
+                      aria-label={`Vínculo ${index + 1}`}
+                      data-link-state={link.state}
+                    >
                       <span className="tadeon-link-row__number" aria-hidden="true">
                         {String(index + 1).padStart(2, "0")}
                       </span>
-                      <Input
+                      <Textarea
+                        rows={2}
                         className="tadeon-link-row__name tadeon-dossier-field"
                         disabled={!canEdit}
                         value={link.name}
@@ -283,7 +290,8 @@ export function SheetIdentitySection({
                           });
                         }}
                       />
-                      <Input
+                      <Textarea
+                        rows={2}
                         className="tadeon-link-row__relation tadeon-dossier-field"
                         disabled={!canEdit}
                         value={link.relation}

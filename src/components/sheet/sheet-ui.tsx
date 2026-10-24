@@ -128,24 +128,22 @@ export function Section({
               </h2>
             </span>
           </div>
-          <div className="tadeon-sheet-section__actions">
-            {extra}
-            <CollapsibleTrigger asChild>
-              <button
-                type="button"
-                data-sheet-fold-trigger=""
-                data-material-surface="control"
-                className="tadeon-sheet-section__toggle"
-                aria-controls={bodyId}
-                aria-label={`${collapsed ? "Expandir" : "Recolher"} seção ${title}`}
-                title={`${collapsed ? "Expandir" : "Recolher"} ${title}`}
-              >
-                <span className="tadeon-sheet-fold-chevron">
-                  <ChevronDown aria-hidden="true" />
-                </span>
-              </button>
-            </CollapsibleTrigger>
-          </div>
+          {extra && <div className="tadeon-sheet-section__actions">{extra}</div>}
+          <CollapsibleTrigger asChild>
+            <button
+              type="button"
+              data-sheet-fold-trigger=""
+              data-material-surface="control"
+              className="tadeon-sheet-section__toggle"
+              aria-controls={bodyId}
+              aria-label={`${collapsed ? "Expandir" : "Recolher"} seção ${title}`}
+              title={`${collapsed ? "Expandir" : "Recolher"} ${title}`}
+            >
+              <span className="tadeon-sheet-fold-chevron">
+                <ChevronDown aria-hidden="true" />
+              </span>
+            </button>
+          </CollapsibleTrigger>
         </div>
         <CollapsibleContent id={bodyId} className="tadeon-sheet-section__body">
           <div className="tadeon-sheet-section__body-inner">{children}</div>

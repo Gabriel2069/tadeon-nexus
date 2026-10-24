@@ -54,7 +54,7 @@
         "src/styles/button.css",
         "src/styles/hero-backgrounds.css"
       ],
-      "boundary": "Cabeçalhos renderizam símbolos; geometria de Área em foco pertence a page-hero-parity.css. Gatilho Mais e símbolos pertencem ao render; Radix mantém foco/teclado/colisão, sem captura global. Reflexos pertencem a useMaterialLight e à superfície React; o diretor legado não injeta luz nessas superfícies. Material de navegação pertence a navigation-layout; fundos de trama pertencem a experience-surfaces. Movimento da navegação consolidado em navigation-layout; mobile-more-radial é o proprietário da roda de opções do Mais: três destinos orbitais e fechamento central, sem rotação contínua; Radix mantém foco, colisão e dispensa. DEC-017 substitui a apresentação em lista de NEX-016 por pedido explícito de Tadeu. Card é dono da reflexão local; campos usam um plano rebaixado sem escritores legados. Tokens de relevo/flutuação pertencem a styles.css; AppLayout fornece o tom por contexto React (MaterialToneContext em use-material-light), preservado nos portais. NEX-026: PageHeader é o render único da anatomia de cabeçalhos principais e do acervo. Geometria em page-hero-parity, material em hero-backgrounds; envelope data-page-layout em desktop-shell. A barra da Ficha conserva somente sua extensão sticky no módulo da ficha. WorkspaceActions concentra Nova janela e Salvar sessão, renderizados nos slots das rotas; nenhum portal descobre títulos ou injeta ações nos cabeçalhos."
+      "boundary": "Cabeçalhos renderizam símbolos; geometria de Área em foco pertence a page-hero-parity.css. Gatilho Mais e símbolos pertencem ao render; Radix mantém foco/teclado/colisão, sem captura global. Reflexos pertencem a useMaterialLight e à superfície React; o diretor legado não injeta luz nessas superfícies. Material de navegação pertence a navigation-layout; fundos de trama pertencem a experience-surfaces. Movimento da navegação consolidado em navigation-layout; mobile-more-radial é o proprietário da roda de opções do Mais: três destinos orbitais e fechamento central, sem rotação contínua; Radix mantém foco, colisão e dispensa. DEC-017 substitui a apresentação em lista de NEX-016 por pedido explícito de Tadeu. Card é dono da reflexão local; campos usam um plano rebaixado sem escritores legados. Tokens de relevo/flutuação pertencem a styles.css; AppLayout fornece o tom por contexto React (MaterialToneContext em use-material-light), preservado nos portais. NEX-026: PageHeader é o render único da anatomia de cabeçalhos principais e do acervo. Geometria em page-hero-parity, material em hero-backgrounds; envelope data-page-layout em desktop-shell. A identidade da Ficha rola com o dossiê (DEC-020); posição pertence ao módulo da ficha. WorkspaceActions concentra Nova janela e Salvar sessão, renderizados nos slots das rotas; nenhum portal descobre títulos ou injeta ações nos cabeçalhos."
     },
     {
       "id": "popup",
@@ -112,7 +112,7 @@
         "src/styles/sheet-premium.css",
         "src/styles/sheet-experience.css"
       ],
-      "boundary": "Rota mantém estado, regras derivadas, leitura cancelável e autosave por personagem/usuário/cargo. Seções recebem valores/callbacks; não criam estado persistido paralelo. Sheet UI mantém rótulos, recolhimento e material; sheet-premium é dono do material. Histórico/inventário montados explicitamente na ficha, sem observer de montagem; o arquivo de experiência ainda conserva bridges de outras áreas. NEX-025: vínculos recolhem no componente; títulos recebem foco para revelar seções. Dossiê em sheet-premium, densidade do modo Jogo em sheet-layout; índice sem captura global. useSheetChrome mede somente os dois cabeçalhos conhecidos do shell e a barra local, com observer e listener desmontados; publica offsets apenas no host da ficha."
+      "boundary": "Rota mantém estado, regras derivadas, leitura cancelável e autosave por personagem/usuário/cargo. Seções recebem valores/callbacks; não criam estado persistido paralelo. Sheet UI mantém rótulos, recolhimento e material; sheet-premium é dono do material. Histórico/inventário montados explicitamente na ficha, sem observer de montagem; o arquivo de experiência ainda conserva bridges de outras áreas. NEX-025: vínculos recolhem no componente; títulos recebem foco para revelar seções. Dossiê em sheet-premium, densidade do modo Jogo em sheet-layout; índice sem captura global. useSheetChrome mede somente os dois cabeçalhos conhecidos do shell e a barra local, com observer e listener desmontados; publica offsets apenas no host da ficha. NEX-034/DEC-020: identidade relativa e compacta, títulos/ações com fluxo próprio, instrumentos por largura real do cartão e vínculos multilinha. Nenhuma mudança em regras ou persistência."
     },
     {
       "id": "knowledge",
@@ -1122,6 +1122,27 @@
         "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40056793969"
       ],
       "checkpoint": "Integrado pela PR #296, fonte 153e0ff, merge 0b6513d. Quality do HEAD/main aprovados: 154 suítes/625 testes. Comparação em 320/390/820/1440: 12 eventos de scroll, leituras 72→0 sem pop-up e 72→12 com um aberto. Sem backdrop ou scroll lock retido após cinco trocas de preferência por largura; foco, reabertura, clique móvel e rodas preservados. Visual inclui 31 estados da Mesa e duas vistas editáveis da Ficha; capturas do fonte final inspecionadas. Zod e dependências transitivas corrigidos sem downgrade forçado; auditoria completa zerada. HTTP 200/SHA exato em 2026-10-24T03:07:00.6784920Z. NEX-009/010/011 preservam hardware físico, autorização e restauração. Fechamento documental confirma sua própria publicação na PR correspondente."
+    },
+    {
+      "id": "NEX-034",
+      "title": "Ficha e celular: hierarquia, instrumentos e composição adaptável",
+      "domain": "sheet",
+      "status": "active",
+      "priority": 7,
+      "dependsOn": [
+        "NEX-033"
+      ],
+      "acceptance": [
+        "Retirar o cabeçalho grande fixo da Ficha e reduzir seu volume sem perder ações e estado de gravação.",
+        "Reorganizar Identidade e vínculos, Atributos, Equilíbrio e Exposição com títulos íntegros, leitura clara e alvos estáveis.",
+        "Conferir Ficha, Maestria, História e demais áreas em 320/390/820/1440; usar colunas somente quando conteúdo e controles couberem.",
+        "Preservar cálculos, dados, permissões, autosave, botões aprovados, portais e rodas circulares.",
+        "Validar comparação renderizada, fluxos editáveis/somente leitura, foco, movimento reduzido, check e audit; publicar após gates."
+      ],
+      "evidence": [
+        "scripts/verify-sheet-design.mjs"
+      ],
+      "checkpoint": "Implementação concluída sobre main 6adba01: cabeçalho relativo/compacto, títulos e ações sem compressão, vínculos multilinha, instrumentos rotulados e grades adaptáveis. 154 suítes/625 testes aprovados; fluxos completos em 320/1440 passaram com edição, autosave, portais, teclado e modo Jogo. Conferência visual final em andamento; publicação depende dos gates do fonte."
     }
   ],
   "decisions": [
@@ -1253,6 +1274,11 @@
       "id": "DEC-019",
       "decision": "A Mesa usa PageHeader em faixa operacional compacta e uma barra de visão junto ao tabuleiro.",
       "reason": "Pedido explícito de aprimoramento da Mesa: reduzir a abertura, dar espaço ao mapa e tornar câmera, encaixe e composição acessíveis. A anatomia e as fontes continuam compartilhadas; a geometria do cabeçalho permanece em page-hero-parity.css."
+    },
+    {
+      "id": "DEC-020",
+      "decision": "O cabeçalho grande da Ficha rola com o dossiê em todas as larguras; instrumentos usam hierarquia adaptável pela largura do cartão.",
+      "reason": "Pedido explícito de Tadeu para retirar o topo fixo exagerado, melhorar celulares e reorganizar Identidade/vínculos, Atributos, Equilíbrio e Exposição. PageHeader preserva anatomia compartilhada; controles e regras permanecem estáveis."
     }
   ],
   "bridges": [

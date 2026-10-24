@@ -59,7 +59,7 @@ export function SheetAttributesSection({
           Reduza Atributos para voltar à faixa válida.
         </p>
       )}
-      <div className="space-y-4">
+      <div className="tadeon-attributes-composition">
         <div
           className="tadeon-attribute-grid grid grid-cols-2 gap-2 sm:grid-cols-3"
           role="group"
@@ -122,12 +122,12 @@ export function SheetAttributesSection({
               </div>
             );
           })}
+          <p className="tadeon-attribute-remaining">
+            {attributeRemaining > 0
+              ? `${attributeRemaining} ponto(s) ainda disponível(is).`
+              : "Orçamento do Rank totalmente distribuído."}
+          </p>
         </div>
-        <p className="text-center text-[10px] leading-relaxed text-muted-foreground">
-          {attributeRemaining > 0
-            ? `${attributeRemaining} ponto(s) ainda disponível(is).`
-            : "Orçamento do Rank totalmente distribuído."}
-        </p>
         <div className="tadeon-attribute-radar h-36 sm:h-52">
           <Suspense
             fallback={<Loader2 className="w-6 h-6 animate-spin text-primary mx-auto mt-20" />}
