@@ -1,13 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { lazy, Suspense } from "react";
 
 import { type Attributes } from "@/lib/sheet-types";
-import { Loader2, Minus, Plus } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
 
 import { type SheetUpdate } from "./sheet-model";
 import { Section } from "./sheet-ui";
 
-const AttributeRadar = lazy(() => import("./attribute-radar"));
+import AttributeRadar from "./attribute-radar";
 export function SheetAttributesSection({
   attrs,
   canEdit,
@@ -129,11 +128,7 @@ export function SheetAttributesSection({
           </p>
         </div>
         <div className="tadeon-attribute-radar h-36 sm:h-52">
-          <Suspense
-            fallback={<Loader2 className="w-6 h-6 animate-spin text-primary mx-auto mt-20" />}
-          >
-            <AttributeRadar data={radarData} color="#a855f7" tickColor="#c084fc" />
-          </Suspense>
+          <AttributeRadar data={radarData} color="#a855f7" tickColor="#c084fc" />
         </div>
       </div>
     </Section>

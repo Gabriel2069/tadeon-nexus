@@ -475,13 +475,14 @@ function SheetPage() {
     );
   };
 
-  const radarData = useMemo(() => {
-    if (!sheet) return [];
-    return (Object.keys(sheet.attributes) as (keyof Attributes)[]).map((k) => ({
-      attr: k,
-      value: sheet.attributes[k],
-    }));
-  }, [sheet]);
+  const radarAttributes = sheet?.attributes;
+  const radarData = useMemo(
+    () =>
+      radarAttributes
+        ? Object.entries(radarAttributes).map(([attr, value]) => ({ attr, value }))
+        : [],
+    [radarAttributes],
+  );
 
   // Active conditions for colored border
   const activeConditions = useMemo(() => {

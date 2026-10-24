@@ -284,3 +284,9 @@ Na revalidação do gate, novos avisos atingiram as ferramentas transitivas. For
 DEC-020 retira a antiga extensão sticky da identidade da Ficha. A geometria compacta continua em `page-hero-parity.css`; `sheet-premium.css` declara posição relativa, organiza título/recolhimento/ações e concentra a geometria do radar. Declarações concorrentes de tamanho do radar foram retiradas de `route-layout.css` e `sheet-experience.css`. O antigo fundo de estado em `sheet-layout.css` e a altura de inputs de estado em `interface-layout.css` deixaram de disputar os proprietários. Os tetos CSS foram reduzidos.
 
 `Section` mantém as ações em um contêiner flexível próprio e o botão de recolher na linha do título. Não aplicar `display: contents` às ações: extras podem conter fragmentos com vários gatilhos, que precisam de fluxo próprio para evitar sobreposição. A largura do cartão determina a apresentação lado a lado. Estado/dados/autosave continuam sob a rota; os novos agrupamentos não criam persistência paralela.
+
+## Instrumento vetorial de atributos — NEX-035
+
+`sheet/attribute-radar.tsx` passa a ser SVG local, compartilhado pela Ficha e Forma de Poder, com escala mínima 0–5 e domínio ampliado para extremos. O cartão controla dimensões; o radar não precisa de ResizeObserver, Suspense ou Recharts. Os consumidores mantêm os dados estáveis enquanto outros campos mudam. O componente é memoizado; controles de edição, autorização, cálculos e gravação continuam nas rotas.
+
+A dependência Recharts continua disponível para o primitivo genérico de gráficos; removê-la de um radar não autoriza uma migração global desse primitivo. A retirada de código do cliente deve ser comprovada pelo build, sem inferir latência/FPS do tamanho de um pacote.

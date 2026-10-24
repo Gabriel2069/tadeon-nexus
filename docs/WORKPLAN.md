@@ -44,6 +44,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-032 | Mesa: acabamento dos instrumentos, dobras e seleção | Integrado | 7 | tabletop | NEX-031 |
 | NEX-033 | Fluidez: presença e movimento dos menus compartilhados | Integrado | 7 | popup | NEX-032 |
 | NEX-034 | Ficha e celular: hierarquia, instrumentos e composição adaptável | Integrado | 7 | sheet | NEX-033 |
+| NEX-035 | Atributos: instrumento vetorial leve e leitura acessível | Validado na branch | 7 | sheet | NEX-034 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -333,6 +334,16 @@ Evidências: [docs/shared-motion-validation.json](../docs/shared-motion-validati
 - Validar comparação renderizada, fluxos editáveis/somente leitura, foco, movimento reduzido, check e audit; publicar após gates.
 
 Evidências: [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [docs/adaptive-layout-validation.json](../docs/adaptive-layout-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/298), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40060516314), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40062046584).
+
+## NEX-035 — Atributos: instrumento vetorial leve e leitura acessível
+
+- Substituir a infraestrutura de gráfico do radar por SVG local, preservando valores, cores e escala mínima de 0 a 5.
+- Conservar valores excepcionais dentro da escala visível e fornecer descrição acessível dos atributos.
+- Evitar atualizar dados do radar quando apenas outros campos mudam; aplicar à Ficha e Forma de Poder.
+- Comparar bytes de build e estrutura renderizada com o mesmo cenário, sem inferir FPS/INP físicos.
+- Conferir quatro larguras, edição, leitura, portais e movimento reduzido; publicar após check, audit e gates.
+
+Evidências: [src/components/sheet/attribute-radar.tsx](../src/components/sheet/attribute-radar.tsx), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [src/components/sheet/attribute-radar.test.tsx](../src/components/sheet/attribute-radar.test.tsx), [docs/attribute-instrument-validation.json](../docs/attribute-instrument-validation.json).
 
 ## Decisões vigentes
 

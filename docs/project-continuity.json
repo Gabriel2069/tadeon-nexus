@@ -105,14 +105,15 @@
         "src/components/sheet/sheet-skills-section.tsx",
         "src/components/sheet/sheet-experience-bridge.tsx",
         "src/components/sheet/sheet-inventory-organizer.tsx",
-        "src/components/sheet/use-sheet-chrome.ts"
+        "src/components/sheet/use-sheet-chrome.ts",
+        "src/components/sheet/attribute-radar.tsx"
       ],
       "styles": [
         "src/styles/sheet-layout.css",
         "src/styles/sheet-premium.css",
         "src/styles/sheet-experience.css"
       ],
-      "boundary": "Rota mantém estado, regras derivadas, leitura cancelável e autosave por personagem/usuário/cargo. Seções recebem valores/callbacks; não criam estado persistido paralelo. Sheet UI mantém rótulos, recolhimento e material; sheet-premium é dono do material. Histórico/inventário montados explicitamente na ficha, sem observer de montagem; o arquivo de experiência ainda conserva bridges de outras áreas. NEX-025: vínculos recolhem no componente; títulos recebem foco para revelar seções. Dossiê em sheet-premium, densidade do modo Jogo em sheet-layout; índice sem captura global. useSheetChrome mede somente os dois cabeçalhos conhecidos do shell e a barra local, com observer e listener desmontados; publica offsets apenas no host da ficha. NEX-034/DEC-020: identidade relativa e compacta, títulos/ações com fluxo próprio, instrumentos por largura real do cartão e vínculos multilinha. Nenhuma mudança em regras ou persistência."
+      "boundary": "Rota mantém estado, regras derivadas, leitura cancelável e autosave por personagem/usuário/cargo. Seções recebem valores/callbacks; não criam estado persistido paralelo. Sheet UI mantém rótulos, recolhimento e material; sheet-premium é dono do material. Histórico/inventário montados explicitamente na ficha, sem observer de montagem; o arquivo de experiência ainda conserva bridges de outras áreas. NEX-025: vínculos recolhem no componente; títulos recebem foco para revelar seções. Dossiê em sheet-premium, densidade do modo Jogo em sheet-layout; índice sem captura global. useSheetChrome mede somente os dois cabeçalhos conhecidos do shell e a barra local, com observer e listener desmontados; publica offsets apenas no host da ficha. NEX-034/DEC-020: identidade relativa e compacta, títulos/ações com fluxo próprio, instrumentos por largura real do cartão e vínculos multilinha. Nenhuma mudança em regras ou persistência. NEX-035: radar SVG local, compartilhado pela Ficha e Forma de Poder; dados dependem somente de atributos e não mantêm observação de tamanho própria."
     },
     {
       "id": "knowledge",
@@ -1147,6 +1148,30 @@
         "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40062046584"
       ],
       "checkpoint": "Integrado pela PR #298, fonte e9180d9, merge 4d55374. Ficha com cabeçalho relativo/compacto, títulos íntegros e ações sem sobreposição, vínculos multilinha e estado legível, radar menor e instrumentos rotulados. Quality do fonte/main: 154 suítes/625 testes; audit zero. Oito vistas da Ficha com três abas em 320/390/820/1440, dois fluxos completos, 28 vistas compartilhadas e 31 estados da Mesa aprovados; nove estados locais das utilidades e 40 estados das abas/fluxos do Mestre. Capturas do fonte final inspecionadas; rótulos Presente/Tensionado verificados por geometria. HTTP 200/SHA exato em 2026-10-24T04:24:32.2049085Z. NEX-009/010/011 preservam hardware físico, contas reais e restauração. Fechamento documental confirma sua própria publicação na PR correspondente."
+    },
+    {
+      "id": "NEX-035",
+      "title": "Atributos: instrumento vetorial leve e leitura acessível",
+      "domain": "sheet",
+      "status": "validated",
+      "priority": 7,
+      "dependsOn": [
+        "NEX-034"
+      ],
+      "acceptance": [
+        "Substituir a infraestrutura de gráfico do radar por SVG local, preservando valores, cores e escala mínima de 0 a 5.",
+        "Conservar valores excepcionais dentro da escala visível e fornecer descrição acessível dos atributos.",
+        "Evitar atualizar dados do radar quando apenas outros campos mudam; aplicar à Ficha e Forma de Poder.",
+        "Comparar bytes de build e estrutura renderizada com o mesmo cenário, sem inferir FPS/INP físicos.",
+        "Conferir quatro larguras, edição, leitura, portais e movimento reduzido; publicar após check, audit e gates."
+      ],
+      "evidence": [
+        "src/components/sheet/attribute-radar.tsx",
+        "scripts/verify-sheet-design.mjs",
+        "src/components/sheet/attribute-radar.test.tsx",
+        "docs/attribute-instrument-validation.json"
+      ],
+      "checkpoint": "Validado localmente sobre main ba073d5: 155 suítes/629 testes, audit zero, 16 vistas da Ficha/Forma de Poder em quatro larguras. Radar SVG com descrição de valores/amplitude e escala expandida para extremos; dados estáveis nas edições de outros campos. Build local: 285.866 bytes JS/85.494 bytes gzip a menos; chunk vendor-charts de 282.823 bytes deixa de ser gerado. Descendentes do SVG: 57→41. Não é medição de FPS/INP. Integração e publicação dependem dos gates do fonte."
     }
   ],
   "decisions": [
@@ -1542,6 +1567,10 @@
     {
       "path": "docs/adaptive-layout-validation.json",
       "purpose": "NEX-034: composição adaptável da Ficha e celular, regressão do estado dos vínculos, gates e publicação confirmada."
+    },
+    {
+      "path": "docs/attribute-instrument-validation.json",
+      "purpose": "NEX-035: comparação de build, radar SVG, estados da Ficha/Forma de Poder e publicação."
     }
   ],
   "integrationHistory": [
