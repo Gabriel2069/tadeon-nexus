@@ -61,3 +61,4 @@ Comece pelo [estado de continuidade](ai/00_ESTADO_ATUAL.md), [mapa do código](P
 | [adaptive-layout-validation.json](adaptive-layout-validation.json) | NEX-034: composição adaptável da Ficha e celular, regressão do estado dos vínculos, gates e publicação confirmada. |
 | [attribute-instrument-validation.json](attribute-instrument-validation.json) | NEX-035: comparação de build, radar SVG, estados da Ficha/Forma de Poder e publicação. |
 | [sheet-register-validation.json](sheet-register-validation.json) | Evidência de composição adaptável de Identidade, Vínculos, Equilíbrio e Exposição; NEX-036. |
+| [equilibrium-axis-validation.json](equilibrium-axis-validation.json) | NEX-037: tamanho físico do radar, eixo conceitual de Equilíbrio, tensão direcional, gates e publicação. |

@@ -268,9 +268,10 @@
 .tadeon-attribute-radar {
   position: relative;
   margin-inline: auto;
-  width: 100%;
-  height: 12rem;
-  padding: .5rem;
+  width: min(100%, 26rem);
+  height: auto;
+  aspect-ratio: 1;
+  padding: 0;
 }
 
 .tadeon-attribute-radar::before {
@@ -2045,23 +2046,14 @@
 .tadeon-identity-narrative__trigger small { display: block; color: var(--muted-foreground); font-size: .75rem; font-weight: 400; }
 
 /* Compact state instruments: stable readouts, 44px controls, quieter contact relief. */
-.tadeon-tension-control { display: grid; grid-template-columns: auto 44px minmax(2rem, 1fr) 44px auto; align-items: center; gap: .25rem; padding: .25rem .5rem; border: 1px solid rgb(245 158 11 / 25%); border-radius: .85rem; background: #10161d; }
 .tadeon-sheet-page .tadeon-tension-control button { min-width: 44px; min-height: 44px; }
 .tadeon-state-reading { display: flex; align-items: baseline; justify-content: space-between; gap: .75rem; margin-bottom: .6rem; color: var(--muted-foreground); font-size: .875rem; }
 .tadeon-state-reading > :last-child { color: var(--foreground); font: 500 1.8rem/1.2 var(--font-inter); font-variant-numeric: tabular-nums; }
-.tadeon-state-reading--equilibrium > :nth-child(2) { color: var(--foreground); font: 500 1.8rem/1.2 var(--font-inter); font-variant-numeric: tabular-nums; }
 
 .tadeon-state-controls { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); align-items: center; gap: .75rem; margin-top: .75rem; }
 .tadeon-state-controls :is(input[type="number"], input[type="range"]) { width: 100%; min-width: 0; min-height: 44px; font-size: 1rem; }
-.tadeon-equilibrium-effects { display: grid; grid-template-columns: minmax(0, 1fr); gap: .65rem; margin-top: 1rem; padding: .75rem; border: 1px solid rgb(233 227 213 / 12%); border-radius: .85rem; background: #10161d; font: 400 .875rem/1.5 var(--font-inter); }
-.tadeon-equilibrium-effects > div { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: .5rem; }
-.tadeon-equilibrium-effects > div + div { padding-top: .5rem; border-top: 1px solid rgb(233 227 213 / 10%); }
-.tadeon-equilibrium-effects span { display: block; margin: 0; color: var(--muted-foreground); font-size: .75rem; }
 .tadeon-attributes-composition { display: grid; gap: .85rem; align-items: center; }
 .tadeon-attribute-remaining { display: grid; place-items: center; align-content: center; padding: .75rem; min-height: 6rem; text-align: center; color: var(--muted-foreground); font: 400 .8125rem/1.5 var(--font-inter); }
-@container (min-width: 600px) {
-  .tadeon-attributes-composition { grid-template-columns: minmax(0, 1fr) minmax(9rem, .7fr); }
-}
 
 .tadeon-link-row { container-type: inline-size; }
 @container (min-width: 20rem) {
@@ -2079,18 +2071,11 @@
 /* State instruments expose current readings before adjustment and derived context. */
 .tadeon-state-label { display: block; margin-bottom: .25rem; color: var(--muted-foreground); font: 500 .75rem/1.5 var(--font-inter); }
 .tadeon-state-unit { margin-left: .15rem; font-size: 1rem; }
-.tadeon-state-scale { display: flex; justify-content: space-between; gap: .5rem; margin-top: .4rem; color: var(--muted-foreground); font: 400 .75rem/1.4 var(--font-inter); }
-.tadeon-state-scale > :last-child { text-align: right; }
-.tadeon-tension-register { display: grid; gap: .6rem; margin-top: 1rem; padding-top: .75rem; border-top: 1px solid rgb(233 227 213 / 12%); }
-.tadeon-tension-register p, .tadeon-state-note { color: var(--muted-foreground); font: 400 .8125rem/1.5 var(--font-inter); }
 .tadeon-exposure-derived { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; margin-top: 1rem; }
 .tadeon-exposure-derived > div { min-width: 0; padding: .65rem .75rem; border-left: 1px solid rgb(239 68 68 / 35%); background: linear-gradient(110deg, rgb(239 68 68 / 5%), transparent); }
 .tadeon-exposure-derived dt { color: var(--muted-foreground); font: 400 .8125rem/1.4 var(--font-inter); }
 .tadeon-exposure-derived dd { margin-top: .25rem; color: var(--foreground); font: 500 1.5rem/1.2 var(--font-inter); font-variant-numeric: tabular-nums; }
-.tadeon-state-note { margin-top: .65rem; }
-@container (min-width: 500px) {
-  .tadeon-tension-register { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
-}
+.tadeon-state-note { margin-top: .65rem; color: var(--muted-foreground); font: 400 .8125rem/1.5 var(--font-inter); }
 
 @container (min-width: 650px) {
   .tadeon-identity-foundation { grid-template-columns: repeat(4, minmax(0, 1fr)); }
@@ -2099,4 +2084,55 @@
 }
 @container (min-width: 800px) {
   .tadeon-identity-register { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); }
+}
+
+/* Equilibrium is a relation between poles; tension is the accumulation that moves it. */
+.tadeon-equilibrium-instrument { --equilibrium-rgb: 233 227 213; }
+.tadeon-equilibrium-instrument[data-equilibrium-pole="fear"] { --equilibrium-rgb: 248 113 113; }
+.tadeon-equilibrium-instrument[data-equilibrium-pole="knowledge"] { --equilibrium-rgb: 217 215 164; }
+.tadeon-equilibrium-reading { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .75rem; }
+.tadeon-equilibrium-reading h3 { color: var(--foreground); font: 600 clamp(1.5rem, 2.5vw, 2rem)/1.15 var(--font-cinzel); overflow-wrap: anywhere; }
+.tadeon-equilibrium-value { display: grid; min-width: 3.25rem; min-height: 3.25rem; padding: .35rem; place-items: center; color: rgb(var(--equilibrium-rgb)); border: 1px solid rgb(var(--equilibrium-rgb) / 30%); border-radius: 50%; background: radial-gradient(ellipse at 35% 0, rgb(var(--equilibrium-rgb) / 10%), transparent 65%), #10161d; box-shadow: inset 0 1px rgb(233 227 213 / 9%), 0 5px 12px -8px #000; font: 500 1.8rem/1 var(--font-cinzel); font-variant-numeric: tabular-nums; }
+.tadeon-equilibrium-exception { display: inline-block; margin-top: .4rem; color: rgb(var(--equilibrium-rgb)); font: 400 .75rem/1.4 var(--font-inter); }
+.tadeon-equilibrium-axis { margin-top: 1.2rem; }
+.tadeon-equilibrium-poles { display: flex; align-items: baseline; justify-content: space-between; gap: .5rem; color: var(--foreground); font: 600 1.15rem/1.2 var(--font-cinzel); }
+.tadeon-equilibrium-poles > :first-child { color: #fca5a5; }
+.tadeon-equilibrium-poles > :last-child { color: #d9d7a4; text-align: right; }
+.tadeon-equilibrium-poles small { color: var(--muted-foreground); font: 400 .75rem/1.4 var(--font-inter); }
+.tadeon-equilibrium-gauge { position: relative; display: flex; justify-content: space-between; align-items: center; height: 3rem; margin-top: .35rem; padding-inline: .5rem; border-block: 1px solid rgb(233 227 213 / 9%); background: linear-gradient(90deg, rgb(248 113 113 / 7%), transparent 45%, transparent 55%, rgb(217 215 164 / 7%)); }
+.tadeon-equilibrium-gauge::before { position: absolute; inset: 0 25%; content: ""; border-inline: 1px dashed rgb(233 227 213 / 16%); background: rgb(233 227 213 / 3%); pointer-events: none; }
+.tadeon-equilibrium-tick { width: 1px; height: .5rem; flex-shrink: 0; background: rgb(233 227 213 / 28%); }
+.tadeon-equilibrium-tick[data-major] { height: 1.25rem; background: rgb(233 227 213 / 58%); }
+.tadeon-equilibrium-tick[data-center] { height: 1.75rem; background: var(--foreground); }
+.tadeon-equilibrium-marker { position: absolute; top: 0; bottom: 0; width: 1rem; color: rgb(var(--equilibrium-rgb)); }
+.tadeon-equilibrium-marker::before { position: absolute; top: .6rem; bottom: .35rem; left: calc(50% - .5px); width: 1px; background: currentColor; content: ""; }
+.tadeon-equilibrium-marker::after { position: absolute; top: .3rem; left: .2rem; width: .6rem; height: .6rem; border: 1px solid #10161d; background: currentColor; rotate: 45deg; box-shadow: 0 0 10px rgb(var(--equilibrium-rgb) / 20%); content: ""; }
+.tadeon-equilibrium-center { position: relative; height: 1.25rem; margin-top: .4rem; color: var(--muted-foreground); font: 400 .75rem/1.4 var(--font-inter); }
+.tadeon-equilibrium-center > span { position: absolute; top: 0; translate: -50% 0; white-space: nowrap; }
+.tadeon-equilibrium-center > :first-child { left: 25%; }
+.tadeon-equilibrium-center > :nth-child(2) { left: 50%; }
+.tadeon-equilibrium-center > :last-child { left: 75%; }
+.tadeon-equilibrium-range-note, .tadeon-equilibrium-tension p { color: var(--muted-foreground); font: 400 .8125rem/1.5 var(--font-inter); }
+.tadeon-equilibrium-range-note { margin-top: .5rem; }
+.tadeon-equilibrium-tension { margin-top: 1rem; padding: .75rem; border: 1px solid rgb(var(--equilibrium-rgb) / 19%); border-radius: .9rem; background: linear-gradient(120deg, rgb(var(--equilibrium-rgb) / 4%), transparent), #10161d; }
+.tadeon-equilibrium-tension__heading { display: flex; align-items: baseline; justify-content: space-between; gap: .5rem; }
+.tadeon-equilibrium-tension__heading > span { color: var(--foreground); font: 600 1.2rem/1.2 var(--font-cinzel); }
+.tadeon-equilibrium-tension__heading > small { color: var(--muted-foreground); font: 400 .75rem/1.4 var(--font-inter); text-align: right; }
+.tadeon-tension-control { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center; gap: .5rem; margin-block: .5rem; }
+.tadeon-equilibrium-tension__reading { min-width: 0; text-align: center; }
+.tadeon-equilibrium-tension__reading output { color: var(--foreground); font: 500 1.2rem/1.4 var(--font-inter); font-variant-numeric: tabular-nums; }
+.tadeon-tension-stitches { display: flex; align-items: center; justify-content: center; gap: .3rem; margin-top: .25rem; }
+.tadeon-tension-stitches > span { width: .65rem; max-width: 12%; height: .25rem; border-radius: 1px; background: rgb(233 227 213 / 15%); }
+.tadeon-tension-stitches > [data-tension-step="0"] { width: 1px; height: .65rem; margin-inline: .1rem; }
+.tadeon-tension-stitches > [data-active][data-tension-step^="-"] { background: #fca5a5; }
+.tadeon-tension-stitches > [data-active]:not([data-tension-step^="-"]) { background: #d9d7a4; }
+.tadeon-tension-stitches > [data-active][data-tension-step="0"] { background: var(--foreground); }
+.tadeon-equilibrium-effects { display: grid; gap: .75rem; margin-top: 1rem; font: 400 .9375rem/1.5 var(--font-inter); }
+.tadeon-equilibrium-effects > div { min-width: 0; padding-left: .75rem; border-left: 1px solid rgb(var(--equilibrium-rgb) / 35%); }
+.tadeon-equilibrium-effects span { display: block; margin-bottom: .25rem; color: var(--muted-foreground); font-size: .75rem; }
+.tadeon-equilibrium-effects p { color: var(--foreground); }
+.tadeon-equilibrium-integrity p + p { margin-top: .35rem; color: var(--muted-foreground); }
+@container (min-width: 460px) {
+  .tadeon-equilibrium-effects { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tadeon-equilibrium-integrity { grid-column: 1 / -1; }
 }

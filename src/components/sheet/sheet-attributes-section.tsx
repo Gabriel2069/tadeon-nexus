@@ -127,7 +127,7 @@ export function SheetAttributesSection({
               : "Orçamento do Rank totalmente distribuído."}
           </p>
         </div>
-        <div className="tadeon-attribute-radar h-36 sm:h-52">
+        <div className="tadeon-attribute-radar">
           <AttributeRadar data={radarData} color="#a855f7" tickColor="#c084fc" />
         </div>
       </div>

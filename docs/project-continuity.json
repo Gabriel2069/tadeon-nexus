@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-24",
+  "checkedAt": "2026-10-25",
   "runtimeReference": "e01ebf04ffea0e23e7ec0fe29728b76954531646",
   "integration": {
     "pr": 302,
@@ -106,7 +106,8 @@
         "src/components/sheet/sheet-experience-bridge.tsx",
         "src/components/sheet/sheet-inventory-organizer.tsx",
         "src/components/sheet/use-sheet-chrome.ts",
-        "src/components/sheet/attribute-radar.tsx"
+        "src/components/sheet/attribute-radar.tsx",
+        "src/components/sheet/sheet-equilibrium-section.tsx"
       ],
       "styles": [
         "src/styles/sheet-layout.css",
@@ -1202,6 +1203,29 @@
         "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40150710642"
       ],
       "checkpoint": "Integrado pela PR #302, fonte 78a85d9, merge e01ebf0. Identidade por largura real do fólio, campos multilinha e vínculos independentes da narrativa, com rótulos persistentes e estados explícitos. Equilíbrio separa leitura/ajuste/tensão/efeitos, mantém indicador contido nos extremos; Exposição mostra as bases do patamar. Altura forçada dos painéis retirada. Quality do fonte/main: 155 suítes/629 testes; audit zero. Visual final: oito vistas adaptáveis com vínculos longos/múltiplos, três abas, dois fluxos completos, 16 vistas do radar, superfícies/portais e Mesa preservados. Capturas finais inspecionadas. HTTP 200/SHA exato em 2026-10-25T01:30:26.6140618Z. Fixtures não certificam hardware ou contas reais; NEX-009/010/011 preservados. Fechamento documental confirma a própria publicação na PR correspondente."
+    },
+    {
+      "id": "NEX-037",
+      "title": "Atributos em escala legível e Equilíbrio como relação entre polos",
+      "domain": "sheet",
+      "status": "validated",
+      "priority": 7,
+      "dependsOn": [
+        "NEX-036"
+      ],
+      "acceptance": [
+        "Aumentar a área real do radar e dos rótulos na Ficha e Forma de Poder, preservando SVG leve e escala dos valores.",
+        "Representar Equilíbrio como eixo Medo–Inteireza–Conhecimento, com tensão direcional e efeitos coerentes com os dados existentes.",
+        "Conservar limites de cargo, deslocamento em ±4, autosave e fonte única das regras.",
+        "Verificar tamanho físico do gráfico, quatro larguras, leitura/edição, limiares de tensão, foco e movimento reduzido; publicar após gates."
+      ],
+      "evidence": [
+        "src/components/sheet/sheet-equilibrium-section.tsx",
+        "src/components/sheet/sheet-equilibrium-section.test.tsx",
+        "scripts/verify-sheet-design.mjs",
+        "docs/equilibrium-axis-validation.json"
+      ],
+      "checkpoint": "Validado localmente: 156 suítes/632 testes, audit zero. Radar em quatro larguras e Forma de Poder em 320/1440; malha 112→181px em 320 e 112→283px em 1440, com rótulos contidos. Oito vistas adaptáveis, repetição final em 320/1440 com limiares de tensão nos dois sentidos e painel imóvel no hover/press, dois fluxos completos. Gates do fonte remoto e publicação ainda pendentes."
     }
   ],
   "decisions": [
@@ -1605,6 +1629,10 @@
     {
       "path": "docs/sheet-register-validation.json",
       "purpose": "Evidência de composição adaptável de Identidade, Vínculos, Equilíbrio e Exposição; NEX-036."
+    },
+    {
+      "path": "docs/equilibrium-axis-validation.json",
+      "purpose": "NEX-037: tamanho físico do radar, eixo conceitual de Equilíbrio, tensão direcional, gates e publicação."
     }
   ],
   "integrationHistory": [

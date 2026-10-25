@@ -39,7 +39,7 @@
    -------------------------------------------------------------------------- */
 @media (hover: hover) and (pointer: fine) {
   .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"],
-  .tadeon-shell .tadeon-state-panel {
+  .tadeon-shell .tadeon-state-panel:not([data-material-surface]) {
     transition:
       transform var(--tadeon-visible-ui) var(--tadeon-visible-ease-standard),
       border-color var(--tadeon-visible-ui) ease,
@@ -48,7 +48,7 @@
   }
 
   .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:hover,
-  .tadeon-shell .tadeon-state-panel:hover {
+  .tadeon-shell .tadeon-state-panel:not([data-material-surface]):hover {
     transform: translate3d(0, -7px, 0) scale(1.012) !important;
     filter: saturate(1.06) brightness(1.025) !important;
   }
@@ -62,7 +62,7 @@
   }
 
   .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:active,
-  .tadeon-shell .tadeon-state-panel:active {
+  .tadeon-shell .tadeon-state-panel:not([data-material-surface]):active {
     transform: translate3d(0, 2px, 0) scale(.978) !important;
   }
 }
@@ -536,8 +536,8 @@
 @keyframes tdv-state-pop{0%{transform:scale(.78) rotate(-6deg)}48%{transform:scale(1.18) rotate(2deg)}76%{transform:scale(.96)}100%{transform:scale(1) rotate(0)}}
 
 /* Cards / rows: distinct lift, lateral drift and material sheen. */
-.tadeon-shell .tadeon-surface,.tadeon-shell .tadeon-user-row,.tadeon-shell .tadeon-state-panel{transition:transform 340ms var(--tdv-spring),box-shadow 440ms var(--tdv-soft),border-color 260ms ease,filter 340ms ease}
-@media (hover:hover) and (pointer:fine){.tadeon-shell .tadeon-surface:hover{transform:translateY(-8px) rotate(-.18deg) scale(1.012);filter:brightness(1.035)}.tadeon-shell .tadeon-user-row:hover{transform:translateX(8px) translateY(-2px);filter:brightness(1.025)}.tadeon-shell .tadeon-state-panel:hover{transform:translateY(-6px) scale(1.008)}}
+.tadeon-shell .tadeon-surface,.tadeon-shell .tadeon-user-row,.tadeon-shell .tadeon-state-panel:not([data-material-surface]){transition:transform 340ms var(--tdv-spring),box-shadow 440ms var(--tdv-soft),border-color 260ms ease,filter 340ms ease}
+@media (hover:hover) and (pointer:fine){.tadeon-shell .tadeon-surface:hover{transform:translateY(-8px) rotate(-.18deg) scale(1.012);filter:brightness(1.035)}.tadeon-shell .tadeon-user-row:hover{transform:translateX(8px) translateY(-2px);filter:brightness(1.025)}.tadeon-shell .tadeon-state-panel:not([data-material-surface]):hover{transform:translateY(-6px) scale(1.008)}}
 
 /* Navigation: active destination arrives with a directional sweep. */
 
@@ -775,7 +775,7 @@
 }
 
 .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"],
-.tadeon-shell .tadeon-state-panel,
+.tadeon-shell .tadeon-state-panel:not([data-material-surface]),
 .tadeon-shell .tadeon-skill-modifier-panel{
   transition:
     transform 340ms var(--tadeon-frame-ease),
@@ -786,7 +786,7 @@
 
 @media (hover:hover) and (pointer:fine){
   .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:hover,
-  .tadeon-shell .tadeon-state-panel:hover,
+  .tadeon-shell .tadeon-state-panel:not([data-material-surface]):hover,
   .tadeon-shell .tadeon-skill-modifier-panel:hover{
     transform:translate3d(0,-4px,0) scale(1.008) !important;
     filter:saturate(1.035) brightness(1.015) !important;
@@ -802,7 +802,7 @@
 }
 
 .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:active,
-.tadeon-shell .tadeon-state-panel:active,
+.tadeon-shell .tadeon-state-panel:not([data-material-surface]):active,
 .tadeon-shell .tadeon-skill-modifier-panel:active{
   transform:translate3d(0,1px,0) scale(.986) !important;
 }

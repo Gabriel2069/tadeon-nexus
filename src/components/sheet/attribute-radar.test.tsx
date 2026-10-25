@@ -28,13 +28,18 @@ it("keeps exceptional values visible and explains the expanded scale", () => {
     <AttributeRadar {...props} data={data.map((d, i) => (i === 0 ? { ...d, value: 10 } : d))} />,
   );
   expect(container.querySelector("desc")?.textContent).toContain("Escala de 0 a 10");
+  const [left, top, width, height] = container
+    .querySelector("svg")!
+    .getAttribute("viewBox")!
+    .split(" ")
+    .map(Number);
   for (const point of container.querySelectorAll("circle")) {
     const x = Number(point.getAttribute("cx")),
       y = Number(point.getAttribute("cy"));
-    expect(x).toBeGreaterThanOrEqual(0);
-    expect(x).toBeLessThanOrEqual(260);
-    expect(y).toBeGreaterThanOrEqual(0);
-    expect(y).toBeLessThanOrEqual(230);
+    expect(x).toBeGreaterThanOrEqual(left);
+    expect(x).toBeLessThanOrEqual(left + width);
+    expect(y).toBeGreaterThanOrEqual(top);
+    expect(y).toBeLessThanOrEqual(top + height);
   }
 });
 it("gives each instance its own accessible references and handles an empty chart", () => {
