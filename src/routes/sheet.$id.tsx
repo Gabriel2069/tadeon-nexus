@@ -914,50 +914,20 @@ function SheetPage() {
                 id="equilibrio"
                 title="Equilíbrio"
                 className="tadeon-state-panel tadeon-equilibrium-panel"
-                extra={
-                  <div className="tadeon-tension-control">
-                    <span className="text-[10px] uppercase tracking-wider font-cinzel text-amber-300">
-                      Tensão
-                    </span>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-11 w-11 p-0 text-amber-300"
-                      disabled={!canEdit}
-                      aria-label="Diminuir tensão"
-                      title="Diminuir tensão"
-                      onClick={() => addDirectionalTension(-1)}
-                    >
-                      <Minus className="w-3 h-3" />
-                    </Button>
-                    <span
-                      className={`min-w-[2.25rem] text-center text-sm font-bold ${sheet.drift === 0 ? "text-amber-200" : sheet.drift > 0 ? "text-yellow-300" : "text-red-300"}`}
-                    >
-                      {sheet.drift > 0 ? `+${sheet.drift}` : sheet.drift}
-                    </span>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-11 w-11 p-0 text-amber-300"
-                      disabled={!canEdit}
-                      aria-label="Aumentar tensão"
-                      title="Aumentar tensão"
-                      onClick={() => addDirectionalTension(1)}
-                    >
-                      <Plus className="w-3 h-3" />
-                    </Button>
-                    <span className="text-[10px] text-muted-foreground ml-1">−4…+4</span>
-                  </div>
-                }
               >
                 <div className="tadeon-state-reading tadeon-state-reading--equilibrium">
-                  <span>-10</span>
+                  <span>
+                    <small className="tadeon-state-label">Estado atual</small>
+                    {equilibriumEffect.state}
+                  </span>
                   <span className="font-bold text-foreground text-base">
                     {equilibrium > 0 ? `+${equilibrium}` : equilibrium}
                   </span>
-                  <span>+10</span>
                 </div>
-                <div className="relative w-full h-7 bg-secondary rounded-full overflow-hidden border border-border">
+                <div
+                  className="tadeon-equilibrium-gauge relative w-full h-7 bg-secondary rounded-full overflow-hidden border border-border"
+                  aria-hidden="true"
+                >
                   {/* Static dual gradient background */}
                   <div
                     className="absolute inset-0"
@@ -973,10 +943,15 @@ function SheetPage() {
                   <div
                     className="absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-2 border-background shadow-md transition-[background-color,box-shadow] duration-150"
                     style={{
-                      left: `calc(${equilibriumPct}% - 10px)`,
+                      left: `clamp(0px, calc(${equilibriumPct}% - 10px), calc(100% - 20px))`,
                       background: equilibriumColor(equilibrium),
                     }}
                   />
+                </div>
+                <div className="tadeon-state-scale" aria-hidden="true">
+                  <span>−10 · Medo</span>
+                  <span>0</span>
+                  <span>Conhecimento · +10</span>
                 </div>
                 <div className="tadeon-state-controls">
                   <Input
@@ -1023,11 +998,46 @@ function SheetPage() {
                   Faixa comum: −5 a +5. Valores além disso exigem fonte excepcional e ajuste do
                   mestre.
                 </p>
-                <div className="tadeon-equilibrium-effects">
+                <div className="tadeon-tension-register">
                   <div>
-                    <span className="text-muted-foreground">Estado</span>
-                    <p className="font-semibold text-foreground">{equilibriumEffect.state}</p>
+                    <span className="tadeon-state-label">Pressão acumulada</span>
+                    <p>Ao atingir ±4, a tensão desloca o Equilíbrio em 1 ponto.</p>
                   </div>
+                  <div className="tadeon-tension-control">
+                    <span className="text-[10px] uppercase tracking-wider font-cinzel text-amber-300">
+                      Tensão
+                    </span>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-11 w-11 p-0 text-amber-300"
+                      disabled={!canEdit}
+                      aria-label="Diminuir tensão"
+                      title="Diminuir tensão"
+                      onClick={() => addDirectionalTension(-1)}
+                    >
+                      <Minus className="w-3 h-3" />
+                    </Button>
+                    <span
+                      className={`min-w-[2.25rem] text-center text-sm font-bold ${sheet.drift === 0 ? "text-amber-200" : sheet.drift > 0 ? "text-yellow-300" : "text-red-300"}`}
+                    >
+                      {sheet.drift > 0 ? `+${sheet.drift}` : sheet.drift}
+                    </span>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-11 w-11 p-0 text-amber-300"
+                      disabled={!canEdit}
+                      aria-label="Aumentar tensão"
+                      title="Aumentar tensão"
+                      onClick={() => addDirectionalTension(1)}
+                    >
+                      <Plus className="w-3 h-3" />
+                    </Button>
+                    <span className="text-[10px] text-muted-foreground ml-1">−4…+4</span>
+                  </div>
+                </div>
+                <div className="tadeon-equilibrium-effects">
                   <div>
                     <span className="text-muted-foreground">Benefício</span>
                     <p className="text-emerald-300">{equilibriumEffect.benefit}</p>
@@ -1047,10 +1057,12 @@ function SheetPage() {
               >
                 <div className="tadeon-state-reading">
                   <span className="text-xs text-muted-foreground">
-                    Rank base: <strong className="text-foreground">{base.rank}</strong>
+                    <small className="tadeon-state-label">Contato acumulado</small>
+                    Patamar {base.rank}
                   </span>
                   <span className="font-cinzel text-lg font-bold text-primary">
-                    {sheet.exposure}/100
+                    {sheet.exposure}
+                    <small className="tadeon-state-unit">%</small>
                   </span>
                 </div>
                 <div className="relative w-full h-4 bg-secondary rounded-full overflow-hidden border border-border">
@@ -1093,6 +1105,27 @@ function SheetPage() {
                     className="flex-1"
                   />
                 </div>
+                <dl className="tadeon-exposure-derived" aria-label="Bases do patamar atual">
+                  <div>
+                    <dt>Patamar</dt>
+                    <dd>{base.rank}</dd>
+                  </div>
+                  <div>
+                    <dt>Pontos de atributos</dt>
+                    <dd>{attributeBudget}</dd>
+                  </div>
+                  <div>
+                    <dt>Limite por atributo</dt>
+                    <dd>{attributeCap}</dd>
+                  </div>
+                  <div>
+                    <dt>PM de base</dt>
+                    <dd>{base.pm}</dd>
+                  </div>
+                </dl>
+                <p className="tadeon-state-note">
+                  Bases do patamar atual, antes dos modificadores da personagem.
+                </p>
               </Section>
             </div>
 

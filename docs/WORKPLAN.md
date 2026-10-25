@@ -45,6 +45,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-033 | Fluidez: presença e movimento dos menus compartilhados | Integrado | 7 | popup | NEX-032 |
 | NEX-034 | Ficha e celular: hierarquia, instrumentos e composição adaptável | Integrado | 7 | sheet | NEX-033 |
 | NEX-035 | Atributos: instrumento vetorial leve e leitura acessível | Integrado | 7 | sheet | NEX-034 |
+| NEX-036 | Ficha: registros de identidade, vínculos e instrumentos de estado | Em andamento | 7 | sheet | NEX-035 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -344,6 +345,16 @@ Evidências: [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mj
 - Conferir quatro larguras, edição, leitura, portais e movimento reduzido; publicar após check, audit e gates.
 
 Evidências: [src/components/sheet/attribute-radar.tsx](../src/components/sheet/attribute-radar.tsx), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [src/components/sheet/attribute-radar.test.tsx](../src/components/sheet/attribute-radar.test.tsx), [docs/attribute-instrument-validation.json](../docs/attribute-instrument-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/300), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40083897202), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40085253889).
+
+## NEX-036 — Ficha: registros de identidade, vínculos e instrumentos de estado
+
+- Dar acesso independente aos vínculos, com rótulos persistentes e leitura integral no celular.
+- Organizar identidade em registros complementares, sem esticar cartões curtos.
+- Separar leitura, ajuste e efeitos de Equilíbrio; mostrar contexto derivado de Exposição sem alterar regras.
+- Conferir 320/390/820/1440, vínculos longos/múltiplos, edição/leitura, abas, foco, portais e movimento reduzido.
+- Executar check e audit, inspecionar capturas e publicar somente após gates.
+
+Evidências: [src/components/sheet/sheet-identity-section.tsx](../src/components/sheet/sheet-identity-section.tsx), [src/styles/sheet-premium.css](../src/styles/sheet-premium.css), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [docs/sheet-register-validation.json](../docs/sheet-register-validation.json).
 
 ## Decisões vigentes
 

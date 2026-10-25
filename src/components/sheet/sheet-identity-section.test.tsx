@@ -63,18 +63,27 @@ it("allows a reader to fold links while keeping every edit control disabled", ()
 });
 
 it("opens the named compact narrative without losing edits when folded again", () => {
-  vi.stubGlobal("matchMedia", () => ({matches:true,addEventListener:vi.fn(),removeEventListener:vi.fn()}));
+  vi.stubGlobal("matchMedia", () => ({
+    matches: true,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  }));
   function Identity() {
     const [sheet, setSheet] = useState(fixture);
-    const update: SheetUpdate = (key,value) => setSheet(previous=>({...previous,[key]:value}));
+    const update: SheetUpdate = (key, value) =>
+      setSheet((previous) => ({ ...previous, [key]: value }));
     return <SheetIdentitySection sheet={sheet} canEdit update={update} />;
   }
   render(<Identity />);
-  const narrative=screen.getByRole("button", {name:/Convicções, pergunta e vínculos/});
+  const narrative = screen.getByRole("button", { name: /Convicções e pergunta/ });
   expect(narrative.getAttribute("aria-expanded")).toBe("false");
   expect(screen.queryByLabelText("Convicção")).toBeNull();
+  expect((screen.getByLabelText("Nome do vínculo 1") as HTMLTextAreaElement).value).toBe(
+    "Sentinela",
+  );
+  expect(screen.getByRole("button", { name: "Novo vínculo" })).toBeTruthy();
   fireEvent.click(narrative);
-  fireEvent.change(screen.getByLabelText("Convicção"),{target:{value:"Guardar este fio"}});
+  fireEvent.change(screen.getByLabelText("Convicção"), { target: { value: "Guardar este fio" } });
   fireEvent.click(narrative);
   fireEvent.click(narrative);
   expect((screen.getByLabelText("Convicção") as HTMLInputElement).value).toBe("Guardar este fio");
