@@ -943,7 +943,7 @@ function SheetPage() {
                   <div
                     className="absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-2 border-background shadow-md transition-[background-color,box-shadow] duration-150"
                     style={{
-                      left: `clamp(0px, calc(${equilibriumPct}% - 10px), calc(100% - 20px))`,
+                      left: `clamp(0px, calc(${equilibriumPct}% - .625rem), calc(100% - 1.25rem))`,
                       background: equilibriumColor(equilibrium),
                     }}
                   />

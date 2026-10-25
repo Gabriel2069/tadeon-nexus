@@ -255,10 +255,6 @@
   content: "";
 }
 
-.tadeon-core-panel {
-  height: 100%;
-}
-
 .tadeon-stepper-button {
   min-width: 2.5rem;
   min-height: 2.5rem;
