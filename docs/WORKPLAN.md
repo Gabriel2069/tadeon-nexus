@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-25; referência de runtime: `e01ebf04ffea0e23e7ec0fe29728b76954531646`. PR #302 em `feat/nex-036-sheet-composition`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-25; referência de runtime: `870dd4cd2c9b2db5f565230cb672942b219ebf35`. PR #304 em `feat/nex-037-equilibrium-axis`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -46,7 +46,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-034 | Ficha e celular: hierarquia, instrumentos e composição adaptável | Integrado | 7 | sheet | NEX-033 |
 | NEX-035 | Atributos: instrumento vetorial leve e leitura acessível | Integrado | 7 | sheet | NEX-034 |
 | NEX-036 | Ficha: registros de identidade, vínculos e instrumentos de estado | Integrado | 7 | sheet | NEX-035 |
-| NEX-037 | Atributos em escala legível e Equilíbrio como relação entre polos | Validado na branch | 7 | sheet | NEX-036 |
+| NEX-037 | Atributos em escala legível e Equilíbrio como relação entre polos | Integrado | 7 | sheet | NEX-036 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -364,7 +364,7 @@ Evidências: [src/components/sheet/sheet-identity-section.tsx](../src/components
 - Conservar limites de cargo, deslocamento em ±4, autosave e fonte única das regras.
 - Verificar tamanho físico do gráfico, quatro larguras, leitura/edição, limiares de tensão, foco e movimento reduzido; publicar após gates.
 
-Evidências: [src/components/sheet/sheet-equilibrium-section.tsx](../src/components/sheet/sheet-equilibrium-section.tsx), [src/components/sheet/sheet-equilibrium-section.test.tsx](../src/components/sheet/sheet-equilibrium-section.test.tsx), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [docs/equilibrium-axis-validation.json](../docs/equilibrium-axis-validation.json).
+Evidências: [src/components/sheet/sheet-equilibrium-section.tsx](../src/components/sheet/sheet-equilibrium-section.tsx), [src/components/sheet/sheet-equilibrium-section.test.tsx](../src/components/sheet/sheet-equilibrium-section.test.tsx), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [docs/equilibrium-axis-validation.json](../docs/equilibrium-axis-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/304), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40216726243), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40218832040).
 
 ## Decisões vigentes
 

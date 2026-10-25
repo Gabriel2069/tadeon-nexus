@@ -1,23 +1,23 @@
 {
   "version": 1,
   "checkedAt": "2026-10-25",
-  "runtimeReference": "e01ebf04ffea0e23e7ec0fe29728b76954531646",
+  "runtimeReference": "870dd4cd2c9b2db5f565230cb672942b219ebf35",
   "integration": {
-    "pr": 302,
-    "branch": "feat/nex-036-sheet-composition",
+    "pr": 304,
+    "branch": "feat/nex-037-equilibrium-axis",
     "base": "main",
-    "baseCommit": "cde841db8ea5b1a9ff048fb7421e1ffcd53dced0",
-    "sourceCommit": "78a85d935a505d10e12025ad02be918ede493a99",
-    "headCommit": "78a85d935a505d10e12025ad02be918ede493a99",
+    "baseCommit": "788dbf3f86d69227abc5f8651a98f70ca5e110c8",
+    "sourceCommit": "a5313016010e452565db8ec8d45ba83d73308f8a",
+    "headCommit": "a5313016010e452565db8ec8d45ba83d73308f8a",
     "state": "integrated",
-    "mergeCommit": "e01ebf04ffea0e23e7ec0fe29728b76954531646",
-    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40148827896",
-    "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40148827926",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40150710654",
+    "mergeCommit": "870dd4cd2c9b2db5f565230cb672942b219ebf35",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40216726191",
+    "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40216726243",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40218832068",
     "production": "confirmed",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40150710642",
-    "productionCommit": "e01ebf04ffea0e23e7ec0fe29728b76954531646",
-    "productionVerifiedAt": "2026-10-25T01:30:26.6140618Z",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40218832040",
+    "productionCommit": "870dd4cd2c9b2db5f565230cb672942b219ebf35",
+    "productionVerifiedAt": "2026-10-25T17:57:48.9704100Z",
     "productionHttpStatus": 200
   },
   "domains": [
@@ -114,7 +114,7 @@
         "src/styles/sheet-premium.css",
         "src/styles/sheet-experience.css"
       ],
-      "boundary": "Rota mantém estado, regras derivadas, leitura cancelável e autosave por personagem/usuário/cargo. Seções recebem valores/callbacks; não criam estado persistido paralelo. Sheet UI mantém rótulos, recolhimento e material; sheet-premium é dono do material. Histórico/inventário montados explicitamente na ficha, sem observer de montagem; o arquivo de experiência ainda conserva bridges de outras áreas. NEX-025: vínculos recolhem no componente; títulos recebem foco para revelar seções. Dossiê em sheet-premium, densidade do modo Jogo em sheet-layout; índice sem captura global. useSheetChrome mede somente os dois cabeçalhos conhecidos do shell e a barra local, com observer e listener desmontados; publica offsets apenas no host da ficha. NEX-034/DEC-020: identidade relativa e compacta, títulos/ações com fluxo próprio, instrumentos por largura real do cartão e vínculos multilinha. Nenhuma mudança em regras ou persistência. NEX-035: radar SVG local, compartilhado pela Ficha e Forma de Poder; dados dependem somente de atributos e não mantêm observação de tamanho própria. NEX-036: narrativa e vínculos têm dobras independentes; registros adaptam-se à largura do cartão. Equilíbrio e Exposição somente apresentam valores e bases derivados pela rota, sem estado persistido paralelo."
+      "boundary": "Rota mantém estado, regras derivadas, leitura cancelável e autosave por personagem/usuário/cargo. Seções recebem valores/callbacks; não criam estado persistido paralelo. Sheet UI mantém rótulos, recolhimento e material; sheet-premium é dono do material. Histórico/inventário montados explicitamente na ficha, sem observer de montagem; o arquivo de experiência ainda conserva bridges de outras áreas. NEX-025: vínculos recolhem no componente; títulos recebem foco para revelar seções. Dossiê em sheet-premium, densidade do modo Jogo em sheet-layout; índice sem captura global. useSheetChrome mede somente os dois cabeçalhos conhecidos do shell e a barra local, com observer e listener desmontados; publica offsets apenas no host da ficha. NEX-034/DEC-020: identidade relativa e compacta, títulos/ações com fluxo próprio, instrumentos por largura real do cartão e vínculos multilinha. Nenhuma mudança em regras ou persistência. NEX-035: radar SVG local, compartilhado pela Ficha e Forma de Poder; dados dependem somente de atributos e não mantêm observação de tamanho própria. NEX-036: narrativa e vínculos têm dobras independentes; registros adaptam-se à largura do cartão. Equilíbrio e Exposição somente apresentam valores e bases derivados pela rota, sem estado persistido paralelo. NEX-037: SheetEquilibriumSection apresenta o eixo e a tensão por props/callbacks; regras continuam na rota e getEquilibriumEffect. Radar compartilha proporção quadrada e largura útil na Ficha/Forma de Poder; motion legado deixa painéis materiais explícitos."
     },
     {
       "id": "knowledge",
@@ -1208,7 +1208,7 @@
       "id": "NEX-037",
       "title": "Atributos em escala legível e Equilíbrio como relação entre polos",
       "domain": "sheet",
-      "status": "validated",
+      "status": "integrated",
       "priority": 7,
       "dependsOn": [
         "NEX-036"
@@ -1223,9 +1223,12 @@
         "src/components/sheet/sheet-equilibrium-section.tsx",
         "src/components/sheet/sheet-equilibrium-section.test.tsx",
         "scripts/verify-sheet-design.mjs",
-        "docs/equilibrium-axis-validation.json"
+        "docs/equilibrium-axis-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/304",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40216726243",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40218832040"
       ],
-      "checkpoint": "Validado localmente: 156 suítes/632 testes, audit zero. Radar em quatro larguras e Forma de Poder em 320/1440; malha 112→181px em 320 e 112→283px em 1440, com rótulos contidos. Oito vistas adaptáveis, repetição final em 320/1440 com limiares de tensão nos dois sentidos e painel imóvel no hover/press, dois fluxos completos. Gates do fonte remoto e publicação ainda pendentes."
+      "checkpoint": "Integrado pela PR #304, fonte a531301, merge 870dd4c. Radar quadrado e maior na Ficha/Forma de Poder, com raio de 90 unidades, rótulos contidos e 41 descendentes SVG. Comparação local: malha 112→181px em 320 e 112→283px em 1440. Equilíbrio como eixo Medo–Inteireza–Conhecimento; tensão direcional, limiar ±4 e efeitos existentes; Inteireza sem rótulo falso de penalidade. Regras/callbacks/autosave preservados. Painéis materiais sem deslocamento ou escala no hover/press após excluir 20 escritores históricos. Quality do fonte/main: 156 suítes/632 testes; audit zero. Visual final aprovado: oito vistas adaptáveis com tensão nos dois sentidos, 16 vistas do radar, dois fluxos completos e regressões compartilhadas/Mesa. Artefato e capturas finais inspecionados. HTTP 200/SHA exato em 2026-10-25T17:57:48.9704100Z. Geometria não é FPS/INP; fixtures não certificam hardware/contas reais. NEX-009/010/011 preservados; o fechamento documental confirma a própria publicação na PR correspondente."
     }
   ],
   "decisions": [
@@ -2024,6 +2027,24 @@
       "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40085253889",
       "productionCommit": "2068aee18164e3272a4e938a42b2f7f8b73260a7",
       "productionVerifiedAt": "2026-10-24T10:18:44.9941387Z",
+      "productionHttpStatus": 200
+    },
+    {
+      "pr": 302,
+      "branch": "feat/nex-036-sheet-composition",
+      "base": "main",
+      "baseCommit": "cde841db8ea5b1a9ff048fb7421e1ffcd53dced0",
+      "sourceCommit": "78a85d935a505d10e12025ad02be918ede493a99",
+      "headCommit": "78a85d935a505d10e12025ad02be918ede493a99",
+      "state": "integrated",
+      "mergeCommit": "e01ebf04ffea0e23e7ec0fe29728b76954531646",
+      "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40148827896",
+      "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40148827926",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40150710654",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40150710642",
+      "productionCommit": "e01ebf04ffea0e23e7ec0fe29728b76954531646",
+      "productionVerifiedAt": "2026-10-25T01:30:26.6140618Z",
       "productionHttpStatus": 200
     }
   ]
