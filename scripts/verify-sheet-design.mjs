@@ -90,6 +90,12 @@ const sheet = {
   power_form_enabled: process.env.NEXUS_POWER_HEADER === "1",
   power_form_data: {},
 };
+if (process.env.NEXUS_EXPECT_COMPOSITION === "1") {
+  sheet.identity_data.links.push(
+    { id: "v2", name: "A guardiã das memórias que atravessam o limiar", relation: "Aliada de viagens e testemunha dos fios perdidos", state: "Costurado" },
+    { id: "v3", name: "O antigo mentor", relation: "Uma promessa ainda por cumprir", state: "Rompido" },
+  );
+}
 const results = [];
 let browser;
 const launchBrowser = () => chromium.launch({
@@ -402,7 +408,7 @@ try {
       const name = page.locator("#sec-info").getByLabel("Nome", { exact: true });
       await name.waitFor();
       await page.waitForFunction(() =>
-        Object.keys(document.querySelector("#sec-info input")).some((k) =>
+        Object.keys(document.querySelector("#sec-info textarea, #sec-info input")).some((k) =>
           k.startsWith("__reactProps$"),
         ),
       );
@@ -469,6 +475,47 @@ try {
           });
         await captureAdaptive({ path: `${output}/top-${state}-${width}.png` });
         const initial = await measure();
+        const composition = {};
+        if (process.env.NEXUS_EXPECT_COMPOSITION === "1") {
+          const narrative = page.locator(".tadeon-identity-narrative__trigger");
+          const link = page.getByRole("textbox", { name: "Nome do vínculo 1", exact: true });
+          assert(await link.isVisible(), "Relationships are independently available before unfolding narrative");
+          await narrative.click();
+          assert(await link.isVisible(), "Narrative disclosure never hides relationships");
+          await narrative.click();
+          const equilibrium = page.getByRole("spinbutton", { name: "Equilíbrio atual", exact: true });
+          const exposure = page.getByRole("spinbutton", { name: "Exposição atual", exact: true });
+          if (state === "editable") {
+            await equilibrium.fill("-3");
+            assert(await page.getByRole("slider", { name: "Ajustar equilíbrio", exact: true }).inputValue() === "-3", "Direct equilibrium edit keeps range synchronized");
+            for (const edge of ["-10", "10"]) {
+              await equilibrium.fill(edge);
+              assert(await page.locator('.tadeon-equilibrium-gauge').evaluate(e => {
+                const box=e.getBoundingClientRect(), marker=e.lastElementChild.getBoundingClientRect();
+                return marker.left>=box.left && marker.right<=box.right;
+              }), "Equilibrium indicator stays contained at " + edge);
+            }
+            await equilibrium.fill("-3");
+            await exposure.fill("35");
+            assert(await page.getByRole("slider", { name: "Ajustar exposição", exact: true }).inputValue() === "35", "Direct exposure edit keeps range synchronized");
+            await page.waitForFunction(() => document.querySelector('.tadeon-exposure-derived dd').textContent === '35');
+            await page.getByRole("button", {name: "Novo vínculo", exact: true}).click();
+            assert(await page.getByRole("textbox", { name: "Nome do vínculo 4", exact: true }).isVisible(), "Add remains directly reachable");
+            await page.getByRole("button", { name: "Remover vínculo 4", exact: true }).click();
+            assert(await page.getByRole("textbox", { name: "Nome do vínculo 4", exact: true }).count() === 0, "Remove only affects the chosen link");
+          } else {
+            assert(await equilibrium.isDisabled() && await exposure.isDisabled(), "Reader cannot alter state instruments");
+          }
+          composition.links = await page.locator('.tadeon-link-row').evaluateAll(rows => rows.map(row => {
+            const r = row.getBoundingClientRect();
+            return {state: row.dataset.linkState, width:r.width,height:r.height, textFits:[...row.querySelectorAll('textarea')].every(e=>e.scrollHeight<=e.clientHeight+1), fits:[...row.querySelectorAll('textarea,button')].every(e => {
+              const b=e.getBoundingClientRect();return b.left>=r.left && b.right<=r.right+1 && b.width>=44 && b.height>=44;
+            })};
+          }));
+          assert(composition.links.every(row=>row.fits && row.textFits), "Long relationship fields and actions fit each folio");
+          await page.locator('#sec-info').screenshot({path: `${output}/identity-register-${state}-${width}.png`});
+        }
+
         await page.locator("#sec-attr").scrollIntoViewIfNeeded();
         await captureAdaptive({ path: `${output}/attributes-${state}-${width}.png` });
         const scrolled = await measure();
@@ -527,7 +574,7 @@ try {
           );
         }
         assert(errors.length === 0, JSON.stringify(errors));
-        results.push({ width, state, initial, scrolled, linkLabels, errors });
+        results.push({ width, state, initial, scrolled, linkLabels, composition, errors });
         writeFileSync(
           `${output}/results.json`,
           JSON.stringify({ fixtureOnly: true, results }, null, 2),
@@ -729,7 +776,7 @@ try {
         (await name.inputValue()) === sheet.name,
         "The section index reveals a folded section and transfers focus without changing data",
       );
-      const narrative = page.getByRole("button", { name: /Convicções, pergunta e vínculos/ });
+      const narrative = page.getByRole("button", { name: /Convicções e pergunta/ });
       const defaultNarrative = await narrative.getAttribute("aria-expanded");
       if (width < 768)
         assert(defaultNarrative === "false", "Mobile narrative starts folded, with a named entry");

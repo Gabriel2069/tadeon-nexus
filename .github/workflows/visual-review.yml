@@ -95,6 +95,7 @@ jobs:
           NEXUS_AUDIT_STATES: '["editable","readonly"]'
           NEXUS_ADAPTIVE_ONLY: "1"
           NEXUS_EXPECT_ADAPTIVE: "1"
+          NEXUS_EXPECT_COMPOSITION: "1"
         run: node scripts/verify-sheet-design.mjs
       - name: Conferir radar vetorial na Ficha
         env:

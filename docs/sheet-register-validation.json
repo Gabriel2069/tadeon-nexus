@@ -1,0 +1,42 @@
+{
+  "task": "NEX-036",
+  "baseCommit": "cde841db8ea5b1a9ff048fb7421e1ffcd53dced0",
+  "status": "source-review",
+  "scope": [
+    "Identidade e núcleo narrativo com campos multilinha",
+    "Vínculos independentes da dobra narrativa, com rótulos persistentes e estados locais",
+    "Equilíbrio: leitura, faixa contida, tensão e efeitos",
+    "Exposição: percentual e bases do patamar existentes",
+    "Altura intrínseca dos instrumentos na grade principal"
+  ],
+  "local": {
+    "baselineWidths": [
+      320,
+      390,
+      1440
+    ],
+    "check": {
+      "suites": 155,
+      "tests": 629,
+      "passed": true
+    },
+    "audit": {
+      "total": 0
+    },
+    "browserReview": "Em andamento; a integração depende da revisão do fonte final e dos gates."
+  },
+  "preserved": [
+    "Regras, limites por cargo e autosave",
+    "Botões e menus circulares",
+    "Fontes, símbolos e paleta Fio-Mestre"
+  ],
+  "limits": [
+    "Fixtures interceptam backend; não são prova de contas ou autorização reais.",
+    "Sem medição de FPS/INP ou teclado virtual em hardware físico.",
+    "NEX-009/010/011 permanecem com seus critérios próprios."
+  ],
+  "integration": {
+    "state": "not-integrated",
+    "production": "not-published"
+  }
+}

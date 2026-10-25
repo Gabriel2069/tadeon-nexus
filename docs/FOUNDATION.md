@@ -290,3 +290,9 @@ DEC-020 retira a antiga extensão sticky da identidade da Ficha. A geometria com
 `sheet/attribute-radar.tsx` passa a ser SVG local, compartilhado pela Ficha e Forma de Poder, com escala mínima 0–5 e domínio ampliado para extremos. O cartão controla dimensões; o radar não precisa de ResizeObserver, Suspense ou Recharts. Os consumidores mantêm os dados estáveis enquanto outros campos mudam. O componente é memoizado; controles de edição, autorização, cálculos e gravação continuam nas rotas.
 
 A dependência Recharts continua disponível para o primitivo genérico de gráficos; removê-la de um radar não autoriza uma migração global desse primitivo. A retirada de código do cliente deve ser comprovada pelo build, sem inferir latência/FPS do tamanho de um pacote.
+
+## Registros adaptáveis da Ficha — NEX-036
+
+SheetIdentitySection controla duas dobras independentes para narrativa e vínculos; dados/callbacks continuam sob a rota. Campos multilinha usam o primitivo existente, com dimensionamento pelo conteúdo e redimensionamento manual como fallback. sheet-premium.css mantém geometria/material: a consulta de largura dos vínculos pertence ao próprio cartão, evitando usar a largura de toda a coleção para comprimir o seletor de estado. A grade principal alinha instrumentos pelo início no desktop e preserva stretch horizontal no flex móvel.
+
+A rota mantém os cálculos, limites de cargo e autosave; o novo resumo de Exposição somente lê base, orçamento e limite derivados existentes. Nenhum esquema, serviço, permissão ou regra de RPG foi alterado. O verificador adaptável cobre múltiplos vínculos longos, edição/leitura, independência das dobras e sincronismo de entradas/faixas. Fixture não certifica hardware, teclado virtual ou contas reais.

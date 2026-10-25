@@ -1175,6 +1175,30 @@
         "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40085253889"
       ],
       "checkpoint": "Integrado pela PR #300, fonte 3d42601, merge 2068aee. Radar SVG na Ficha/Forma de Poder, valores/amplitude acessíveis, escala mínima 0–5 e dados estáveis nas outras edições. Build local: 285.866 bytes JS/85.494 bytes gzip a menos; vendor-charts deixa de ser gerado. SVG: 57→41 descendentes. Quality do fonte/main: 155 suítes/629 testes; audit zero. Visual final: 16 vistas do radar, oito vistas adaptáveis, dois fluxos completos, 28 vistas compartilhadas e 31 estados da Mesa. Capturas finais inspecionadas; HTTP 200/SHA exato em 2026-10-24T10:18:44.9941387Z. Não inferir FPS/INP ou autorização real; NEX-009/010/011 preservados. Fechamento documental confirma a própria publicação na PR correspondente."
+    },
+    {
+      "id": "NEX-036",
+      "title": "Ficha: registros de identidade, vínculos e instrumentos de estado",
+      "domain": "sheet",
+      "status": "active",
+      "priority": 7,
+      "dependsOn": [
+        "NEX-035"
+      ],
+      "acceptance": [
+        "Dar acesso independente aos vínculos, com rótulos persistentes e leitura integral no celular.",
+        "Organizar identidade em registros complementares, sem esticar cartões curtos.",
+        "Separar leitura, ajuste e efeitos de Equilíbrio; mostrar contexto derivado de Exposição sem alterar regras.",
+        "Conferir 320/390/820/1440, vínculos longos/múltiplos, edição/leitura, abas, foco, portais e movimento reduzido.",
+        "Executar check e audit, inspecionar capturas e publicar somente após gates."
+      ],
+      "evidence": [
+        "src/components/sheet/sheet-identity-section.tsx",
+        "src/styles/sheet-premium.css",
+        "scripts/verify-sheet-design.mjs",
+        "docs/sheet-register-validation.json"
+      ],
+      "checkpoint": "Implementação em revisão local; sem integração ou publicação deste lote."
     }
   ],
   "decisions": [
@@ -1574,6 +1598,10 @@
     {
       "path": "docs/attribute-instrument-validation.json",
       "purpose": "NEX-035: comparação de build, radar SVG, estados da Ficha/Forma de Poder e publicação."
+    },
+    {
+      "path": "docs/sheet-register-validation.json",
+      "purpose": "Evidência de composição adaptável de Identidade, Vínculos, Equilíbrio e Exposição; NEX-036."
     }
   ],
   "integrationHistory": [
