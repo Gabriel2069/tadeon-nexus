@@ -1,7 +1,7 @@
 {
   "task": "NEX-037",
   "baseCommit": "788dbf3f86d69227abc5f8651a98f70ca5e110c8",
-  "status": "validated-locally-awaiting-source-gates",
+  "status": "integrated-and-production-confirmed",
   "design": {
     "radar": "Área física maior na Ficha e Forma de Poder; mantém SVG estático, escala mínima 0–5 e ampliação para valores excepcionais.",
     "equilibrium": "Eixo Medo–Inteireza–Conhecimento, régua de 21 posições, tensão direcional de sete marcas e efeitos existentes; sem representar Inteireza como penalidade."
@@ -337,7 +337,87 @@
     "Fixtures não certificam hardware, contas reais ou restauração; NEX-009/010/011 preservados."
   ],
   "integration": {
-    "state": "not-integrated",
-    "production": "not-published"
+    "pr": 304,
+    "branch": "feat/nex-037-equilibrium-axis",
+    "base": "main",
+    "baseCommit": "788dbf3f86d69227abc5f8651a98f70ca5e110c8",
+    "sourceCommit": "a5313016010e452565db8ec8d45ba83d73308f8a",
+    "headCommit": "a5313016010e452565db8ec8d45ba83d73308f8a",
+    "state": "integrated",
+    "mergeCommit": "870dd4cd2c9b2db5f565230cb672942b219ebf35",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40216726191",
+    "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40216726243",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40218832068",
+    "production": "confirmed",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40218832040",
+    "productionCommit": "870dd4cd2c9b2db5f565230cb672942b219ebf35",
+    "productionVerifiedAt": "2026-10-25T17:57:48.9704100Z",
+    "productionHttpStatus": 200
+  },
+  "source": {
+    "commit": "a5313016010e452565db8ec8d45ba83d73308f8a",
+    "tree": "3ee978b20fd5881b09468fefc70cc33bef7a004b",
+    "quality": {
+      "id": 40216726191,
+      "job": 121239361839,
+      "head": "a5313016010e452565db8ec8d45ba83d73308f8a",
+      "conclusion": "success",
+      "suites": 156,
+      "tests": 632,
+      "audit": 0
+    },
+    "visual": {
+      "id": 40216726243,
+      "job": 121239362103,
+      "head": "a5313016010e452565db8ec8d45ba83d73308f8a",
+      "conclusion": "success",
+      "adaptiveCases": 8,
+      "radarCases": 16,
+      "completeEditableWidths": [
+        320,
+        1440
+      ]
+    },
+    "artifact": {
+      "id": 12609270043,
+      "name": "visual-review",
+      "size_in_bytes": 80347873,
+      "url": "https://api.github.com/repos/Gabriel2069/tadeon-nexus/actions/artifacts/12609270043",
+      "archive_download_url": "https://api.github.com/repos/Gabriel2069/tadeon-nexus/actions/artifacts/12609270043/zip",
+      "expired": false,
+      "created_at": "2026-10-25T17:54:31Z",
+      "expires_at": "2026-11-01T17:54:27Z",
+      "updated_at": "2026-10-25T17:54:31Z",
+      "digest": "sha256:b74c38e33072894bd6369bf898100e06b215decfb400a48157a1449f7520a2a7",
+      "workflow_run": {
+        "id": 40216726243,
+        "repository_id": 1284491281,
+        "head_repository_id": 1284491281,
+        "head_branch": "feat/nex-037-equilibrium-axis",
+        "head_sha": "a5313016010e452565db8ec8d45ba83d73308f8a"
+      },
+      "verifiedSha256": "b74c38e33072894bd6369bf898100e06b215decfb400a48157a1449f7520a2a7",
+      "pngs": 193
+    }
+  },
+  "manualInspection": {
+    "head": "a5313016010e452565db8ec8d45ba83d73308f8a",
+    "files": [
+      "radar-base/radar-320-base.png",
+      "radar-base/radar-1440-base.png",
+      "sheet-adaptive/equilibrium-integrity-editable-320.png",
+      "sheet-adaptive/equilibrium-pressure-1440.png",
+      "sheet-adaptive/states-editable-390.png",
+      "radar-power/radar-320-power.png"
+    ],
+    "result": "Inspecionadas: radar maior, rótulos contidos, eixo neutro/direcional coerente e painel estável; nenhuma regressão visual bloqueante observada.",
+    "inspectedAt": "2026-10-25T17:55:59.245Z"
+  },
+  "production": {
+    "sha": "870dd4cd2c9b2db5f565230cb672942b219ebf35",
+    "httpStatus": 200,
+    "verifiedAt": "2026-10-25T17:57:48.9704100Z",
+    "httpLine": "2026-10-25T17:57:48.9703375Z Attempt 1/12: HTTP 200, build 870dd4cd2c9b2db5f565230cb672942b219ebf35.",
+    "confirmationLine": "2026-10-25T17:57:48.9704100Z Production confirmed at SHA 870dd4cd2c9b2db5f565230cb672942b219ebf35."
   }
 }
