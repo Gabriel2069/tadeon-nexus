@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-24; referência de runtime: `2068aee18164e3272a4e938a42b2f7f8b73260a7`. PR #300 em `feat/nex-035-attribute-instrument`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-24; referência de runtime: `e01ebf04ffea0e23e7ec0fe29728b76954531646`. PR #302 em `feat/nex-036-sheet-composition`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -45,7 +45,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-033 | Fluidez: presença e movimento dos menus compartilhados | Integrado | 7 | popup | NEX-032 |
 | NEX-034 | Ficha e celular: hierarquia, instrumentos e composição adaptável | Integrado | 7 | sheet | NEX-033 |
 | NEX-035 | Atributos: instrumento vetorial leve e leitura acessível | Integrado | 7 | sheet | NEX-034 |
-| NEX-036 | Ficha: registros de identidade, vínculos e instrumentos de estado | Em andamento | 7 | sheet | NEX-035 |
+| NEX-036 | Ficha: registros de identidade, vínculos e instrumentos de estado | Integrado | 7 | sheet | NEX-035 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -354,7 +354,7 @@ Evidências: [src/components/sheet/attribute-radar.tsx](../src/components/sheet/
 - Conferir 320/390/820/1440, vínculos longos/múltiplos, edição/leitura, abas, foco, portais e movimento reduzido.
 - Executar check e audit, inspecionar capturas e publicar somente após gates.
 
-Evidências: [src/components/sheet/sheet-identity-section.tsx](../src/components/sheet/sheet-identity-section.tsx), [src/styles/sheet-premium.css](../src/styles/sheet-premium.css), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [docs/sheet-register-validation.json](../docs/sheet-register-validation.json).
+Evidências: [src/components/sheet/sheet-identity-section.tsx](../src/components/sheet/sheet-identity-section.tsx), [src/styles/sheet-premium.css](../src/styles/sheet-premium.css), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [docs/sheet-register-validation.json](../docs/sheet-register-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/302), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40148827926), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40150710642).
 
 ## Decisões vigentes
 
