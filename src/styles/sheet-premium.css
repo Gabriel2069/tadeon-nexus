@@ -1860,7 +1860,7 @@
 
 /* Identity: foundation followed by independent narrative and relationship registers. */
 .tadeon-sheet-core-grid { align-items: start; }
-.tadeon-identity-register { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); align-items: start; gap: 1.25rem; margin-top: 1rem; }
+.tadeon-identity-register { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 1.25rem; margin-top: 1rem; }
 .tadeon-identity-lead { display: flex; align-items: center; gap: .8rem; margin-bottom: 1.25rem; }
 .tadeon-identity-sigil { display: grid; flex-shrink: 0; width: 3rem; height: 3rem; place-items: center; color: var(--primary); }
 .tadeon-identity-sigil svg { width: 2.8rem; height: 2.8rem; }
@@ -1870,15 +1870,15 @@
 .tadeon-identity-link-count svg { width: .9rem; height: .9rem; color: var(--primary); }
 .tadeon-identity-link-count span { font: 500 1.3rem/1.2 var(--font-inter); font-variant-numeric: tabular-nums; }
 .tadeon-identity-link-count small { grid-column: 1 / -1; color: var(--muted-foreground); font: 400 .65rem/1.5 var(--font-inter); }
-.tadeon-identity-foundation { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .9rem; }
+.tadeon-identity-foundation { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .9rem; }
 .tadeon-sheet-field { display: grid; align-content: start; gap: .4rem; min-width: 0; }
 .tadeon-sheet-field > label { color: var(--muted-foreground); font: 500 .7rem/1.4 var(--font-inter); letter-spacing: .03em; }
 .tadeon-sheet-field > input { min-height: 44px; font-size: 1rem; }
 .tadeon-sheet-field > textarea { min-height: 4.5rem; resize: vertical; font-size: 1rem; }
 .tadeon-sheet-section :is(input, textarea, [role="combobox"]):disabled { opacity: 1; color: var(--foreground); }
 :where(.tadeon-identity-section) .tadeon-sheet-field > textarea { field-sizing: content; height: auto; min-height: 44px; font-size: 1rem; line-height: 1.5; }
-.tadeon-identity-field--name { grid-column: span 2; grid-row: span 2; display: grid; grid-template-rows: auto 1fr; }
-.tadeon-identity-field--occupation { grid-column: span 2; }
+.tadeon-identity-field--name { grid-column: 1 / -1; grid-row: auto; display: grid; grid-template-rows: auto 1fr; }
+.tadeon-identity-field--occupation { grid-column: 1 / -1; }
 .tadeon-identity-field--name > textarea { min-height: 5.5rem; border-color: rgb(233 227 213 / 18%); font: 500 clamp(1.6rem, 3vw, 2.25rem)/1.25 var(--font-cinzel); letter-spacing: -.02em; }
 .tadeon-identity-axis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-top: .75rem; padding: .75rem 0; border-block: 1px solid rgb(233 227 213 / 12%); }
 .tadeon-identity-axis > :first-child { grid-column: 1 / -1; }
@@ -1938,9 +1938,6 @@
   .tadeon-sheet-section__toggle:hover { border-color: rgb(var(--section-rgb) / 45%); }
   .tadeon-sheet-jump:hover { color: var(--foreground); background: rgb(233 227 213 / 6%); }
 }
-@media (min-width: 768px) and (max-width: 1179px) {
-  .tadeon-identity-register { grid-template-columns: minmax(0, 1fr); }
-}
 @media (max-width: 767px) {
   .tadeon-sheet-jumpbar { gap: .75rem; }
   .tadeon-sheet-jumpbar__links { display: none; }
@@ -1954,12 +1951,8 @@
   .tadeon-identity-lead { flex-wrap: wrap; gap: .6rem; }
   .tadeon-identity-sigil { display: none; }
   .tadeon-identity-lead__detail { font-size: .75rem; }
-  .tadeon-identity-foundation { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .tadeon-identity-field--name { grid-column: 1 / -1; grid-row: auto; }
-  .tadeon-identity-field--occupation { grid-column: 1 / -1; }
   .tadeon-identity-axis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tadeon-identity-axis > :first-child { grid-column: 1 / -1; }
-  .tadeon-identity-register { grid-template-columns: minmax(0, 1fr); }
 }
 @media (prefers-reduced-motion: reduce) {
   .tadeon-sheet-section, .tadeon-sheet-section::before, .tadeon-sheet-fabric, .tadeon-sheet-fold-chevron, .tadeon-stat-block__fill { transition: none; }
@@ -2101,4 +2094,13 @@
 .tadeon-state-note { margin-top: .65rem; }
 @container (min-width: 500px) {
   .tadeon-tension-register { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+}
+
+@container (min-width: 650px) {
+  .tadeon-identity-foundation { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .tadeon-identity-field--name { grid-column: span 2; grid-row: span 2; }
+  .tadeon-identity-field--occupation { grid-column: span 2; }
+}
+@container (min-width: 800px) {
+  .tadeon-identity-register { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); }
 }
