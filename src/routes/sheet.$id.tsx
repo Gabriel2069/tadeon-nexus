@@ -2,6 +2,7 @@ import { PageHeader } from "@/components/page-header";
 import { PageState } from "@/components/page-state";
 import { ProtectedShell } from "@/components/protected-shell";
 import { SheetAttributesSection } from "@/components/sheet/sheet-attributes-section";
+import { SheetEquilibriumSection } from "@/components/sheet/sheet-equilibrium-section";
 import { SheetConditionsSection } from "@/components/sheet/sheet-conditions-section";
 import { SheetExperienceBridge } from "@/components/sheet/sheet-experience-bridge";
 import { SheetIdentitySection } from "@/components/sheet/sheet-identity-section";
@@ -168,21 +169,6 @@ const PLOT_RANGE_OPTIONS = ["Pessoal", "Curto", "Médio", "Longo", "Extremo"];
 
 function clampArmor(v: number): number {
   return clamp(Math.round(v), 0, 25);
-}
-
-// Equilibrium color from -10 (dark red) → 0 (deep green) → +10 (near white yellow)
-function equilibriumColor(value: number): string {
-  const v = clamp(value, -10, 10);
-  if (v === 0) return "hsl(140, 70%, 22%)"; // deep green at perfect balance
-  if (v < 0) {
-    const t = (v + 10) / 10; // 0..1
-    const l = 18 + t * 32;
-    return `hsl(0, 75%, ${l}%)`;
-  }
-  const t = v / 10;
-  const l = 55 + t * 40;
-  const s = 95 - t * 25;
-  return `hsl(50, ${s}%, ${l}%)`;
 }
 
 function SheetRoute() {
@@ -625,7 +611,6 @@ function SheetPage() {
   };
 
   const equilibrium = clamp(Math.round(sheet.equilibrium || 0), -10, 10);
-  const equilibriumPct = ((equilibrium + 10) / 20) * 100;
   const equilibriumEffect = getEquilibriumEffect(equilibrium);
   const tutorial = tutorialStep === null ? null : SHEET_TUTORIAL_STEPS[tutorialStep];
 
@@ -909,145 +894,21 @@ function SheetPage() {
             </div>
 
             <div className="tadeon-sheet-state-grid">
-              {/* Equilibrium card */}
-              <Section
-                id="equilibrio"
-                title="Equilíbrio"
-                className="tadeon-state-panel tadeon-equilibrium-panel"
-              >
-                <div className="tadeon-state-reading tadeon-state-reading--equilibrium">
-                  <span>
-                    <small className="tadeon-state-label">Estado atual</small>
-                    {equilibriumEffect.state}
-                  </span>
-                  <span className="font-bold text-foreground text-base">
-                    {equilibrium > 0 ? `+${equilibrium}` : equilibrium}
-                  </span>
-                </div>
-                <div
-                  className="tadeon-equilibrium-gauge relative w-full h-7 bg-secondary rounded-full overflow-hidden border border-border"
-                  aria-hidden="true"
-                >
-                  {/* Static dual gradient background */}
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background:
-                        "linear-gradient(90deg, hsl(0,75%,18%) 0%, hsl(0,75%,50%) 50%, hsl(50,95%,55%) 50%, hsl(50,70%,95%) 100%)",
-                      opacity: 0.25,
-                    }}
-                  />
-                  {/* Center marker */}
-                  <div className="absolute top-0 bottom-0 left-1/2 w-px bg-foreground/40" />
-                  {/* Indicator pill */}
-                  <div
-                    className="absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-2 border-background shadow-md transition-[background-color,box-shadow] duration-150"
-                    style={{
-                      left: `clamp(0px, calc(${equilibriumPct}% - .625rem), calc(100% - 1.25rem))`,
-                      background: equilibriumColor(equilibrium),
-                    }}
-                  />
-                </div>
-                <div className="tadeon-state-scale" aria-hidden="true">
-                  <span>−10 · Medo</span>
-                  <span>0</span>
-                  <span>Conhecimento · +10</span>
-                </div>
-                <div className="tadeon-state-controls">
-                  <Input
-                    type="number"
-                    min={role === "mestre" ? -10 : -5}
-                    max={role === "mestre" ? 10 : 5}
-                    disabled={!canEdit}
-                    value={sheet.equilibrium}
-                    aria-label="Equilíbrio atual"
-                    onChange={(e) =>
-                      update(
-                        "equilibrium",
-                        clamp(
-                          Number(e.target.value),
-                          role === "mestre" ? -10 : -5,
-                          role === "mestre" ? 10 : 5,
-                        ),
-                      )
-                    }
-                    className="w-24 h-8"
-                  />
-                  <input
-                    type="range"
-                    min={role === "mestre" ? -10 : -5}
-                    max={role === "mestre" ? 10 : 5}
-                    step={1}
-                    disabled={!canEdit}
-                    value={sheet.equilibrium}
-                    aria-label="Ajustar equilíbrio"
-                    onChange={(e) =>
-                      update(
-                        "equilibrium",
-                        clamp(
-                          Number(e.target.value),
-                          role === "mestre" ? -10 : -5,
-                          role === "mestre" ? 10 : 5,
-                        ),
-                      )
-                    }
-                    className="flex-1"
-                  />
-                </div>
-                <p className="mt-2 text-[10px] text-muted-foreground">
-                  Faixa comum: −5 a +5. Valores além disso exigem fonte excepcional e ajuste do
-                  mestre.
-                </p>
-                <div className="tadeon-tension-register">
-                  <div>
-                    <span className="tadeon-state-label">Pressão acumulada</span>
-                    <p>Ao atingir ±4, a tensão desloca o Equilíbrio em 1 ponto.</p>
-                  </div>
-                  <div className="tadeon-tension-control">
-                    <span className="text-[10px] uppercase tracking-wider font-cinzel text-amber-300">
-                      Tensão
-                    </span>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-11 w-11 p-0 text-amber-300"
-                      disabled={!canEdit}
-                      aria-label="Diminuir tensão"
-                      title="Diminuir tensão"
-                      onClick={() => addDirectionalTension(-1)}
-                    >
-                      <Minus className="w-3 h-3" />
-                    </Button>
-                    <span
-                      className={`min-w-[2.25rem] text-center text-sm font-bold ${sheet.drift === 0 ? "text-amber-200" : sheet.drift > 0 ? "text-yellow-300" : "text-red-300"}`}
-                    >
-                      {sheet.drift > 0 ? `+${sheet.drift}` : sheet.drift}
-                    </span>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-11 w-11 p-0 text-amber-300"
-                      disabled={!canEdit}
-                      aria-label="Aumentar tensão"
-                      title="Aumentar tensão"
-                      onClick={() => addDirectionalTension(1)}
-                    >
-                      <Plus className="w-3 h-3" />
-                    </Button>
-                    <span className="text-[10px] text-muted-foreground ml-1">−4…+4</span>
-                  </div>
-                </div>
-                <div className="tadeon-equilibrium-effects">
-                  <div>
-                    <span className="text-muted-foreground">Benefício</span>
-                    <p className="text-emerald-300">{equilibriumEffect.benefit}</p>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">Penalidade</span>
-                    <p className="text-amber-300">{equilibriumEffect.penalty}</p>
-                  </div>
-                </div>
-              </Section>
+              <SheetEquilibriumSection
+                value={sheet.equilibrium}
+                drift={sheet.drift}
+                effect={equilibriumEffect}
+                canEdit={canEdit}
+                minimum={role === "mestre" ? -10 : -5}
+                maximum={role === "mestre" ? 10 : 5}
+                onValueChange={(value) =>
+                  update(
+                    "equilibrium",
+                    clamp(value, role === "mestre" ? -10 : -5, role === "mestre" ? 10 : 5),
+                  )
+                }
+                onTension={addDirectionalTension}
+              />
 
               {/* Exposure card */}
               <Section

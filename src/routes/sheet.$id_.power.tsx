@@ -649,7 +649,7 @@ function PowerFormPage() {
                     </div>
                   ))}
                 </div>
-                <div className="h-48 sm:h-56">
+                <div className="tadeon-attribute-radar">
                   <AttributeRadar
                     data={radarData}
                     color="#fb923c"

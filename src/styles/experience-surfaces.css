@@ -116,7 +116,7 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-
    ================================================================ */
 
 .tadeon-surface,
-.tadeon-state-panel {
+.tadeon-state-panel:not([data-material-surface]) {
   transition:
     transform var(--tadeon-motion-hover) var(--tadeon-ease-material),
     border-color var(--tadeon-motion-hover) var(--tadeon-ease-material),
@@ -145,12 +145,12 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-
 }
 
 .tadeon-surface::before,
-.tadeon-state-panel::before {
+.tadeon-state-panel:not([data-material-surface])::before {
   transition: opacity var(--tadeon-motion-hover) ease, transform var(--tadeon-motion-hover) var(--tadeon-ease-material);
 }
 
 .tadeon-surface:hover::before,
-.tadeon-state-panel:hover::before {
+.tadeon-state-panel:not([data-material-surface]):hover::before {
   opacity: 1.18;
   transform: translate3d(1.5%, -1%, 0);
 }
@@ -494,14 +494,14 @@ button:not([data-material-surface], .tadeon-material-button)[aria-busy="true"] >
 
 @media (hover: none), (pointer: coarse) {
   .tadeon-surface:hover,
-  .tadeon-state-panel:hover,
+  .tadeon-state-panel:not([data-material-surface]):hover,
   .tadeon-sheet-condition-chip:hover {
     transform: none;
     filter: none;
   }
 
   .tadeon-surface:hover::before,
-  .tadeon-state-panel:hover::before {
+  .tadeon-state-panel:not([data-material-surface]):hover::before {
     transform: none;
     filter: none;
   }
@@ -741,7 +741,7 @@ button:not([data-material-surface], .tadeon-material-button)[aria-busy="true"] >
 }
 
 .tadeon-surface[data-tadeon-directed="true"]::before,
-.tadeon-state-panel[data-tadeon-directed="true"]::before,
+.tadeon-state-panel:not([data-material-surface])[data-tadeon-directed="true"]::before,
 .tadeon-auth-shell[data-tadeon-directed="true"]::before,
 .tadeon-skill-modifier-panel[data-tadeon-directed="true"]::before {
   transition:

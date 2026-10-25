@@ -296,3 +296,11 @@ A dependência Recharts continua disponível para o primitivo genérico de gráf
 SheetIdentitySection controla duas dobras independentes para narrativa e vínculos; dados/callbacks continuam sob a rota. Campos multilinha usam o primitivo existente, com dimensionamento pelo conteúdo e redimensionamento manual como fallback. sheet-premium.css mantém geometria/material: a consulta de largura dos vínculos pertence ao próprio cartão, evitando usar a largura de toda a coleção para comprimir o seletor de estado. A grade principal alinha instrumentos pelo início no desktop e preserva stretch horizontal no flex móvel.
 
 A rota mantém os cálculos, limites de cargo e autosave; o novo resumo de Exposição somente lê base, orçamento e limite derivados existentes. Nenhum esquema, serviço, permissão ou regra de RPG foi alterado. O verificador adaptável cobre múltiplos vínculos longos, edição/leitura, independência das dobras e sincronismo de entradas/faixas. Fixture não certifica hardware, teclado virtual ou contas reais.
+
+## Eixo de Equilíbrio e radar ampliado — NEX-037
+
+SheetEquilibriumSection é apresentação: recebe valor, tensão, efeito calculado, limites e callbacks. A rota continua dona do estado, clamps por cargo, limiar ±4, efeitos derivados e autosave. A cor interpolada que tratava zero como verde de saúde deixa a rota; a apresentação identifica os polos no componente. Nenhum cálculo persistido foi duplicado.
+
+sheet-premium.css é o proprietário da geometria do radar compartilhado, sem utilitários de altura concorrentes nos dois consumidores ou uma composição que o comprima em coluna. O SVG permanece memoizado, com 41 descendentes. A mesma folha mantém régua, ponteiro, marcas de tensão e efeitos de Equilíbrio; escritores antigos exclusivos do card foram retirados. O verificador registra a largura física da malha e testa ida/retorno de tensão, preservando as verificações de rótulos, portais e redução de movimento.
+
+As regras históricas de transform/filter/transição/promoção em painéis de estado passam a excluir superfícies com data-material-surface explícito nos três módulos que as escreviam. Sheet premium conserva o relevo local; hover e pressão não deslocam nem ampliam texto ou alvos do instrumento. A verificação mede esse contrato com movimento normal e reduzido.

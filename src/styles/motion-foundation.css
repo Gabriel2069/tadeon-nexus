@@ -66,12 +66,12 @@
 
 @media (hover: hover) and (pointer: fine) {
   .tadeon-surface[data-tadeon-material],
-  .tadeon-state-panel[data-tadeon-material] {
+  .tadeon-state-panel:not([data-material-surface])[data-tadeon-material] {
     transition: transform 220ms cubic-bezier(.23,1,.32,1), box-shadow 220ms cubic-bezier(.23,1,.32,1), border-color 180ms ease !important;
   }
 
   .tadeon-surface[data-tadeon-material]:hover { transform: translateY(-5px) !important; }
-  .tadeon-state-panel[data-tadeon-material="state"]:hover { transform: translateY(-3px) !important; }
+  .tadeon-state-panel:not([data-material-surface])[data-tadeon-material="state"]:hover { transform: translateY(-3px) !important; }
 }
 
 /* --------------------------------------------------------------------------
@@ -168,7 +168,7 @@
 }
 
 .tadeon-surface[data-tadeon-directed="true"],
-.tadeon-state-panel[data-tadeon-directed="true"] {
+.tadeon-state-panel:not([data-material-surface])[data-tadeon-directed="true"] {
   position: relative;
   will-change: transform;
 }
@@ -967,7 +967,7 @@
 
 /* Surfaces: elevation changes are continuous, not jumpy. */
 .tadeon-shell .tadeon-surface,
-.tadeon-shell .tadeon-state-panel,
+.tadeon-shell .tadeon-state-panel:not([data-material-surface]),
 .tadeon-shell .tadeon-user-row {
   transform-origin: center;
   backface-visibility: hidden;
@@ -975,12 +975,12 @@
 
 @media (hover: hover) and (pointer: fine) {
   .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:hover,
-  .tadeon-shell .tadeon-state-panel:hover {
+  .tadeon-shell .tadeon-state-panel:not([data-material-surface]):hover {
     transform: translateY(-2px) scale(1.003);
   }
 
   .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:active,
-  .tadeon-shell .tadeon-state-panel:active {
+  .tadeon-shell .tadeon-state-panel:not([data-material-surface]):active {
     transform: translateY(1px) scale(.997);
   }
 }

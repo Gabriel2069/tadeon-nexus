@@ -7,7 +7,7 @@ interface AttributeRadarProps {
   tickColor: string;
 }
 
-/** A small, static instrument. The surrounding card owns its dimensions and material. */
+/** A static instrument. The surrounding card owns its dimensions and material. */
 function AttributeRadar({ color, data, fillOpacity = 0.34, tickColor }: AttributeRadarProps) {
   const id = useId();
   const titleId = `${id}-title`;
@@ -16,7 +16,7 @@ function AttributeRadar({ color, data, fillOpacity = 0.34, tickColor }: Attribut
   const minimum = Math.min(0, ...data.map(({ value }) => (Number.isFinite(value) ? value : 0)));
   const point = (index: number, radius: number) => {
     const angle = -Math.PI / 2 + (index * Math.PI * 2) / data.length;
-    return { x: 130 + Math.cos(angle) * radius, y: 115 + Math.sin(angle) * radius };
+    return { x: 125 + Math.cos(angle) * radius, y: 125 + Math.sin(angle) * radius };
   };
   const points = (radius: number) =>
     data
@@ -26,14 +26,14 @@ function AttributeRadar({ color, data, fillOpacity = 0.34, tickColor }: Attribut
       })
       .join(" ");
   const values = data.map(({ value }, index) =>
-    point(index, (78 * ((Number.isFinite(value) ? value : 0) - minimum)) / (maximum - minimum)),
+    point(index, (90 * ((Number.isFinite(value) ? value : 0) - minimum)) / (maximum - minimum)),
   );
   return (
     <svg
       className="tadeon-attribute-radar-svg"
       width="100%"
       height="100%"
-      viewBox="0 0 260 230"
+      viewBox="0 0 250 250"
       role="img"
       aria-labelledby={titleId}
       aria-describedby={descriptionId}
@@ -48,11 +48,11 @@ function AttributeRadar({ color, data, fillOpacity = 0.34, tickColor }: Attribut
         <>
           <g fill="none" stroke={color} strokeWidth="0.8" strokeOpacity="0.22" aria-hidden="true">
             {[1, 2, 3, 4, 5].map((level) => (
-              <polygon key={level} points={points((78 * level) / 5)} />
+              <polygon key={level} points={points((90 * level) / 5)} />
             ))}
             {data.map(({ attr }, index) => {
-              const p = point(index, 78);
-              return <line key={attr} x1="130" y1="115" x2={p.x} y2={p.y} />;
+              const p = point(index, 90);
+              return <line key={attr} x1="125" y1="125" x2={p.x} y2={p.y} />;
             })}
           </g>
           <polygon
@@ -66,7 +66,7 @@ function AttributeRadar({ color, data, fillOpacity = 0.34, tickColor }: Attribut
           />
           <g aria-hidden="true">
             {data.map(({ attr, value }, index) => {
-              const label = point(index, 98),
+              const label = point(index, 108),
                 p = values[index];
               return (
                 <g key={attr}>
@@ -94,8 +94,8 @@ function AttributeRadar({ color, data, fillOpacity = 0.34, tickColor }: Attribut
               );
             })}
             <text
-              x="130"
-              y="224"
+              x="125"
+              y="244"
               textAnchor="middle"
               fill={tickColor}
               opacity="0.7"
@@ -108,8 +108,8 @@ function AttributeRadar({ color, data, fillOpacity = 0.34, tickColor }: Attribut
         </>
       ) : (
         <text
-          x="130"
-          y="115"
+          x="125"
+          y="125"
           textAnchor="middle"
           fill={tickColor}
           fontFamily="var(--font-inter), sans-serif"

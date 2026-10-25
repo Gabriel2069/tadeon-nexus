@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-24; referência de runtime: `e01ebf04ffea0e23e7ec0fe29728b76954531646`. PR #302 em `feat/nex-036-sheet-composition`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-25; referência de runtime: `e01ebf04ffea0e23e7ec0fe29728b76954531646`. PR #302 em `feat/nex-036-sheet-composition`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -46,6 +46,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-034 | Ficha e celular: hierarquia, instrumentos e composição adaptável | Integrado | 7 | sheet | NEX-033 |
 | NEX-035 | Atributos: instrumento vetorial leve e leitura acessível | Integrado | 7 | sheet | NEX-034 |
 | NEX-036 | Ficha: registros de identidade, vínculos e instrumentos de estado | Integrado | 7 | sheet | NEX-035 |
+| NEX-037 | Atributos em escala legível e Equilíbrio como relação entre polos | Validado na branch | 7 | sheet | NEX-036 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -355,6 +356,15 @@ Evidências: [src/components/sheet/attribute-radar.tsx](../src/components/sheet/
 - Executar check e audit, inspecionar capturas e publicar somente após gates.
 
 Evidências: [src/components/sheet/sheet-identity-section.tsx](../src/components/sheet/sheet-identity-section.tsx), [src/styles/sheet-premium.css](../src/styles/sheet-premium.css), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [docs/sheet-register-validation.json](../docs/sheet-register-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/302), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40148827926), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40150710642).
+
+## NEX-037 — Atributos em escala legível e Equilíbrio como relação entre polos
+
+- Aumentar a área real do radar e dos rótulos na Ficha e Forma de Poder, preservando SVG leve e escala dos valores.
+- Representar Equilíbrio como eixo Medo–Inteireza–Conhecimento, com tensão direcional e efeitos coerentes com os dados existentes.
+- Conservar limites de cargo, deslocamento em ±4, autosave e fonte única das regras.
+- Verificar tamanho físico do gráfico, quatro larguras, leitura/edição, limiares de tensão, foco e movimento reduzido; publicar após gates.
+
+Evidências: [src/components/sheet/sheet-equilibrium-section.tsx](../src/components/sheet/sheet-equilibrium-section.tsx), [src/components/sheet/sheet-equilibrium-section.test.tsx](../src/components/sheet/sheet-equilibrium-section.test.tsx), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [docs/equilibrium-axis-validation.json](../docs/equilibrium-axis-validation.json).
 
 ## Decisões vigentes
 

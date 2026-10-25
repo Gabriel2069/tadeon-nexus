@@ -1,0 +1,343 @@
+{
+  "task": "NEX-037",
+  "baseCommit": "788dbf3f86d69227abc5f8651a98f70ca5e110c8",
+  "status": "validated-locally-awaiting-source-gates",
+  "design": {
+    "radar": "Área física maior na Ficha e Forma de Poder; mantém SVG estático, escala mínima 0–5 e ampliação para valores excepcionais.",
+    "equilibrium": "Eixo Medo–Inteireza–Conhecimento, régua de 21 posições, tensão direcional de sete marcas e efeitos existentes; sem representar Inteireza como penalidade."
+  },
+  "local": {
+    "check": {
+      "suites": 156,
+      "tests": 632,
+      "passed": true
+    },
+    "radarBaseline": [
+      {
+        "width": 320,
+        "state": "editable",
+        "power": false,
+        "initial": {
+          "plotWidth": 112.2412109375,
+          "plotHeight": 106.747802734375,
+          "nodes": 41,
+          "width": 248,
+          "height": 174,
+          "x": 36,
+          "right": 284,
+          "viewBox": "0 0 260 230",
+          "accessibleName": "Distribuição dos atributos",
+          "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+          "labelsFit": true
+        },
+        "current": {
+          "plotWidth": 112.2412109375,
+          "plotHeight": 106.74771118164062,
+          "nodes": 41,
+          "width": 248,
+          "height": 174,
+          "x": 36,
+          "right": 284,
+          "viewBox": "0 0 260 230",
+          "accessibleName": "Distribuição dos atributos",
+          "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+          "labelsFit": true
+        },
+        "errors": []
+      },
+      {
+        "width": 1440,
+        "state": "editable",
+        "power": false,
+        "initial": {
+          "plotWidth": 112.2412109375,
+          "plotHeight": 106.7476806640625,
+          "nodes": 41,
+          "width": 433.34375,
+          "height": 174,
+          "x": 324.546875,
+          "right": 757.890625,
+          "viewBox": "0 0 260 230",
+          "accessibleName": "Distribuição dos atributos",
+          "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+          "labelsFit": true
+        },
+        "current": {
+          "plotWidth": 112.2412109375,
+          "plotHeight": 106.74771118164062,
+          "nodes": 41,
+          "width": 433.34375,
+          "height": 174,
+          "x": 324.546875,
+          "right": 757.890625,
+          "viewBox": "0 0 260 230",
+          "accessibleName": "Distribuição dos atributos",
+          "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+          "labelsFit": true
+        },
+        "errors": []
+      }
+    ],
+    "radarCurrent": [
+      {
+        "width": 320,
+        "state": "editable",
+        "power": false,
+        "initial": {
+          "plotWidth": 180.77682495117188,
+          "plotHeight": 171.928955078125,
+          "nodes": 41,
+          "width": 264,
+          "height": 264,
+          "x": 28,
+          "right": 292,
+          "viewBox": "0 0 250 250",
+          "accessibleName": "Distribuição dos atributos",
+          "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+          "labelsFit": true
+        },
+        "current": {
+          "plotWidth": 180.77682495117188,
+          "plotHeight": 171.92898559570312,
+          "nodes": 41,
+          "width": 264,
+          "height": 264,
+          "x": 28,
+          "right": 292,
+          "viewBox": "0 0 250 250",
+          "accessibleName": "Distribuição dos atributos",
+          "description": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+          "labelsFit": true
+        },
+        "errors": []
+      },
+      {
+        "width": 390,
+        "state": "editable",
+        "power": false,
+        "initial": {
+          "plotWidth": 222.54722595214844,
+          "plotHeight": 211.655029296875,
+          "nodes": 41,
+          "width": 325,
+          "height": 325,
+          "x": 28,
+          "right": 353,
+          "viewBox": "0 0 250 250",
+          "accessibleName": "Distribuição dos atributos",
+          "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+          "labelsFit": true
+        },
+        "current": {
+          "plotWidth": 222.54722595214844,
+          "plotHeight": 211.65496826171875,
+          "nodes": 41,
+          "width": 325,
+          "height": 325,
+          "x": 28,
+          "right": 353,
+          "viewBox": "0 0 250 250",
+          "accessibleName": "Distribuição dos atributos",
+          "description": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+          "labelsFit": true
+        },
+        "errors": []
+      },
+      {
+        "width": 820,
+        "state": "editable",
+        "power": false,
+        "initial": {
+          "plotWidth": 283.4909362792969,
+          "plotHeight": 269.615966796875,
+          "nodes": 41,
+          "width": 414,
+          "height": 414,
+          "x": 326.5,
+          "right": 740.5,
+          "viewBox": "0 0 250 250",
+          "accessibleName": "Distribuição dos atributos",
+          "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+          "labelsFit": true
+        },
+        "current": {
+          "plotWidth": 283.4909362792969,
+          "plotHeight": 269.6159362792969,
+          "nodes": 41,
+          "width": 414,
+          "height": 414,
+          "x": 326.5,
+          "right": 740.5,
+          "viewBox": "0 0 250 250",
+          "accessibleName": "Distribuição dos atributos",
+          "description": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+          "labelsFit": true
+        },
+        "errors": []
+      },
+      {
+        "width": 1440,
+        "state": "editable",
+        "power": false,
+        "initial": {
+          "plotWidth": 283.4909362792969,
+          "plotHeight": 269.615966796875,
+          "nodes": 41,
+          "width": 414,
+          "height": 414,
+          "x": 334.21875,
+          "right": 748.21875,
+          "viewBox": "0 0 250 250",
+          "accessibleName": "Distribuição dos atributos",
+          "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+          "labelsFit": true
+        },
+        "current": {
+          "plotWidth": 283.4909362792969,
+          "plotHeight": 269.6159362792969,
+          "nodes": 41,
+          "width": 414,
+          "height": 414,
+          "x": 334.21875,
+          "right": 748.21875,
+          "viewBox": "0 0 250 250",
+          "accessibleName": "Distribuição dos atributos",
+          "description": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+          "labelsFit": true
+        },
+        "errors": []
+      }
+    ],
+    "radarPowerCurrent": [
+      {
+        "width": 320,
+        "state": "editable",
+        "power": true,
+        "initial": {
+          "plotWidth": 179.4073028564453,
+          "plotHeight": 170.62646484375,
+          "nodes": 41,
+          "width": 262,
+          "height": 262,
+          "x": 29,
+          "right": 291,
+          "viewBox": "0 0 250 250",
+          "accessibleName": "Distribuição dos atributos",
+          "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+          "labelsFit": true
+        },
+        "current": {
+          "plotWidth": 179.4073028564453,
+          "plotHeight": 170.62646484375,
+          "nodes": 41,
+          "width": 262,
+          "height": 262,
+          "x": 29,
+          "right": 291,
+          "viewBox": "0 0 250 250",
+          "accessibleName": "Distribuição dos atributos",
+          "description": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+          "labelsFit": true
+        },
+        "errors": []
+      },
+      {
+        "width": 1440,
+        "state": "editable",
+        "power": true,
+        "initial": {
+          "plotWidth": 284.86041259765625,
+          "plotHeight": 270.91845703125,
+          "nodes": 41,
+          "width": 416,
+          "height": 416,
+          "x": 906.46875,
+          "right": 1322.46875,
+          "viewBox": "0 0 250 250",
+          "accessibleName": "Distribuição dos atributos",
+          "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+          "labelsFit": true
+        },
+        "current": {
+          "plotWidth": 284.86041259765625,
+          "plotHeight": 270.91839599609375,
+          "nodes": 41,
+          "width": 416,
+          "height": 416,
+          "x": 906.46875,
+          "right": 1322.46875,
+          "viewBox": "0 0 250 250",
+          "accessibleName": "Distribuição dos atributos",
+          "description": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+          "labelsFit": true
+        },
+        "errors": []
+      }
+    ],
+    "adaptiveReview": {
+      "cases": 8,
+      "widths": [
+        320,
+        390,
+        820,
+        1440
+      ],
+      "modes": [
+        "editable",
+        "readonly"
+      ],
+      "passed": true,
+      "finalRepeat": {
+        "widths": [
+          320,
+          1440
+        ],
+        "positiveTensionThreshold": true,
+        "negativeTensionThreshold": true,
+        "neutralNarrative": true,
+        "panelStableOnHoverAndPress": true
+      },
+      "completeEditableFlows": [
+        320,
+        1440
+      ]
+    },
+    "audit": {
+      "total": 0
+    },
+    "comparison": [
+      {
+        "width": 320,
+        "beforePlotWidth": 112.2412109375,
+        "afterPlotWidth": 180.77682495117188
+      },
+      {
+        "width": 1440,
+        "beforePlotWidth": 112.2412109375,
+        "afterPlotWidth": 283.4909362792969
+      }
+    ],
+    "manualInspection": [
+      "nex037-current/equilibrium-integrity-editable-320.png",
+      "nex037-current/equilibrium-pressure-320.png",
+      "nex037-final/equilibrium-integrity-editable-1440.png",
+      "nex037-radar-final/radar-320-base.png",
+      "nex037-radar-final/radar-1440-base.png",
+      "nex037-power-final/radar-320-power.png"
+    ]
+  },
+  "preserved": [
+    "Limites por cargo e callback de tensão existentes",
+    "Fonte de efeitos getEquilibriumEffect e autosave da rota",
+    "SVG memoizado sem observador, biblioteca de gráfico ou loop permanente",
+    "Botões, menus circulares, fontes e identidade aprovados"
+  ],
+  "limits": [
+    "Medidas de tamanho do gráfico não são FPS/INP.",
+    "Fixtures não certificam hardware, contas reais ou restauração; NEX-009/010/011 preservados."
+  ],
+  "integration": {
+    "state": "not-integrated",
+    "production": "not-published"
+  }
+}

@@ -312,8 +312,8 @@ try {
         await radar.waitFor({timeout:60000});
         await page.evaluate(()=>document.fonts.ready);
         const measure = () => radar.evaluate(e=>{
-          const r=e.getBoundingClientRect();
-          return {nodes:e.querySelectorAll('*').length,width:r.width,height:r.height,x:r.x,right:r.right,viewBox:e.getAttribute('viewBox'),accessibleName:e.querySelector('title')?.textContent??null,description:e.querySelector('desc')?.textContent??null,labelsFit:[...e.querySelectorAll('text')].every(t=>{const b=t.getBoundingClientRect();return b.left>=r.left-1 && b.right<=r.right+1 && b.top>=r.top-1 && b.bottom<=r.bottom+1;})};
+          const r=e.getBoundingClientRect(), plot=e.querySelector('g[fill="none"] > polygon:last-of-type')?.getBoundingClientRect();
+          return {plotWidth:plot?.width??0,plotHeight:plot?.height??0,nodes:e.querySelectorAll('*').length,width:r.width,height:r.height,x:r.x,right:r.right,viewBox:e.getAttribute('viewBox'),accessibleName:e.querySelector('title')?.textContent??null,description:e.querySelector('desc')?.textContent??null,labelsFit:[...e.querySelectorAll('text')].every(t=>{const b=t.getBoundingClientRect();return b.left>=r.left-1 && b.right<=r.right+1 && b.top>=r.top-1 && b.bottom<=r.bottom+1;})};
         });
         const initial=await measure();
         await radar.scrollIntoViewIfNeeded();
@@ -326,6 +326,7 @@ try {
           }
         }
         const current=await measure();
+        if(process.env.NEXUS_EXPECT_LARGE_RADAR==='1') assert(initial.plotWidth>=140 && initial.labelsFit, 'Radar plot has a useful physical size with contained labels: '+JSON.stringify(initial));
         assert(current.width>0 && current.x>=0 && current.right<=width+1,'Radar stays inside the viewport');
         assert(!errors.length,JSON.stringify(errors));
         results.push({width,state,power:process.env.NEXUS_POWER_HEADER==='1',initial,current,errors});
@@ -494,6 +495,34 @@ try {
                 const box=e.getBoundingClientRect(), marker=e.lastElementChild.getBoundingClientRect();
                 return marker.left>=box.left && marker.right<=box.right;
               }), "Equilibrium indicator stays contained at " + edge);
+            }
+            if (process.env.NEXUS_EXPECT_EQUILIBRIUM_AXIS === "1") {
+              await equilibrium.fill("0");
+              const tensionOutput=page.getByLabel('Tensão atual',{exact:true});
+              assert(await page.locator('#equilibrio h3').textContent()==='Inteireza', 'Neutral equilibrium is Inteireza');
+              assert(await page.locator('#equilibrio').getByText('Penalidade',{exact:true}).count()===0, 'Neutral narrative is not labelled as a penalty');
+              await page.locator('#equilibrio').scrollIntoViewIfNeeded();
+              if (width >= 768) {
+                await page.emulateMedia({reducedMotion:'no-preference'});
+                const panel=page.locator('#equilibrio');
+                await page.getByRole('button',{name:'Aumentar tensão',exact:true}).hover();
+                assert(await panel.evaluate(e=>getComputedStyle(e).transform==='none' && getComputedStyle(e).filter==='none'), 'Hovering a state control keeps the panel and type stable');
+                await page.locator('#equilibrio h3').hover();
+                await page.mouse.down();
+                assert(await panel.evaluate(e=>getComputedStyle(e).transform==='none'), 'Press never scales or moves the whole state panel');
+                await page.mouse.up();
+                await page.emulateMedia({reducedMotion:'reduce'});
+              }
+
+              await captureAdaptive({path:`${output}/equilibrium-integrity-${state}-${width}.png`});
+              for(let i=0;i<3;i++) await page.getByRole('button',{name:'Aumentar tensão',exact:true}).click();
+              assert(await tensionOutput.textContent()==='+3' && await equilibrium.inputValue()==='0','Three positive tension steps do not shift equilibrium');
+              await captureAdaptive({path:`${output}/equilibrium-pressure-${width}.png`});
+              await page.getByRole('button',{name:'Aumentar tensão',exact:true}).click();
+              assert(await tensionOutput.textContent()==='0' && await equilibrium.inputValue()==='1','Fourth positive tension step shifts equilibrium and resets tension');
+              for(let i=0;i<4;i++) await page.getByRole('button',{name:'Diminuir tensão',exact:true}).click();
+              assert(await tensionOutput.textContent()==='0' && await equilibrium.inputValue()==='0','Four negative tension steps return toward Medo and reset tension');
+              composition.equilibriumAxis={neutralNarrative:true,positiveThreshold:true,negativeThreshold:true};
             }
             await equilibrium.fill("-3");
             await exposure.fill("35");
