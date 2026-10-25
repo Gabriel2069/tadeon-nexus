@@ -325,7 +325,7 @@ export function SheetIdentitySection({
                     />
                   </label>
                   <label className="tadeon-link-row__status">
-                    <span>Estado da relação</span>
+                    <span>Estado do vínculo</span>
                     <Select
                       value={link.state}
                       disabled={!canEdit}
