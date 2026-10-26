@@ -1779,7 +1779,7 @@
 :where(.tadeon-identity-section) .tadeon-sheet-field > textarea { field-sizing: content; height: auto; min-height: 44px; font-size: 1rem; line-height: 1.5; }
 .tadeon-identity-field--name { grid-column: 1 / -1; grid-row: auto; display: grid; grid-template-rows: auto 1fr; }
 .tadeon-identity-field--occupation { grid-column: 1 / -1; }
-.tadeon-identity-field--name > textarea { min-height: 4.5rem; border-color: rgb(233 227 213 / 18%); font: 500 clamp(1.6rem, 3vw, 2.25rem)/1.25 var(--font-cinzel); letter-spacing: -.02em; }
+.tadeon-identity-field--name > textarea { min-height: 5rem; border-color: rgb(233 227 213 / 18%); font: 500 clamp(1.6rem, 3vw, 2.25rem)/1.25 var(--font-cinzel); letter-spacing: -.02em; }
 .tadeon-identity-axis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-top: .75rem; padding: .75rem 0; border-block: 1px solid rgb(233 227 213 / 12%); }
 .tadeon-identity-axis > :first-child { grid-column: 1 / -1; }
 .tadeon-identity-details { min-width: 0; margin-top: .75rem; }
@@ -1907,7 +1907,7 @@
  .tadeon-identity-lead { margin-bottom: .75rem; }
  .tadeon-identity-lead__detail { display: none; }
  .tadeon-identity-foundation { gap: .6rem; }
- .tadeon-identity-field--name > textarea { min-height: 4.5rem; font-size: 1.5rem; }
+ .tadeon-identity-field--name > textarea { min-height: 5rem; font-size: 1.5rem; }
  .tadeon-identity-axis { gap: .65rem; margin-top: .65rem; padding-block: .65rem; }
 
  .tadeon-defense-card { grid-column: 1 / -1; }

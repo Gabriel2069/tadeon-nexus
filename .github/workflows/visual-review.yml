@@ -33,6 +33,13 @@ jobs:
           npm ci
           npm install --prefix /tmp/tadeon-browser --no-audit --no-fund playwright@1.56.1
           /tmp/tadeon-browser/node_modules/.bin/playwright install --with-deps chromium
+      - name: Conferir dobras compartilhadas na Ficha
+        env:
+          NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/sheet-folds
+          NEXUS_AUDIT_WIDTHS: "[320,1440]"
+          NEXUS_AUDIT_STATES: '["editable"]'
+          NEXUS_SKIP_SCREENSHOTS: "1"
+        run: node scripts/verify-sheet-design.mjs
       - name: Comparar referência do acervo
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
@@ -122,13 +129,6 @@ jobs:
           NEXUS_EXPECT_LIGHT_RADAR: "1"
           NEXUS_EXPECT_LARGE_RADAR: "1"
           NEXUS_POWER_HEADER: "1"
-        run: node scripts/verify-sheet-design.mjs
-      - name: Conferir dobras compartilhadas na Ficha
-        env:
-          NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/sheet-folds
-          NEXUS_AUDIT_WIDTHS: "[320,1440]"
-          NEXUS_AUDIT_STATES: '["editable"]'
-          NEXUS_SKIP_SCREENSHOTS: "1"
         run: node scripts/verify-sheet-design.mjs
       - name: Publicar métricas de comparação no log
         if: always()
