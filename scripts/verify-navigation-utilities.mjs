@@ -24,7 +24,17 @@ const people = [
  {id:"00000000-0000-4000-8000-000000000003",full_name:"Cronista",email:"cronista@nexus.test",role:"espectador"}
 ];
 try {
- await new Promise((ok,fail)=>{server.stdout.on("data",b=>{if(b.toString().includes("Local:"))ok();});server.on("exit",code=>fail(new Error("Vite exited "+code)));setTimeout(()=>fail(new Error("Vite timeout")),30000).unref();});
+ let serverLog="", serverExit=null;
+ const capture=chunk=>{serverLog=(serverLog+chunk.toString()).slice(-12000);};
+ server.stdout.on("data",capture);server.stderr.on("data",capture);
+ server.on("exit",code=>{serverExit=code??-1;});
+ const startupDeadline=Date.now()+120000;let ready=false;
+ while(Date.now()<startupDeadline && serverExit===null) {
+  try {const response=await fetch(`http://127.0.0.1:${port}/`,{signal:AbortSignal.timeout(5000)});if(response.status<500){ready=true;break;}} catch {/* Server startup is still in progress. */}
+  await new Promise(resolve=>setTimeout(resolve,400));
+ }
+ writeFileSync(`${root}/server.log`,serverLog);
+ if(!ready)throw new Error(`Vite did not become ready. Exit: ${serverExit}\n${serverLog}`);
  for(const width of JSON.parse(process.env.NEXUS_AUDIT_WIDTHS||"[320,390,820,1440]")) {
   const context=await browser.newContext({viewport:{width,height:1000},hasTouch:width<768,reducedMotion:"reduce",acceptDownloads:true});
   const page=await context.newPage();page.setDefaultTimeout(45000);
