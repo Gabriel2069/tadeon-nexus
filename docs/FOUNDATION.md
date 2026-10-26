@@ -308,7 +308,7 @@ As regras históricas de transform/filter/transição/promoção em painéis de 
 
 ## Composição do dossiê e utilidades — NEX-038
 
-sheet-premium.css conserva a geometria do radar e passa a compor faixas de instrumentos pela largura real das seções. Retirados os escritores anteriores de colunas de core/state/perícias; o par de estados só alinha a moldura quando as duas dobras estão abertas. SheetExposureSection é apresentação por props: RankRow, orçamento e limite chegam da rota, cujos clamps, salvamento e autorização permanecem.
+sheet-premium.css conserva a geometria do radar e passa a compor faixas de instrumentos pela largura real das seções. Retirados os escritores anteriores de colunas de core/state/perícias e a altura mínima legada de 240px de Equilíbrio/Exposição em interface-layout; o par de estados só alinha a moldura quando as duas dobras estão abertas. SheetExposureSection é apresentação por props: RankRow, orçamento e limite chegam da rota, cujos clamps, salvamento e autorização permanecem.
 
 workspace.css é a autoridade de composição/material da lista de Usuários e dos registros de Offline/Backup. As declarações da lista saem dos módulos legados de shell, navegação, cabeçalhos e motion, incluindo cascata de entrada, deslocamento, filtro e animação ambiental. Não há novo observador ou módulo CSS. O Card conserva sua reflexão local e os controles mantêm seus primitivos.
 

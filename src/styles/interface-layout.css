@@ -1096,7 +1096,6 @@ html[data-tadeon-tabletop-selection-active="true"] :is(.tadeon-tabletop-studio,.
 /* Equilibrium and Exposure/Rank read as instruments instead of generic cards. */
 .tadeon-sheet-page :is(#equilibrio, #exposicao) {
   overflow: hidden !important;
-  min-height: 15rem;
   border-color: rgb(217 215 164 / 18%) !important;
   background:
     radial-gradient(circle at 88% 10%, rgb(217 215 164 / 9%), transparent 14rem),

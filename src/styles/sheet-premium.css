@@ -1885,12 +1885,12 @@
 
  .tadeon-sheet-experience-actions { display: contents; }
  .tadeon-stat-block { padding: .5rem; border-radius: .85rem; }
- .tadeon-stat-block__head { display: grid; grid-template-columns: minmax(0, 1fr); gap: .25rem; margin-bottom: .4rem; }
- .tadeon-stat-block__head > div:first-child { display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem .35rem; }
- .tadeon-stat-block__head h3 { margin: 0; font-size: 1.15rem; overflow-wrap: anywhere; }
- .tadeon-stat-block__caption { width: 100%; margin: 0; font-size: .7rem; }
- .tadeon-stat-block__dial { width: 3.75rem; height: 3.75rem; justify-self: center; }
- .tadeon-stat-block__value { font: 600 1.7rem/1 var(--font-cinzel); }
+ .tadeon-stat-block__head { display: grid; grid-template-columns: minmax(0, 1fr) 44px; align-items: center; gap: .25rem; margin-bottom: .4rem; }
+ .tadeon-stat-block__head > div:first-child { min-width: 0; }
+ .tadeon-stat-block__head h3 { margin: .15rem 0 0; font-size: 1rem; overflow-wrap: anywhere; }
+ .tadeon-stat-block__caption { display: none; }
+ .tadeon-stat-block__dial { width: 44px; height: 44px; justify-self: end; }
+ .tadeon-stat-block__value { font: 600 1.35rem/1 var(--font-cinzel); }
  .tadeon-stat-block input { font-size: 1rem; }
  .tadeon-stat-block__controls { grid-template-columns: minmax(0, 1fr); gap: .35rem; padding-top: .35rem; }
  .tadeon-stat-block__stepper { grid-template-columns: 44px minmax(18px, 1fr) 44px; }

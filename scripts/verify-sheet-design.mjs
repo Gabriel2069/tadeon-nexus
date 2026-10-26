@@ -561,7 +561,11 @@ try {
             assert(Math.abs(instrument.equilibrium.y-instrument.exposure.y)<1 && Math.abs(instrument.equilibrium.height-instrument.exposure.height)<1 && Math.abs(instrument.equilibrium.width-instrument.exposure.width)<1, "Open state pair has aligned frames and equal widths");
             assert(instrument.attributes.height<650 && instrument.vitals.height<650, "Wide instruments use horizontal composition instead of giant stacked cards");
             await page.getByRole('button',{name:'Recolher seção Equilíbrio',exact:true}).click();
-            await page.waitForFunction(() => document.querySelector('#equilibrio').getBoundingClientRect().height < 150, undefined, {timeout: 5000});
+            await page.waitForFunction(() => document.querySelector('#equilibrio').getBoundingClientRect().height < 150, undefined, {timeout: 5000}).catch(async error => {
+              const diagnostic=await page.locator('#equilibrio').evaluate(e=>{const c=getComputedStyle(e),b=e.querySelector('.tadeon-sheet-section__body');return {height:e.getBoundingClientRect().height,minHeight:c.minHeight,heightStyle:c.height,alignSelf:c.alignSelf,attributes:Object.fromEntries([...e.attributes].map(a=>[a.name,a.value])),parentAlign:getComputedStyle(e.parentElement).alignItems,body:b?{height:b.getBoundingClientRect().height,display:getComputedStyle(b).display,animation:getComputedStyle(b).animationName,state:b.dataset.state}:null};});
+              writeFileSync(`${output}/collapse-diagnostic.json`,JSON.stringify(diagnostic,null,2));
+              throw error;
+            });
             const collapsed=await page.locator('#equilibrio').boundingBox();
             assert(collapsed.height<150, "A collapsed instrument never stretches to the adjacent open panel");
             await page.getByRole('button',{name:'Expandir seção Equilíbrio',exact:true}).click();
