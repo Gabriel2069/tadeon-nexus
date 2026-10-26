@@ -384,3 +384,14 @@ Pedido de Tadeu em 25/10/2026: ampliar o gráfico de Atributos e tornar Equilíb
 Equilíbrio é uma posição entre Medo e Conhecimento; zero é Inteireza. A régua graduada distingue faixa comum e extremos, com ponteiro local e leitura de estado. Não usa um preenchimento de recurso nem trata o centro como vida/saúde. A tensão possui marcas nos dois sentidos e mostra sua direção; ao atingir ±4, o callback existente desloca a posição e zera o acúmulo. Benefícios e penalidades vêm da mesma tabela; em zero, as duas frases existentes compõem o efeito de Inteireza, sem chamar a descrição narrativa de penalidade.
 
 A composição permanece estática em repouso, com rótulos e campos acessíveis, alvos de 44px e cores acompanhadas de texto. Dados excepcionais continuam visíveis mesmo quando estão fora da faixa editável da conta; a faixa secundária fica bloqueada nesse caso, sem dar permissão adicional.
+
+
+## NEX-038 — Densidade e gramática de registros
+
+O [dossiê fornecido por Tadeu](VEU_E_TRAMA.md) aprofunda Véu & Trama como direção sistêmica. Fólios, instrumentos, placas, janelas e pranchas variam conforme a tarefa; não exigem formatos arbitrários nem uma reforma universal de cards. A referência orienta a evolução das áreas existentes, confrontada com seu estado real e com a fila canônica. Preservar símbolos, trio tipográfico, radar ampliado, eixo bipolar, rodas, cabeçalho compacto da Ficha e abertura única do Dashboard.
+
+Nesta rodada, Atributos forma uma faixa de controles e radar em cartões largos; Pontos Vitais distribui quatro recursos sobre uma proteção contínua. No celular, os recursos precedem os atributos e os controles mantêm 44px. O radar conserva raio, viewBox e limite de 26rem. Equilíbrio e Exposição compartilham largura e alinhamento de moldura no desktop aberto; recolher uma seção devolve altura intrínseca. Evitar tanto alturas fixas quanto esticar campos para preencher a caixa vizinha.
+
+Exposição ganha escala de contato de 0 a 100, marcações a cada cinco e indicação do valor real. Patamar, orçamento, limite, PM e recursos de base vêm da rota; não há uma segunda regra de progressão. Os efeitos de Equilíbrio e a tensão mantêm seu modelo. Condições/perícias preservam estados explícitos; História usa fólios de escrita com linhas internas alinhadas e Maestria mantém sua árvore, com rótulos legíveis.
+
+Offline distingue detalhes disponíveis e resumo, em um fólio com recursos num registro único; n/d significa não armazenado, sem fabricar zero. O diretório de Usuários reúne linhas contínuas e deixa acesso/administração em uma trilha própria, com confirmações existentes. Backup separa criação, histórico e importação por composição. Não movimentar a linha de uma pessoa ao operar o seletor de papel. Atributos data-state e aria-live não definem uma família tipográfica: PT Mono fica somente nos metadados explícitos, sem contaminar todo o conteúdo de uma aba por herança.

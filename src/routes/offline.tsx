@@ -140,11 +140,13 @@ function OfflinePageContent() {
           },
         ]}
       />
-      <p className="tadeon-utility-note">
-        <strong>Cópia deste dispositivo.</strong> O conteúdo é preparado ao abrir as áreas
-        conectado. Ler novamente a cópia não busca dados no servidor. O acesso depende da sessão
-        verificada; este arquivo não substitui um backup.
-      </p>
+      <details className="tadeon-utility-note">
+        <summary>Cópia deste dispositivo</summary>
+        <p>
+          O conteúdo é preparado ao abrir as áreas conectado. Ler novamente a cópia não busca dados
+          no servidor. O acesso depende da sessão verificada; este arquivo não substitui um backup.
+        </p>
+      </details>
       {hasCache && (
         <div className="tadeon-utility-toolbar">
           <label>
@@ -255,32 +257,32 @@ function OfflineSheetCard({
   const identity = (data?.identity_data ?? {}) as Record<string, unknown>;
 
   return (
-    <Card className="tadeon-surface rounded-2xl p-5">
-      <p className="tadeon-mono text-[10px] uppercase text-muted-foreground">
-        Exposição {summary.exposure ?? 0}
-      </p>
-      <h2 className="mt-2 font-cinzel text-xl font-semibold">{summary.name}</h2>
+    <Card className="tadeon-offline-folio" data-availability={data ? "details" : "summary"}>
+      <div className="tadeon-offline-folio__meta">
+        <span>Exposição {summary.exposure ?? 0}%</span>
+        <span>{data ? "Detalhes disponíveis" : "Somente resumo"}</span>
+      </div>
+      <h2 className="tadeon-offline-folio__title">{summary.name}</h2>
       <p className="text-xs text-muted-foreground">
         {summary.occupation || "Ocupação não definida"}
       </p>
       {data ? (
         <>
-          <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <dl className="tadeon-offline-resources" aria-label="Recursos locais">
             {[
               ["PV", stats.pv_current],
               ["PS", stats.ps_current],
               ["PE", stats.pe_current],
               ["PA", stats.pa_current],
             ].map(([label, value]) => (
-              <div
-                key={String(label)}
-                className="rounded-lg border border-border/60 p-2 text-center"
-              >
-                <p className="text-sm font-semibold">{Number(value ?? 0)}</p>
-                <p className="text-[10px] text-muted-foreground">{label}</p>
+              <div key={String(label)}>
+                <dt>{label}</dt>
+                <dd>
+                  {typeof value === "number" ? value : <span aria-label="Não armazenado">n/d</span>}
+                </dd>
               </div>
             ))}
-          </div>
+          </dl>
           <div className="mt-3 flex flex-wrap gap-1.5">
             {Object.entries(attributes).map(([key, value]) => (
               <Badge key={key} variant="secondary">
@@ -301,7 +303,7 @@ function OfflineSheetCard({
         </p>
       )}
       {online && (
-        <Button asChild variant="outline" size="sm" className="mt-5 w-full">
+        <Button asChild variant="outline" size="sm" className="tadeon-offline-folio__action">
           <Link to="/sheet/$id" params={{ id: summary.id }}>
             Abrir versão principal
           </Link>

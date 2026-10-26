@@ -107,14 +107,15 @@
         "src/components/sheet/sheet-inventory-organizer.tsx",
         "src/components/sheet/use-sheet-chrome.ts",
         "src/components/sheet/attribute-radar.tsx",
-        "src/components/sheet/sheet-equilibrium-section.tsx"
+        "src/components/sheet/sheet-equilibrium-section.tsx",
+        "src/components/sheet/sheet-exposure-section.tsx"
       ],
       "styles": [
         "src/styles/sheet-layout.css",
         "src/styles/sheet-premium.css",
         "src/styles/sheet-experience.css"
       ],
-      "boundary": "Rota mantém estado, regras derivadas, leitura cancelável e autosave por personagem/usuário/cargo. Seções recebem valores/callbacks; não criam estado persistido paralelo. Sheet UI mantém rótulos, recolhimento e material; sheet-premium é dono do material. Histórico/inventário montados explicitamente na ficha, sem observer de montagem; o arquivo de experiência ainda conserva bridges de outras áreas. NEX-025: vínculos recolhem no componente; títulos recebem foco para revelar seções. Dossiê em sheet-premium, densidade do modo Jogo em sheet-layout; índice sem captura global. useSheetChrome mede somente os dois cabeçalhos conhecidos do shell e a barra local, com observer e listener desmontados; publica offsets apenas no host da ficha. NEX-034/DEC-020: identidade relativa e compacta, títulos/ações com fluxo próprio, instrumentos por largura real do cartão e vínculos multilinha. Nenhuma mudança em regras ou persistência. NEX-035: radar SVG local, compartilhado pela Ficha e Forma de Poder; dados dependem somente de atributos e não mantêm observação de tamanho própria. NEX-036: narrativa e vínculos têm dobras independentes; registros adaptam-se à largura do cartão. Equilíbrio e Exposição somente apresentam valores e bases derivados pela rota, sem estado persistido paralelo. NEX-037: SheetEquilibriumSection apresenta o eixo e a tensão por props/callbacks; regras continuam na rota e getEquilibriumEffect. Radar compartilha proporção quadrada e largura útil na Ficha/Forma de Poder; motion legado deixa painéis materiais explícitos."
+      "boundary": "Rota mantém estado, regras derivadas, leitura cancelável e autosave por personagem/usuário/cargo. Seções recebem valores/callbacks; não criam estado persistido paralelo. Sheet UI mantém rótulos, recolhimento e material; sheet-premium é dono do material. Histórico/inventário montados explicitamente na ficha, sem observer de montagem; o arquivo de experiência ainda conserva bridges de outras áreas. NEX-025: vínculos recolhem no componente; títulos recebem foco para revelar seções. Dossiê em sheet-premium, densidade do modo Jogo em sheet-layout; índice sem captura global. useSheetChrome mede somente os dois cabeçalhos conhecidos do shell e a barra local, com observer e listener desmontados; publica offsets apenas no host da ficha. NEX-034/DEC-020: identidade relativa e compacta, títulos/ações com fluxo próprio, instrumentos por largura real do cartão e vínculos multilinha. Nenhuma mudança em regras ou persistência. NEX-035: radar SVG local, compartilhado pela Ficha e Forma de Poder; dados dependem somente de atributos e não mantêm observação de tamanho própria. NEX-036: narrativa e vínculos têm dobras independentes; registros adaptam-se à largura do cartão. Equilíbrio e Exposição somente apresentam valores e bases derivados pela rota, sem estado persistido paralelo. NEX-037: SheetEquilibriumSection apresenta o eixo e a tensão por props/callbacks; regras continuam na rota e getEquilibriumEffect. Radar compartilha proporção quadrada e largura útil na Ficha/Forma de Poder; motion legado deixa painéis materiais explícitos. NEX-038: instrumentos usam composição horizontal pela largura útil, e Equilíbrio/Exposição têm molduras alinhadas somente quando abertas. SheetExposureSection apresenta bases recebidas, sem cálculo paralelo. Densidade e tipografia das três guias pertencem a sheet-premium."
     },
     {
       "id": "knowledge",
@@ -189,7 +190,7 @@
         "src/styles/master-panel-navigation.css",
         "src/styles/workspace.css"
       ],
-      "boundary": "A rota é a única dona do rascunho, leitura e autorização via ProtectedShell. Overview recebe dados/callbacks; busca e paginação são locais. Navegação e identidade do cabeçalho recebem a mesma aba React; o router mantém URL. useMasterDraft salva snapshots manuais sem reconhecer edições posteriores. Master-panel-navigation.css é a única autoridade da navegação interna; workspace.css mantém os painéis."
+      "boundary": "A rota é a única dona do rascunho, leitura e autorização via ProtectedShell. Overview recebe dados/callbacks; busca e paginação são locais. Navegação e identidade do cabeçalho recebem a mesma aba React; o router mantém URL. useMasterDraft salva snapshots manuais sem reconhecer edições posteriores. Master-panel-navigation.css é a única autoridade da navegação interna; workspace.css mantém os painéis. Geometria/material da lista de Usuários pertencem exclusivamente a workspace.css; escritores anteriores de animação, filtro, geometria e tipografia da lista foram retirados dos módulos de shell/motion."
     },
     {
       "id": "session",
@@ -198,22 +199,27 @@
         "src/lib/auth.tsx",
         "src/lib/offline-cache.ts",
         "src/lib/feature-flags.ts",
-        "src/lib/latest-request.ts"
+        "src/lib/latest-request.ts",
+        "src/routes/offline.tsx"
       ],
       "styles": [
-        "src/styles/page-hero-parity.css"
+        "src/styles/page-hero-parity.css",
+        "src/styles/workspace.css"
       ],
-      "boundary": "Identidade verificada acompanha cada escrita; leituras antigas são invalidadas."
+      "boundary": "Identidade verificada acompanha cada escrita; leituras antigas são invalidadas. Consulta offline apresenta disponibilidade real, sem trocar valor ausente por zero; dobras e fólio não mudam o contrato do cache."
     },
     {
       "id": "assets",
       "name": "Assets e portabilidade",
       "code": [
         "src/lib/assets/asset-service.ts",
-        "src/lib/knowledge/knowledge-portability-service.ts"
+        "src/lib/knowledge/knowledge-portability-service.ts",
+        "src/routes/nexus-tools.tsx"
       ],
-      "styles": [],
-      "boundary": "URLs privadas não são identidade persistente. Rollout e provedores exigem evidência própria. Histórico de backup parcial por identidade verificada; dados antigos sem escopo não são adotados automaticamente."
+      "styles": [
+        "src/styles/workspace.css"
+      ],
+      "boundary": "URLs privadas não são identidade persistente. Rollout e provedores exigem evidência própria. Histórico de backup parcial por identidade verificada; dados antigos sem escopo não são adotados automaticamente. Organização visual de criação, histórico e importação pertence à rota/ workspace.css; não altera importação/restauração."
     },
     {
       "id": "delivery",
@@ -358,6 +364,11 @@
       "path": "docs/tabletop-workspace-map.md",
       "status": "active",
       "purpose": "NEX-007/021: controles, estado e destino dos bridges da Mesa; integração de contexto da página do Nexus."
+    },
+    {
+      "path": "docs/VEU_E_TRAMA.md",
+      "status": "reference",
+      "purpose": "Dossiê de direção fornecido por Tadeu em 25/10/2026: gramática formal e aprofundamento sistêmico. Confrontar cada hipótese com o runtime; a fila continua exclusivamente neste registro."
     }
   ],
   "tasks": [
@@ -1229,6 +1240,31 @@
         "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40218832040"
       ],
       "checkpoint": "Integrado pela PR #304, fonte a531301, merge 870dd4c. Radar quadrado e maior na Ficha/Forma de Poder, com raio de 90 unidades, rótulos contidos e 41 descendentes SVG. Comparação local: malha 112→181px em 320 e 112→283px em 1440. Equilíbrio como eixo Medo–Inteireza–Conhecimento; tensão direcional, limiar ±4 e efeitos existentes; Inteireza sem rótulo falso de penalidade. Regras/callbacks/autosave preservados. Painéis materiais sem deslocamento ou escala no hover/press após excluir 20 escritores históricos. Quality do fonte/main: 156 suítes/632 testes; audit zero. Visual final aprovado: oito vistas adaptáveis com tensão nos dois sentidos, 16 vistas do radar, dois fluxos completos e regressões compartilhadas/Mesa. Artefato e capturas finais inspecionados. HTTP 200/SHA exato em 2026-10-25T17:57:48.9704100Z. Geometria não é FPS/INP; fixtures não certificam hardware/contas reais. NEX-009/010/011 preservados; o fechamento documental confirma a própria publicação na PR correspondente."
+    },
+    {
+      "id": "NEX-038",
+      "title": "Dossiê compacto, Exposição graduada e utilidades como registros",
+      "domain": "sheet",
+      "status": "active",
+      "priority": 7,
+      "dependsOn": [
+        "NEX-037"
+      ],
+      "acceptance": [
+        "Recompor dimensões dos painéis da Ficha: radar ampliado preservado, instrumentos horizontais onde couberem e par Equilíbrio/Exposição alinhado sem altura fixa.",
+        "Dar a Exposição escala própria, bases reais e controles estáveis; refinar condições, perícias, Maestria e História com tipografia e organização adequadas.",
+        "Organizar Offline, Backup e Usuários por tarefa, com disponibilidade real, registro contínuo de pessoas, histórico e importação distintos; preservar contratos e confirmações.",
+        "Incorporar o dossiê Véu & Trama como referência do sistema, retirar escritores concorrentes e verificar quatro larguras, foco/portais/redução de movimento, check e audit antes da publicação."
+      ],
+      "evidence": [
+        "docs/VEU_E_TRAMA.md",
+        "docs/dossier-density-validation.json",
+        "src/components/sheet/sheet-exposure-section.tsx",
+        "src/components/sheet/sheet-exposure-section.test.tsx",
+        "scripts/verify-sheet-design.mjs",
+        "scripts/verify-navigation-utilities.mjs"
+      ],
+      "checkpoint": "Implementação e comparação local em andamento. Dimensões e estilos sob seus proprietários; ainda sem integração ou publicação desta rodada."
     }
   ],
   "decisions": [
@@ -1636,6 +1672,10 @@
     {
       "path": "docs/equilibrium-axis-validation.json",
       "purpose": "NEX-037: tamanho físico do radar, eixo conceitual de Equilíbrio, tensão direcional, gates e publicação."
+    },
+    {
+      "path": "docs/dossier-density-validation.json",
+      "purpose": "Evidência de NEX-038: proporções e encaixe dos instrumentos, Exposição, guias da Ficha e organização de Offline/Backup/Usuários; fixtures, integração e publicação separados."
     }
   ],
   "integrationHistory": [

@@ -189,9 +189,6 @@ html body .tadeon-focus-section-mark-icon {
 
 /* Ícones/controles dentro do Head acompanham a identidade da rota. */
 
-@media (max-width: 639px) {
-}
-
 /* ========================================================================== */
 /* DASHBOARD - OS TRÊS QUADROS SEMPRE LADO A LADO                            */
 /* ========================================================================== */
@@ -208,8 +205,6 @@ html body .tadeon-focus-section-mark-icon {
 /* Ícone da guia ativa permanece centralizado no sigilo do Mestre. */
 
 /* Phone: os quatro Heads reduzem juntos, sem alterar identidade visual. */
-@media (max-width: 639px) {
-}
 
 /* end-source: src/styles/head-tab-parity-217.css */
 /* source: src/styles/menu-color-source-219.css */
@@ -263,9 +258,6 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .mi
 /* O centro do símbolo sobe da metade do bloco para a faixa do h1. Como os
    quatro Heads agora usam a mesma escala, o eixo fica visualmente equivalente. */
 
-@media (max-width: 639px) {
-}
-
 /* end-source: src/styles/menu-color-source-219.css */
 /* source: src/styles/head-background-signatures-221.css */
 /* #221 - assinaturas de fundo distintas para Backup e Offline.
@@ -286,9 +278,6 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .mi
 /* Campo de ondas: três arcos deslocados, sem grade e sem moldura de arquivo. */
 
 /* Interferência inferior: barras quebradas em ritmos irregulares. */
-
-@media (max-width: 639px) {
-}
 
 /* end-source: src/styles/head-background-signatures-221.css */
 /* source: src/styles/head-rich-signatures-223.css */
@@ -331,12 +320,6 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .mi
 /* ========================================================================== */
 /* RESPONSIVIDADE - mesma riqueza, menor presença visual                     */
 /* ========================================================================== */
-
-@media (max-width: 639px) {
-}
-
-@media (prefers-reduced-motion: reduce) {
-}
 
 /* end-source: src/styles/head-rich-signatures-223.css */
 /* source: src/styles/head-system-audit-224.css */
@@ -418,15 +401,6 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .mi
 /* TABLET / MOBILE - preservar riqueza sem disputar espaço com conteúdo       */
 /* ========================================================================== */
 
-@media (min-width: 640px) and (max-width: 1023px) {
-}
-
-@media (max-width: 639px) {
-}
-
-@media (prefers-reduced-motion: reduce) {
-}
-
 /* end-source: src/styles/head-system-audit-224.css */
 /* source: src/styles/head-background-coverage-225.css */
 /* #225 - cobertura visual dos fundos.
@@ -452,19 +426,12 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .mi
 /* -------------------------------------------------------------------------- */
 /* Tablet: continua preenchido, mas desloca o centro visual para fora do texto */
 /* -------------------------------------------------------------------------- */
-@media (min-width: 640px) and (max-width: 1023px) {
-}
 
 /* Mobile: fundo ainda ocupa área perceptível, mas fica atrás do conteúdo. */
-@media (max-width: 639px) {
-}
 
 /* end-source: src/styles/head-background-coverage-225.css */
 /* source: src/styles/offline-meta-row-226.css */
 /* #226 - Offline: badges como subtítulo compacto acima do título. */
-
-@media (max-width: 639px) {
-}
 
 /* end-source: src/styles/offline-meta-row-226.css */
 /* source: src/styles/head-final-polish-227.css */
@@ -492,15 +459,8 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .mi
 /* Mesa: grade rica, mas leitura das ações permanece prioritária. */
 
 /* Tablet: reduz apenas contraste/alcance dos ornamentos, não sua identidade. */
-@media (min-width: 640px) and (max-width: 1023px) {
-}
 
 /* Mobile: compacta o ritmo vertical e preserva uma zona limpa ao redor do texto. */
-@media (max-width: 639px) {
-}
-
-@media (prefers-reduced-motion: reduce) {
-}
 
 /* end-source: src/styles/head-final-polish-227.css */
 /* source: src/styles/tab-accent-propagation-228.css */
@@ -730,40 +690,6 @@ html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users {
   --tab-complement-rgb: 217 215 164;
 }
 
-html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users .tadeon-user-row {
-  border-color: rgb(var(--tab-accent-rgb) / 20%);
-  background:
-    linear-gradient(110deg, rgb(var(--tab-accent-rgb) / 4.5%), transparent 42%),
-    rgb(255 255 255 / 2%);
-  box-shadow: inset 0 1px rgb(255 255 255 / 3%);
-  transition:
-    border-color var(--motion-fast) var(--ease-out),
-    background-color var(--motion-fast) var(--ease-out),
-    box-shadow var(--motion-fast) var(--ease-out),
-    transform var(--motion-press) var(--ease-out);
-}
-
-html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users .tadeon-user-row:hover {
-  border-color: rgb(var(--tab-accent-rgb) / 34%);
-  background:
-    linear-gradient(110deg, rgb(var(--tab-accent-rgb) / 8%), transparent 48%),
-    rgb(255 255 255 / 2.5%);
-  box-shadow:
-    0 16px 38px -34px rgb(var(--tab-accent-rgb) / 55%),
-    inset 0 1px rgb(255 255 255 / 4%);
-}
-
-html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users .tadeon-user-row__sigil {
-  border-color: rgb(var(--tab-accent-rgb) / 34%);
-  color: rgb(var(--tab-complement-rgb));
-  background:
-    radial-gradient(circle at 32% 24%, rgb(var(--tab-complement-rgb) / 10%), transparent 38%),
-    rgb(var(--tab-accent-rgb) / 10%);
-  box-shadow:
-    0 0 0 .22rem rgb(var(--tab-accent-rgb) / 3.5%),
-    inset 0 1px rgb(255 255 255 / 5%);
-}
-
 html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users [data-slot="select-trigger"] {
   border-color: rgb(var(--tab-accent-rgb) / 20%);
 }
@@ -776,30 +702,6 @@ html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users [data-slot
 html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users [data-slot="button"]:focus-visible {
   outline-color: rgb(var(--tab-accent-rgb) / 66%);
   box-shadow: 0 0 0 3px rgb(var(--tab-accent-rgb) / 10%);
-}
-
-html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users .tadeon-users-list > .tadeon-user-row::before {
-  position: absolute;
-  top: .8rem;
-  bottom: .8rem;
-  left: 0;
-  width: 2px;
-  border-radius: 999px;
-  background: linear-gradient(
-    180deg,
-    transparent,
-    rgb(var(--tab-accent-rgb) / 72%),
-    rgb(var(--tab-complement-rgb) / 40%),
-    transparent
-  );
-  opacity: .72;
-  pointer-events: none;
-  content: "";
-}
-
-html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users .tadeon-user-row {
-  position: relative;
-  overflow: hidden;
 }
 
 /* --------------------------------------------------------------------------
@@ -913,16 +815,14 @@ html body .tadeon-shell[data-section="Mesa Nexus"] #tadeon-main .tadeon-tabletop
 }
 
 @media (max-width: 639px) {
-  html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users .tadeon-user-row:hover,
-html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="card"]:not([data-material-surface]):hover {
+  html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="card"]:not([data-material-surface]):hover {
     box-shadow: inset 0 1px rgb(255 255 255 / 3%);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users .tadeon-user-row,
   html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="tabs-trigger"]:not([data-material-surface="tab"]),
-  html body .tadeon-shell[data-section="Mesa Nexus"] #tadeon-main .tadeon-tabletop-studio [data-slot="button"] {
+html body .tadeon-shell[data-section="Mesa Nexus"] #tadeon-main .tadeon-tabletop-studio [data-slot="button"] {
     transition: none !important;
   }
 }
@@ -934,7 +834,6 @@ html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [
    Decorative idle motion is deliberately slow and sparse. */
 
 /* Shared interactive micro-motion for the sections that recently gained color. */
-html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users .tadeon-user-row__sigil,
 html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="tabs-trigger"]:not([data-material-surface="tab"]) svg,
 html body .tadeon-shell[data-section="Mesa Nexus"] #tadeon-main .tadeon-tabletop-studio [data-slot="button"] > svg,
 html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="button"] > svg,
@@ -948,14 +847,6 @@ html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slo
 }
 
 /* Users: sigil has a tiny responsive lift, not a card jump. */
-html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users .tadeon-user-row:hover .tadeon-user-row__sigil {
-  transform: translateY(-1px) scale(1.025);
-  filter: drop-shadow(0 5px 9px rgb(var(--tab-accent-rgb) / 16%));
-}
-
-html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users .tadeon-user-row:focus-within .tadeon-user-row__sigil {
-  transform: scale(1.035);
-}
 
 /* Offline: active tab icon settles into place; hover gives a tiny signal nudge. */
 html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="tabs-trigger"]:not([data-material-surface="tab"]):hover svg {
@@ -995,11 +886,6 @@ html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot
   50% { opacity: .94; transform: scaleY(1); }
 }
 
-html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users .tadeon-users-list > .tadeon-user-row::before {
-  animation: tadeon-subtle-accent-breathe 5.8s ease-in-out infinite;
-  transform-origin: center;
-}
-
 /* Connection-readonly frame gets a very slow, almost imperceptible pulse.
    Online/offline semantic colors themselves are not animated. */
 @keyframes tadeon-offline-frame-pulse {
@@ -1036,25 +922,22 @@ html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slo
 }
 
 @media (hover: none), (pointer: coarse) {
-  html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users .tadeon-user-row:hover .tadeon-user-row__sigil,
   html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="tabs-trigger"]:not([data-material-surface="tab"]):hover svg,
-  html body .tadeon-shell[data-section="Mesa Nexus"] #tadeon-main .tadeon-tabletop-studio [data-slot="button"]:hover > svg,
-  html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="button"]:hover > svg,
-  html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slot="button"]:hover > svg,
-  html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="tabs-trigger"]:not([data-material-surface="tab"]):hover,
-  html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slot="tabs-trigger"]:not([data-material-surface="tab"]):hover {
+html body .tadeon-shell[data-section="Mesa Nexus"] #tadeon-main .tadeon-tabletop-studio [data-slot="button"]:hover > svg,
+html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="button"]:hover > svg,
+html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slot="button"]:hover > svg,
+html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="tabs-trigger"]:not([data-material-surface="tab"]):hover,
+html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slot="tabs-trigger"]:not([data-material-surface="tab"]):hover {
     transform: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users .tadeon-user-row__sigil,
   html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="tabs-trigger"]:not([data-material-surface="tab"]) svg,
-  html body .tadeon-shell[data-section="Mesa Nexus"] #tadeon-main .tadeon-tabletop-studio [data-slot="button"] > svg,
-  html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="button"] > svg,
-  html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slot="button"] > svg,
-  html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users .tadeon-users-list > .tadeon-user-row::before,
-  html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline > [data-slot="tabs"] > [data-slot="tabs-list"] {
+html body .tadeon-shell[data-section="Mesa Nexus"] #tadeon-main .tadeon-tabletop-studio [data-slot="button"] > svg,
+html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="button"] > svg,
+html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slot="button"] > svg,
+html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline > [data-slot="tabs"] > [data-slot="tabs-list"] {
     animation: none !important;
     transition: none !important;
     transform: none !important;
@@ -1082,7 +965,6 @@ html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slo
    ícones. Os movimentos continuam idênticos, mas o navegador pode liberar a GPU
    entre interações. */
 
-html body .tadeon-shell .tadeon-user-row__sigil,
 html body .tadeon-shell .tadeon-route-offline [data-slot="tabs-trigger"] svg,
 html body .tadeon-shell .tadeon-tabletop-studio [data-slot="button"] > svg,
 html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="button"] > svg,
@@ -1111,11 +993,10 @@ html body .tadeon-shell #tadeon-main :is(
 @media (hover: none), (pointer: coarse) {
 
 
-  html body .tadeon-shell[data-section="Usuários"] .tadeon-user-row:hover .tadeon-user-row__sigil,
   html body .tadeon-shell[data-section="Consulta offline"] [data-slot="tabs-trigger"]:not([data-material-surface="tab"]):hover svg,
-  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio [data-slot="button"]:hover > svg,
-  html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="button"]:hover > svg,
-  html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slot="button"]:hover > svg {
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio [data-slot="button"]:hover > svg,
+html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="button"]:hover > svg,
+html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slot="button"]:hover > svg {
     transform: none !important;
     filter: none !important;
   }
@@ -1128,8 +1009,6 @@ html body .tadeon-shell #tadeon-main :is(
 
 /* Em telas muito estreitas, evita que título + ações disputem espaço horizontal
    sem alterar a anatomia aprovada dos Heads. */
-@media (max-width: 419px) {
-}
 
 /* Acessibilidade de movimento: cobre também transições adicionadas pelas camadas
    cromáticas e o motion do Dashboard, não somente as animações contínuas. */
@@ -1239,9 +1118,6 @@ html body [data-slot="dialog-content"]:not([data-motion-surface]),
 }
 
 /* Decorative hero details respond gently to hover/focus without moving text. */
-
-@media (prefers-reduced-motion: reduce) {
-}
 
 /* end-source: src/styles/tadeon-final-responsive-weave.css */
 

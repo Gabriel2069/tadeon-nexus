@@ -285,6 +285,9 @@
 }
 
 .tadeon-defense-card {
+  grid-column: 1 / -1;
+  padding: .75rem;
+  border-color: rgb(59 130 246 / 24%);
   border-radius: 1rem;
   background-image:
     radial-gradient(circle at 10% 22%, rgb(59 130 246 / 12%), transparent 34%),
@@ -328,13 +331,6 @@
   border-top: 1px solid rgb(59 130 246 / 12%);
 }
 
-.tadeon-sheet-state-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
-  align-items: start;
-  gap: 0.75rem;
-}
-
 .tadeon-equilibrium-panel {
   background:
     radial-gradient(circle at 80% 10%, rgb(245 158 11 / 7%), transparent 30%),
@@ -354,7 +350,6 @@
 }
 
 .tadeon-condition-card {
-  min-height: 6.75rem;
   padding: 0.65rem;
 }
 
@@ -430,7 +425,7 @@
 }
 
 .tadeon-sheet-skill-tree .tadeon-skill-node {
-  min-height: 13.5rem;
+  min-height: 0;
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 3%);
   transition:
     transform 200ms ease,
@@ -442,7 +437,6 @@
 @media (hover: hover) and (pointer: fine) {
   .tadeon-condition-card:hover,
   .tadeon-sheet-skill-tree .tadeon-skill-node:hover {
-    transform: translateY(-2px);
     border-color: color-mix(in srgb, var(--primary) 28%, var(--border));
     box-shadow:
       0 22px 46px -36px rgb(0 0 0 / 98%),
@@ -454,12 +448,6 @@
     box-shadow:
       inset 0 1px rgb(255 255 255 / 5%),
       0 14px 30px -21px rgb(168 85 247 / 84%);
-  }
-}
-
-@media (min-width: 1280px) {
-  .tadeon-sheet-core-grid {
-    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
   }
 }
 
@@ -501,10 +489,6 @@
     letter-spacing: normal;
   }
 
-  .tadeon-sheet-core-grid {
-    gap: 0.7rem;
-  }
-
 
   .tadeon-defense-card__score,
   .tadeon-defense-card__score svg {
@@ -514,11 +498,6 @@
 
   .tadeon-defense-card__score span {
     font-size: 1.2rem;
-  }
-
-  .tadeon-sheet-state-grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.7rem;
   }
 
   .tadeon-condition-grid {
@@ -630,9 +609,6 @@
     box-shadow: 0 12px 28px -18px var(--primary);
   }
 
-  .tadeon-sheet-skill-tree .tadeon-skill-node {
-    min-height: 0;
-  }
 
   .tadeon-vp-tabs-list {
     position: sticky;
@@ -654,10 +630,7 @@
 @media (min-width: 390px) and (max-width: 639px) {
 
   .tadeon-attribute-tile__value {
-    font-size: 0.92rem;
-  }
-
-  .tadeon-attribute-tile .tadeon-stepper-button {
+    font-size: 1.35rem;
   }
 }
 
@@ -674,10 +647,6 @@
   .tadeon-sheet-tabs-list [role="tab"] svg {
     width: 0.875rem;
     height: 0.875rem;
-  }
-
-  .tadeon-vitals-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .tadeon-condition-card {
@@ -917,17 +886,8 @@
 
 /* Character-sheet refinement ~ balanced odd grids, authored motion and narrative tabs. */
 
-.tadeon-sheet-tabs [role="tabpanel"][data-state="active"] {
-}
-
 .tadeon-attribute-tile__label {
   justify-self: center;
-}
-
-.tadeon-skill-groups-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 0.65rem;
 }
 
 .tadeon-skill-group {
@@ -971,24 +931,22 @@
 .tadeon-skill-group__heading small,
 .tadeon-skill-group__heading h4 {
   display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 .tadeon-skill-group__heading small {
   color: var(--muted-foreground);
   font-family: var(--font-mono);
-  font-size: 0.48rem;
-  letter-spacing: 0.075em;
+  font-size: 0.6875rem;
+  letter-spacing: 0.025em;
   text-transform: uppercase;
 }
 
 .tadeon-skill-group__heading h4 {
   margin-top: 0.05rem;
   font-family: var(--font-cinzel);
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
 .tadeon-skill-group__list {
@@ -1000,7 +958,7 @@
 .tadeon-skill-row {
   display: grid;
   width: 100%;
-  min-height: 2.25rem;
+  min-height: 44px;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.55rem;
@@ -1017,10 +975,8 @@
 }
 
 .tadeon-skill-row__name {
-  overflow: hidden;
-  font-size: 0.68rem;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-size: .875rem;
+  overflow-wrap: anywhere;
 }
 
 .tadeon-skill-row__value {
@@ -1032,7 +988,7 @@
   border-radius: 999px;
   background: rgb(0 0 0 / 18%);
   font-family: var(--font-mono);
-  font-size: 0.6rem;
+  font-size: .8125rem;
 }
 
 .tadeon-description-hero {
@@ -1040,7 +996,7 @@
   align-items: center;
   gap: 1rem;
   overflow: hidden;
-  padding: clamp(1rem, 2.2vw, 1.5rem);
+  padding: clamp(.875rem, 1.7vw, 1.125rem);
   border-color: rgb(217 215 164 / 17%);
   border-radius: 1.25rem 0.44rem 1.25rem 0.44rem;
   background:
@@ -1110,9 +1066,8 @@
 .tadeon-description-hero__progress span {
   color: var(--muted-foreground);
   font-family: var(--font-mono);
-  font-size: 0.5rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: .6875rem;
+  letter-spacing: .025em;
 }
 
 .tadeon-description-grid {
@@ -1122,7 +1077,6 @@
 }
 
 .tadeon-description-card {
-  --description-index: 0;
   position: relative;
   overflow: hidden;
   min-width: 0;
@@ -1132,8 +1086,9 @@
   background:
     radial-gradient(circle at 100% 0%, rgb(113 107 123 / 8%), transparent 12rem),
     rgb(12 15 19 / 92%);
-  animation: tadeon-description-card-enter 360ms var(--ease-out) both;
-  animation-delay: calc(var(--description-index) * 55ms);
+  display: grid;
+  grid-template-rows: auto auto minmax(9rem, 1fr);
+  align-content: start;
   transition:
     border-color var(--motion-fast) var(--ease-out),
     box-shadow var(--motion-panel) var(--ease-out),
@@ -1174,14 +1129,13 @@
 .tadeon-description-card__count {
   color: var(--muted-foreground);
   font-family: var(--font-mono);
-  font-size: 0.5rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: .6875rem;
+  letter-spacing: .025em;
 }
 
 .tadeon-description-card h3 {
   margin-top: 0.05rem;
-  font-size: 0.92rem;
+  font-size: 1.35rem;
 }
 
 .tadeon-description-card__count {
@@ -1189,11 +1143,10 @@
 }
 
 .tadeon-description-card__prompt {
-  min-height: 2.5rem;
-  margin: 0.75rem 0 0.6rem;
+  margin: .6rem 0;
   color: var(--muted-foreground);
-  font-size: 0.7rem;
-  line-height: 1.55;
+  font-size: .875rem;
+  line-height: 1.5;
 }
 
 .tadeon-description-card textarea {
@@ -1350,7 +1303,7 @@
 .tadeon-vital-upgrades__heading > p {
   max-width: 22rem;
   color: var(--muted-foreground);
-  font-size: 0.65rem;
+  font-size: .8125rem;
   text-align: right;
 }
 
@@ -1382,7 +1335,7 @@
   gap: 0.35rem;
   color: var(--muted-foreground);
   font-family: var(--font-mono);
-  font-size: 0.5rem;
+  font-size: .6875rem;
 }
 
 .tadeon-vital-upgrade__label {
@@ -1450,7 +1403,7 @@
 .tadeon-skill-branch__heading p:not(.tadeon-eyebrow) {
   margin-top: 0.18rem;
   color: var(--muted-foreground);
-  font-size: 0.65rem;
+  font-size: .8125rem;
   line-height: 1.5;
 }
 
@@ -1513,8 +1466,7 @@
 }
 
 .tadeon-skill-node {
-  animation: tadeon-skill-node-enter 320ms var(--ease-out) both;
-  animation-delay: calc(var(--skill-index) * 42ms);
+  border-top-color: rgb(233 227 213 / 18%);
 }
 
 .tadeon-skill-node[data-state="purchased"] {
@@ -1527,7 +1479,6 @@
   .tadeon-skill-row:not(:disabled):hover {
     border-color: rgb(var(--skill-group-rgb) / 17%);
     background: rgb(var(--skill-group-rgb) / 7%);
-    transform: translateX(2px);
   }
 
   .tadeon-description-card:hover,
@@ -1536,7 +1487,6 @@
     box-shadow:
       0 28px 68px -52px rgb(0 0 0 / 100%),
       inset 0 1px rgb(255 255 255 / 4%);
-    transform: translateY(-2px);
   }
 
   .tadeon-description-card:hover .tadeon-description-card__icon,
@@ -1547,52 +1497,6 @@
   .tadeon-skill-tier__trigger:hover {
     border-color: color-mix(in srgb, var(--branch-color) 15%, var(--border));
     background: color-mix(in srgb, var(--branch-color) 5%, transparent);
-  }
-}
-
-@media (min-width: 640px) and (max-width: 1023px) {
-  .tadeon-skill-groups-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .tadeon-skill-group {
-    grid-column: span 2;
-  }
-
-  .tadeon-skill-group:last-child:nth-child(odd) {
-    grid-column: 2 / span 2;
-  }
-}
-
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .tadeon-skill-groups-grid {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-  }
-
-  .tadeon-skill-group {
-    grid-column: span 4;
-  }
-
-  .tadeon-skill-group:nth-last-child(2):nth-child(3n + 1) {
-    grid-column: 3 / span 4;
-  }
-
-  .tadeon-skill-group:last-child:nth-child(3n + 2) {
-    grid-column: 7 / span 4;
-  }
-}
-
-@media (min-width: 1280px) {
-  .tadeon-skill-groups-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 768px) and (max-width: 1179px) {
-
-  .tadeon-sheet-core-grid,
-  .tadeon-sheet-state-grid {
-    grid-template-columns: minmax(0, 1fr) !important;
   }
 }
 
@@ -1740,9 +1644,9 @@
   container-type: inline-size;
   min-width: 0;
   overflow: clip;
-  padding: clamp(1rem, 2.2vw, 1.5rem);
+  padding: clamp(.875rem, 1.7vw, 1.125rem);
   border: 1px solid rgb(233 227 213 / 16%);
-  border-radius: 1.35rem;
+  border-radius: 1.05rem;
   background: linear-gradient(150deg, rgb(233 227 213 / 5%), transparent 35%), #131820;
   box-shadow: inset 0 1px rgb(233 227 213 / 12%), inset 0 -1px rgb(0 0 0 / 70%), var(--shadow-relief);
   font-family: var(--font-inter);
@@ -1787,8 +1691,8 @@
   align-items: center;
   gap: .75rem;
   min-width: 0;
-  margin-bottom: 1.25rem;
-  padding-bottom: 1rem;
+  margin-bottom: .875rem;
+  padding-bottom: .65rem;
   border-bottom: 1px solid rgb(233 227 213 / 10%);
 }
 .tadeon-sheet-section__title-group { display: flex; align-items: center; gap: .8rem; min-width: 0; flex: 1; }
@@ -1856,9 +1760,8 @@
 .tadeon-overview-metric small { display: block; color: var(--muted-foreground); font: 400 .75rem/1.5 var(--font-inter); overflow-wrap: anywhere; }
 
 /* Identity: foundation followed by independent narrative and relationship registers. */
-.tadeon-sheet-core-grid { align-items: start; }
-.tadeon-identity-register { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 1.25rem; margin-top: 1rem; }
-.tadeon-identity-lead { display: flex; align-items: center; gap: .8rem; margin-bottom: 1.25rem; }
+.tadeon-identity-register { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: .875rem; margin-top: .75rem; }
+.tadeon-identity-lead { display: flex; align-items: center; gap: .8rem; margin-bottom: .75rem; }
 .tadeon-identity-sigil { display: grid; flex-shrink: 0; width: 3rem; height: 3rem; place-items: center; color: var(--primary); }
 .tadeon-identity-sigil svg { width: 2.8rem; height: 2.8rem; }
 .tadeon-identity-lead .tadeon-eyebrow { font: 500 .7rem/1.4 var(--font-inter); color: var(--primary); letter-spacing: .1em; }
@@ -1876,7 +1779,7 @@
 :where(.tadeon-identity-section) .tadeon-sheet-field > textarea { field-sizing: content; height: auto; min-height: 44px; font-size: 1rem; line-height: 1.5; }
 .tadeon-identity-field--name { grid-column: 1 / -1; grid-row: auto; display: grid; grid-template-rows: auto 1fr; }
 .tadeon-identity-field--occupation { grid-column: 1 / -1; }
-.tadeon-identity-field--name > textarea { min-height: 5.5rem; border-color: rgb(233 227 213 / 18%); font: 500 clamp(1.6rem, 3vw, 2.25rem)/1.25 var(--font-cinzel); letter-spacing: -.02em; }
+.tadeon-identity-field--name > textarea { min-height: 5rem; border-color: rgb(233 227 213 / 18%); font: 500 clamp(1.6rem, 3vw, 2.25rem)/1.25 var(--font-cinzel); letter-spacing: -.02em; }
 .tadeon-identity-axis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-top: .75rem; padding: .75rem 0; border-block: 1px solid rgb(233 227 213 / 12%); }
 .tadeon-identity-axis > :first-child { grid-column: 1 / -1; }
 .tadeon-identity-details { min-width: 0; margin-top: .75rem; }
@@ -1978,18 +1881,16 @@
  .tadeon-sheet-commandbar__actions .tadeon-sheet-game-button span { display: none; }
  .tadeon-sheet-commandbar__actions :is(button, a) { min-height: 44px; min-width: 44px; }
  .tadeon-sheet-commandbar__actions > button { flex: 0 0 auto; }
- .tadeon-sheet-core-grid { display: flex; flex-direction: column; align-items: stretch; }
  .tadeon-vitals-panel { order: -1; }
 
  .tadeon-sheet-experience-actions { display: contents; }
- .tadeon-vitals-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
  .tadeon-stat-block { padding: .5rem; border-radius: .85rem; }
- .tadeon-stat-block__head { display: grid; grid-template-columns: minmax(0, 1fr); gap: .25rem; margin-bottom: .4rem; }
- .tadeon-stat-block__head > div:first-child { display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem .35rem; }
- .tadeon-stat-block__head h3 { margin: 0; font-size: 1.15rem; overflow-wrap: anywhere; }
- .tadeon-stat-block__caption { width: 100%; margin: 0; font-size: .7rem; }
- .tadeon-stat-block__dial { width: 3.75rem; height: 3.75rem; justify-self: center; }
- .tadeon-stat-block__value { font: 600 1.7rem/1 var(--font-cinzel); }
+ .tadeon-stat-block__head { display: grid; grid-template-columns: minmax(0, 1fr) 44px; align-items: center; gap: .25rem; margin-bottom: .4rem; }
+ .tadeon-stat-block__head > div:first-child { min-width: 0; }
+ .tadeon-stat-block__head h3 { margin: .15rem 0 0; font-size: 1rem; overflow-wrap: anywhere; }
+ .tadeon-stat-block__caption { display: none; }
+ .tadeon-stat-block__dial { width: 44px; height: 44px; justify-self: end; }
+ .tadeon-stat-block__value { font: 600 1.35rem/1 var(--font-cinzel); }
  .tadeon-stat-block input { font-size: 1rem; }
  .tadeon-stat-block__controls { grid-template-columns: minmax(0, 1fr); gap: .35rem; padding-top: .35rem; }
  .tadeon-stat-block__stepper { grid-template-columns: 44px minmax(18px, 1fr) 44px; }
@@ -2008,12 +1909,8 @@
  .tadeon-identity-foundation { gap: .6rem; }
  .tadeon-identity-field--name > textarea { min-height: 5rem; font-size: 1.5rem; }
  .tadeon-identity-axis { gap: .65rem; margin-top: .65rem; padding-block: .65rem; }
- .tadeon-sheet-core-grid { gap: .75rem; }
 
  .tadeon-defense-card { grid-column: 1 / -1; }
-}
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
- .tadeon-sheet-mobile-dock { }
 }
 @media (prefers-reduced-transparency: reduce) {
  .tadeon-sheet-mobile-dock { -webkit-backdrop-filter: none; }
@@ -2021,7 +1918,7 @@
 /* Attribute controls use one responsive instrument grid, including game mode. */
 .tadeon-attribute-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: .6rem;
   overflow: visible;
   padding: 0;
@@ -2052,13 +1949,17 @@
 
 .tadeon-state-controls { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); align-items: center; gap: .75rem; margin-top: .75rem; }
 .tadeon-state-controls :is(input[type="number"], input[type="range"]) { width: 100%; min-width: 0; min-height: 44px; font-size: 1rem; }
-.tadeon-attributes-composition { display: grid; gap: .85rem; align-items: center; }
-.tadeon-attribute-remaining { display: grid; place-items: center; align-content: center; padding: .75rem; min-height: 6rem; text-align: center; color: var(--muted-foreground); font: 400 .8125rem/1.5 var(--font-inter); }
+.tadeon-attributes-composition { display: grid; gap: 1rem; align-items: center; }
+.tadeon-attribute-remaining { display: grid; place-items: center; align-content: center; padding: .5rem; min-height: 4rem; text-align: center; color: var(--muted-foreground); font: 400 .8125rem/1.5 var(--font-inter); }
 
 .tadeon-link-row { container-type: inline-size; }
 @container (min-width: 20rem) {
   .tadeon-link-row__relation { grid-column: 1; }
   .tadeon-link-row__status { grid-column: 2; align-self: start; min-width: 9rem; }
+}
+
+@container (min-width: 420px) {
+  .tadeon-attribute-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 /* Wider folios keep actions beside the title; narrow ones give them a full row. */
@@ -2071,8 +1972,10 @@
 /* State instruments expose current readings before adjustment and derived context. */
 .tadeon-state-label { display: block; margin-bottom: .25rem; color: var(--muted-foreground); font: 500 .75rem/1.5 var(--font-inter); }
 .tadeon-state-unit { margin-left: .15rem; font-size: 1rem; }
-.tadeon-exposure-derived { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; margin-top: 1rem; }
-.tadeon-exposure-derived > div { min-width: 0; padding: .65rem .75rem; border-left: 1px solid rgb(239 68 68 / 35%); background: linear-gradient(110deg, rgb(239 68 68 / 5%), transparent); }
+.tadeon-exposure-derived { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; margin-top: .75rem; border-block: 1px solid rgb(239 68 68 / 18%); }
+.tadeon-exposure-derived > div { min-width: 0; padding: .6rem .75rem; background: linear-gradient(110deg, rgb(239 68 68 / 4%), transparent); }
+.tadeon-exposure-derived > :nth-child(even) { border-left: 1px solid rgb(239 68 68 / 15%); }
+.tadeon-exposure-derived > :nth-child(n+3) { border-top: 1px solid rgb(239 68 68 / 15%); }
 .tadeon-exposure-derived dt { color: var(--muted-foreground); font: 400 .8125rem/1.4 var(--font-inter); }
 .tadeon-exposure-derived dd { margin-top: .25rem; color: var(--foreground); font: 500 1.5rem/1.2 var(--font-inter); font-variant-numeric: tabular-nums; }
 .tadeon-state-note { margin-top: .65rem; color: var(--muted-foreground); font: 400 .8125rem/1.5 var(--font-inter); }
@@ -2094,12 +1997,12 @@
 .tadeon-equilibrium-reading h3 { color: var(--foreground); font: 600 clamp(1.5rem, 2.5vw, 2rem)/1.15 var(--font-cinzel); overflow-wrap: anywhere; }
 .tadeon-equilibrium-value { display: grid; min-width: 3.25rem; min-height: 3.25rem; padding: .35rem; place-items: center; color: rgb(var(--equilibrium-rgb)); border: 1px solid rgb(var(--equilibrium-rgb) / 30%); border-radius: 50%; background: radial-gradient(ellipse at 35% 0, rgb(var(--equilibrium-rgb) / 10%), transparent 65%), #10161d; box-shadow: inset 0 1px rgb(233 227 213 / 9%), 0 5px 12px -8px #000; font: 500 1.8rem/1 var(--font-cinzel); font-variant-numeric: tabular-nums; }
 .tadeon-equilibrium-exception { display: inline-block; margin-top: .4rem; color: rgb(var(--equilibrium-rgb)); font: 400 .75rem/1.4 var(--font-inter); }
-.tadeon-equilibrium-axis { margin-top: 1.2rem; }
+.tadeon-equilibrium-axis { margin-top: .75rem; }
 .tadeon-equilibrium-poles { display: flex; align-items: baseline; justify-content: space-between; gap: .5rem; color: var(--foreground); font: 600 1.15rem/1.2 var(--font-cinzel); }
 .tadeon-equilibrium-poles > :first-child { color: #fca5a5; }
 .tadeon-equilibrium-poles > :last-child { color: #d9d7a4; text-align: right; }
 .tadeon-equilibrium-poles small { color: var(--muted-foreground); font: 400 .75rem/1.4 var(--font-inter); }
-.tadeon-equilibrium-gauge { position: relative; display: flex; justify-content: space-between; align-items: center; height: 3rem; margin-top: .35rem; padding-inline: .5rem; border-block: 1px solid rgb(233 227 213 / 9%); background: linear-gradient(90deg, rgb(248 113 113 / 7%), transparent 45%, transparent 55%, rgb(217 215 164 / 7%)); }
+.tadeon-equilibrium-gauge { position: relative; display: flex; justify-content: space-between; align-items: center; height: 2.5rem; margin-top: .35rem; padding-inline: .5rem; border-block: 1px solid rgb(233 227 213 / 9%); background: linear-gradient(90deg, rgb(248 113 113 / 7%), transparent 45%, transparent 55%, rgb(217 215 164 / 7%)); }
 .tadeon-equilibrium-gauge::before { position: absolute; inset: 0 25%; content: ""; border-inline: 1px dashed rgb(233 227 213 / 16%); background: rgb(233 227 213 / 3%); pointer-events: none; }
 .tadeon-equilibrium-tick { width: 1px; height: .5rem; flex-shrink: 0; background: rgb(233 227 213 / 28%); }
 .tadeon-equilibrium-tick[data-major] { height: 1.25rem; background: rgb(233 227 213 / 58%); }
@@ -2114,7 +2017,7 @@
 .tadeon-equilibrium-center > :last-child { left: 75%; }
 .tadeon-equilibrium-range-note, .tadeon-equilibrium-tension p { color: var(--muted-foreground); font: 400 .8125rem/1.5 var(--font-inter); }
 .tadeon-equilibrium-range-note { margin-top: .5rem; }
-.tadeon-equilibrium-tension { margin-top: 1rem; padding: .75rem; border: 1px solid rgb(var(--equilibrium-rgb) / 19%); border-radius: .9rem; background: linear-gradient(120deg, rgb(var(--equilibrium-rgb) / 4%), transparent), #10161d; }
+.tadeon-equilibrium-tension { margin-top: .75rem; padding: .6rem .75rem; border-block: 1px solid rgb(var(--equilibrium-rgb) / 19%); background: linear-gradient(120deg, rgb(var(--equilibrium-rgb) / 4%), transparent), #10161d; }
 .tadeon-equilibrium-tension__heading { display: flex; align-items: baseline; justify-content: space-between; gap: .5rem; }
 .tadeon-equilibrium-tension__heading > span { color: var(--foreground); font: 600 1.2rem/1.2 var(--font-cinzel); }
 .tadeon-equilibrium-tension__heading > small { color: var(--muted-foreground); font: 400 .75rem/1.4 var(--font-inter); text-align: right; }
@@ -2127,7 +2030,7 @@
 .tadeon-tension-stitches > [data-active][data-tension-step^="-"] { background: #fca5a5; }
 .tadeon-tension-stitches > [data-active]:not([data-tension-step^="-"]) { background: #d9d7a4; }
 .tadeon-tension-stitches > [data-active][data-tension-step="0"] { background: var(--foreground); }
-.tadeon-equilibrium-effects { display: grid; gap: .75rem; margin-top: 1rem; font: 400 .9375rem/1.5 var(--font-inter); }
+.tadeon-equilibrium-effects { display: grid; gap: .65rem; margin-top: .75rem; font: 400 .875rem/1.5 var(--font-inter); }
 .tadeon-equilibrium-effects > div { min-width: 0; padding-left: .75rem; border-left: 1px solid rgb(var(--equilibrium-rgb) / 35%); }
 .tadeon-equilibrium-effects span { display: block; margin-bottom: .25rem; color: var(--muted-foreground); font-size: .75rem; }
 .tadeon-equilibrium-effects p { color: var(--foreground); }
@@ -2135,4 +2038,52 @@
 @container (min-width: 460px) {
   .tadeon-equilibrium-effects { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tadeon-equilibrium-integrity { grid-column: 1 / -1; }
+}
+
+/* Instrument composition follows useful card width; the enlarged radar keeps its scale. */
+.tadeon-sheet-core-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: .75rem; }
+.tadeon-sheet-state-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; gap: .75rem; }
+.tadeon-sheet-state-grid:has([data-collapsed="true"]) { align-items: start; }
+.tadeon-vitals-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
+.tadeon-skill-groups-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); align-items: start; gap: .65rem; }
+.tadeon-exposure-reading { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .75rem; }
+.tadeon-exposure-reading h3 { font: 600 clamp(1.5rem, 2.5vw, 2rem)/1.15 var(--font-cinzel); color: var(--foreground); }
+.tadeon-exposure-reading strong { font: 500 2.25rem/1 var(--font-cinzel); color: #fca5a5; font-variant-numeric: tabular-nums; }
+.tadeon-exposure-reading strong small { margin-left: .2rem; font: 400 1rem/1 var(--font-inter); color: var(--muted-foreground); }
+.tadeon-exposure-scale { margin-top: .75rem; }
+.tadeon-exposure-scale__ticks { position: relative; display: flex; justify-content: space-between; align-items: end; height: 3.25rem; padding: .5rem; border-block: 1px solid rgb(239 68 68 / 18%); background: linear-gradient(90deg, rgb(213 168 91 / 7%), rgb(239 68 68 / 6%)); }
+.tadeon-exposure-scale__ticks > [data-major] { height: 75%; }
+.tadeon-exposure-scale__ticks > span:not(.tadeon-exposure-scale__marker) { width: 2px; min-height: 45%; flex-shrink: 0; background: rgb(233 227 213 / 18%); }
+.tadeon-exposure-scale__ticks > span[data-reached] { background: #d5a85b; box-shadow: 0 0 7px rgb(213 168 91 / 14%); }
+.tadeon-exposure-scale__marker { position: absolute; top: -.1rem; width: 1rem; height: 1rem; background: #fca5a5; clip-path: polygon(15% 0, 85% 0, 50% 60%); }
+.tadeon-exposure-scale__labels { display: flex; justify-content: space-between; margin-top: .4rem; color: var(--muted-foreground); font: 400 .75rem/1.4 var(--font-inter); }
+.tadeon-exposure-resources { margin-top: .875rem; }
+.tadeon-exposure-resources dl { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); padding-block: .4rem; border-block: 1px solid rgb(233 227 213 / 10%); }
+.tadeon-exposure-resources dl > div { text-align: center; min-width: 0; }
+.tadeon-exposure-resources dl > div + div { border-left: 1px solid rgb(233 227 213 / 10%); }
+.tadeon-exposure-resources dt { color: var(--muted-foreground); font: 400 .75rem/1.5 var(--font-inter); }
+.tadeon-exposure-resources dd { color: var(--foreground); font: 500 1.25rem/1.4 var(--font-inter); font-variant-numeric: tabular-nums; }
+@container (min-width: 800px) {
+  .tadeon-attributes-composition { grid-template-columns: minmax(0, 1fr) minmax(0, 26rem); }
+}
+@container (min-width: 850px) {
+  .tadeon-vitals-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .tadeon-defense-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(12rem, .65fr); align-items: center; gap: .5rem 1.25rem; }
+  .tadeon-defense-card__inputs { margin: 0; padding: 0; border: 0; }
+  .tadeon-defense-card > [data-slot="collapsible"], .tadeon-defense-card > :last-child { grid-column: 1 / -1; }
+}
+@media (max-width: 1179px) {
+  .tadeon-sheet-state-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 767px) {
+  .tadeon-description-card__heading { grid-template-columns: auto minmax(0, 1fr); }
+  .tadeon-description-card__count { grid-column: 2; }
+}
+@media (max-width: 767px) {
+  @container (max-width: 320px) {
+    .tadeon-stat-block__head > div:first-child { display: contents; }
+    .tadeon-stat-block__symbol { grid-column: 1; grid-row: 1; align-self: center; }
+    .tadeon-stat-block__head h3 { grid-column: 1 / -1; grid-row: 2; }
+    .tadeon-stat-block__dial { grid-column: 2; grid-row: 1; }
+  }
 }

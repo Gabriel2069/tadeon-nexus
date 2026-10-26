@@ -1,22 +1,9 @@
 import { useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  Check,
-  ChevronDown,
-  Gauge,
-  Lock,
-  Minus,
-  Plus,
-  Sparkles,
-  WandSparkles,
-} from "lucide-react";
+import { Check, ChevronDown, Gauge, Lock, Minus, Plus, Sparkles, WandSparkles } from "lucide-react";
 import { toast } from "sonner";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import type {
   Attributes,
   SkillBranch,
@@ -231,7 +218,10 @@ export function SkillTreeTab({
             <strong>{remaining}</strong>
           </div>
         </div>
-        <div className="tadeon-skill-ledger__progress" aria-label={`${pmSpent} de ${totalPM} PM investidos`}>
+        <div
+          className="tadeon-skill-ledger__progress"
+          aria-label={`${pmSpent} de ${totalPM} PM investidos`}
+        >
           <div
             className="tadeon-skill-ledger__progress-value"
             style={{ width: `${Math.min(100, (pmSpent / Math.max(1, totalPM)) * 100)}%` }}
@@ -257,7 +247,9 @@ export function SkillTreeTab({
               <div key={key} className="tadeon-vital-upgrade" data-upgrade={key}>
                 <div className="tadeon-vital-upgrade__topline">
                   <span className={`tadeon-vital-upgrade__label ${color}`}>{label}</span>
-                  <span>{level}/{maxLevel}</span>
+                  <span>
+                    {level}/{maxLevel}
+                  </span>
                 </div>
                 <div className="tadeon-vital-upgrade__value">+{level * gain}</div>
                 <div className="tadeon-vital-upgrade__detail">{level} aprimoramento(s)</div>
@@ -314,8 +306,8 @@ export function SkillTreeTab({
               <p className="tadeon-eyebrow">Ramo de habilidade</p>
               <h3>{branch.label}</h3>
               <p>
-              Seis escolhas por Tier. Requisitos mecânicos são validados; requisitos narrativos
-              permanecem registrados para a mesa.
+                Seis escolhas por Tier. Requisitos mecânicos são validados; requisitos narrativos
+                permanecem registrados para a mesa.
               </p>
             </div>
             <div className="tadeon-skill-branch__progress">
@@ -355,22 +347,23 @@ export function SkillTreeTab({
                       </CollapsibleTrigger>
                       <CollapsibleContent className="tadeon-skill-tier__content">
                         <div className="tadeon-skill-tier__content-inner grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                          {tierNodes.map((node, nodeIndex) => {
+                          {tierNodes.map((node) => {
                             const isPurchased = purchased.has(node.id);
                             const check = canBuyNode(node);
                             const locked = !isPurchased && !check.ok;
                             return (
                               <div
                                 key={node.id}
-                                className={`tadeon-skill-node flex min-h-56 flex-col rounded-xl border p-4 ${
+                                className={`tadeon-skill-node flex flex-col rounded-xl border p-4 ${
                                   isPurchased
                                     ? "bg-primary/10 border-primary/50 shadow-[0_12px_40px_-28px_var(--primary)]"
                                     : locked
                                       ? "bg-secondary/20 border-border/70"
                                       : "bg-secondary/35 border-border hover:border-primary/50"
                                 }`}
-                                style={{ "--skill-index": nodeIndex } as React.CSSProperties}
-                                data-state={isPurchased ? "purchased" : locked ? "locked" : "available"}
+                                data-state={
+                                  isPurchased ? "purchased" : locked ? "locked" : "available"
+                                }
                               >
                                 <div className="flex items-start justify-between gap-2">
                                   <h4 className="font-cinzel font-bold text-sm">{node.name}</h4>

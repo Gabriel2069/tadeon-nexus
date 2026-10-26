@@ -34,9 +34,6 @@
   border-color: color-mix(in srgb, var(--border) 68%, var(--section-accent) 32%) !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-}
-
 /* end-source: src/styles/dedicated-workspace-parity-168.css */
 /* source: src/styles/navigation-users-uniformity-191.css */
 /* Uniformidade final da navegação principal e da administração de usuários. */
@@ -46,25 +43,6 @@
   width: 100%;
   min-width: 0;
   max-width: 100%;
-}
-
-.tadeon-users-list {
-  display: grid !important;
-  grid-auto-rows: auto;
-  gap: 0.75rem !important;
-}
-
-.tadeon-users-list > .tadeon-user-row {
-  height: auto;
-  min-height: 6.25rem;
-  margin-top: 0 !important;
-  align-content: center;
-}
-
-@media (max-width: 639px) {
-  .tadeon-users-list > .tadeon-user-row {
-    min-height: 0;
-  }
 }
 
 /* end-source: src/styles/navigation-users-uniformity-191.css */

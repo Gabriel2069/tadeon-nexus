@@ -47,6 +47,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-035 | Atributos: instrumento vetorial leve e leitura acessível | Integrado | 7 | sheet | NEX-034 |
 | NEX-036 | Ficha: registros de identidade, vínculos e instrumentos de estado | Integrado | 7 | sheet | NEX-035 |
 | NEX-037 | Atributos em escala legível e Equilíbrio como relação entre polos | Integrado | 7 | sheet | NEX-036 |
+| NEX-038 | Dossiê compacto, Exposição graduada e utilidades como registros | Em andamento | 7 | sheet | NEX-037 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -365,6 +366,15 @@ Evidências: [src/components/sheet/sheet-identity-section.tsx](../src/components
 - Verificar tamanho físico do gráfico, quatro larguras, leitura/edição, limiares de tensão, foco e movimento reduzido; publicar após gates.
 
 Evidências: [src/components/sheet/sheet-equilibrium-section.tsx](../src/components/sheet/sheet-equilibrium-section.tsx), [src/components/sheet/sheet-equilibrium-section.test.tsx](../src/components/sheet/sheet-equilibrium-section.test.tsx), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [docs/equilibrium-axis-validation.json](../docs/equilibrium-axis-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/304), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40216726243), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40218832040).
+
+## NEX-038 — Dossiê compacto, Exposição graduada e utilidades como registros
+
+- Recompor dimensões dos painéis da Ficha: radar ampliado preservado, instrumentos horizontais onde couberem e par Equilíbrio/Exposição alinhado sem altura fixa.
+- Dar a Exposição escala própria, bases reais e controles estáveis; refinar condições, perícias, Maestria e História com tipografia e organização adequadas.
+- Organizar Offline, Backup e Usuários por tarefa, com disponibilidade real, registro contínuo de pessoas, histórico e importação distintos; preservar contratos e confirmações.
+- Incorporar o dossiê Véu & Trama como referência do sistema, retirar escritores concorrentes e verificar quatro larguras, foco/portais/redução de movimento, check e audit antes da publicação.
+
+Evidências: [docs/VEU_E_TRAMA.md](../docs/VEU_E_TRAMA.md), [docs/dossier-density-validation.json](../docs/dossier-density-validation.json), [src/components/sheet/sheet-exposure-section.tsx](../src/components/sheet/sheet-exposure-section.tsx), [src/components/sheet/sheet-exposure-section.test.tsx](../src/components/sheet/sheet-exposure-section.test.tsx), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [scripts/verify-navigation-utilities.mjs](../scripts/verify-navigation-utilities.mjs).
 
 ## Decisões vigentes
 

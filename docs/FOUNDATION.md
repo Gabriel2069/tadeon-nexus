@@ -304,3 +304,12 @@ SheetEquilibriumSection é apresentação: recebe valor, tensão, efeito calcula
 sheet-premium.css é o proprietário da geometria do radar compartilhado, sem utilitários de altura concorrentes nos dois consumidores ou uma composição que o comprima em coluna. O SVG permanece memoizado, com 41 descendentes. A mesma folha mantém régua, ponteiro, marcas de tensão e efeitos de Equilíbrio; escritores antigos exclusivos do card foram retirados. O verificador registra a largura física da malha e testa ida/retorno de tensão, preservando as verificações de rótulos, portais e redução de movimento.
 
 As regras históricas de transform/filter/transição/promoção em painéis de estado passam a excluir superfícies com data-material-surface explícito nos três módulos que as escreviam. Sheet premium conserva o relevo local; hover e pressão não deslocam nem ampliam texto ou alvos do instrumento. A verificação mede esse contrato com movimento normal e reduzido.
+
+
+## Composição do dossiê e utilidades — NEX-038
+
+sheet-premium.css conserva a geometria do radar e passa a compor faixas de instrumentos pela largura real das seções. Retirados os escritores anteriores de colunas de core/state/perícias e a altura mínima legada de 240px de Equilíbrio/Exposição em interface-layout; o par de estados só alinha a moldura quando as duas dobras estão abertas. SheetExposureSection é apresentação por props: RankRow, orçamento e limite chegam da rota, cujos clamps, salvamento e autorização permanecem.
+
+workspace.css é a autoridade de composição/material da lista de Usuários e dos registros de Offline/Backup. As declarações da lista saem dos módulos legados de shell, navegação, cabeçalhos e motion, incluindo cascata de entrada, deslocamento, filtro e animação ambiental. Não há novo observador ou módulo CSS. O Card conserva sua reflexão local e os controles mantêm seus primitivos.
+
+A regra tipográfica genérica que aplicava PT Mono a qualquer data-state/aria-live foi retirada de experience-surfaces.css. Estado e anúncio não são papéis tipográficos; conteúdo de abas e opções herda a interface humanista, enquanto metadados explícitos preservam PT Mono. O dossiê de referência não cria uma segunda fila nem prova defeitos atuais por si só.

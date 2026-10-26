@@ -45,7 +45,7 @@ export function SheetVitalsSection({
       title="Pontos Vitais"
       className="tadeon-core-panel tadeon-vitals-panel"
     >
-      <div className="tadeon-vitals-grid grid grid-cols-2 gap-2.5">
+      <div className="tadeon-vitals-grid">
         <StatBlock
           label="PV"
           full="Vitalidade"
@@ -115,7 +115,7 @@ export function SheetVitalsSection({
           onMod={(v) => update("stats", { ...sheet.stats, pa_mod: clampMod(v) })}
         />
 
-        <Card className="tadeon-defense-card col-span-2 border-blue-500/30 bg-card/60 p-3 shadow-[0_0_22px_-12px_rgba(59,130,246,0.65)]">
+        <Card className="tadeon-defense-card">
           <div className="tadeon-defense-card__summary">
             <div className="tadeon-defense-card__score">
               <Shield aria-hidden="true" strokeWidth={1.5} />

@@ -2,6 +2,7 @@ import { PageHeader } from "@/components/page-header";
 import { PageState } from "@/components/page-state";
 import { ProtectedShell } from "@/components/protected-shell";
 import { SheetAttributesSection } from "@/components/sheet/sheet-attributes-section";
+import { SheetExposureSection } from "@/components/sheet/sheet-exposure-section";
 import { SheetEquilibriumSection } from "@/components/sheet/sheet-equilibrium-section";
 import { SheetConditionsSection } from "@/components/sheet/sheet-conditions-section";
 import { SheetExperienceBridge } from "@/components/sheet/sheet-experience-bridge";
@@ -867,7 +868,7 @@ function SheetPage() {
             <SheetIdentitySection sheet={sheet} canEdit={canEdit} update={update} />
 
             {/* Attributes (with radar) + Vital points */}
-            <div className="tadeon-sheet-core-grid grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <div className="tadeon-sheet-core-grid">
               <SheetAttributesSection
                 attrs={attrs}
                 canEdit={canEdit}
@@ -911,83 +912,16 @@ function SheetPage() {
               />
 
               {/* Exposure card */}
-              <Section
-                id="exposicao"
-                title="Exposição"
-                className="tadeon-state-panel tadeon-exposure-panel"
-              >
-                <div className="tadeon-state-reading">
-                  <span className="text-xs text-muted-foreground">
-                    <small className="tadeon-state-label">Contato acumulado</small>
-                    Patamar {base.rank}
-                  </span>
-                  <span className="font-cinzel text-lg font-bold text-primary">
-                    {sheet.exposure}
-                    <small className="tadeon-state-unit">%</small>
-                  </span>
-                </div>
-                <div className="relative w-full h-4 bg-secondary rounded-full overflow-hidden border border-border">
-                  <div
-                    className="absolute inset-y-0 left-0 bg-gradient-to-r from-yellow-500 via-orange-500 to-red-600"
-                    style={{ width: `${clamp(sheet.exposure, 0, 100)}%` }}
-                  />
-                  {/* Rank tick marks every 5 */}
-                  {Array.from({ length: 21 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="absolute top-0 bottom-0 w-px bg-background/40"
-                      style={{ left: `${i * 5}%` }}
-                    />
-                  ))}
-                </div>
-                <div className="tadeon-state-controls">
-                  <Input
-                    type="number"
-                    min={0}
-                    max={100}
-                    step={5}
-                    disabled={!canEdit}
-                    value={sheet.exposure}
-                    aria-label="Exposição atual"
-                    onChange={(e) =>
-                      update("exposure", clamp(Math.round(Number(e.target.value) / 5) * 5, 0, 100))
-                    }
-                    className="w-24 h-8"
-                  />
-                  <input
-                    type="range"
-                    min={0}
-                    max={100}
-                    step={5}
-                    disabled={!canEdit}
-                    value={sheet.exposure}
-                    aria-label="Ajustar exposição"
-                    onChange={(e) => update("exposure", Number(e.target.value))}
-                    className="flex-1"
-                  />
-                </div>
-                <dl className="tadeon-exposure-derived" aria-label="Bases do patamar atual">
-                  <div>
-                    <dt>Patamar</dt>
-                    <dd>{base.rank}</dd>
-                  </div>
-                  <div>
-                    <dt>Pontos de atributos</dt>
-                    <dd>{attributeBudget}</dd>
-                  </div>
-                  <div>
-                    <dt>Limite por atributo</dt>
-                    <dd>{attributeCap}</dd>
-                  </div>
-                  <div>
-                    <dt>PM de base</dt>
-                    <dd>{base.pm}</dd>
-                  </div>
-                </dl>
-                <p className="tadeon-state-note">
-                  Bases do patamar atual, antes dos modificadores da personagem.
-                </p>
-              </Section>
+              <SheetExposureSection
+                value={sheet.exposure}
+                base={base}
+                attributeBudget={attributeBudget}
+                attributeCap={attributeCap}
+                canEdit={canEdit}
+                onValueChange={(value) =>
+                  update("exposure", clamp(Math.round(value / 5) * 5, 0, 100))
+                }
+              />
             </div>
 
             {/* Conditions */}
@@ -1624,7 +1558,7 @@ function SheetPage() {
                     icon: NotebookPen,
                   },
                 ] as const
-              ).map(({ key, label, kicker, prompt, placeholder, icon: Icon }, index) => {
+              ).map(({ key, label, kicker, prompt, placeholder, icon: Icon }) => {
                 const value = sheet.description[key] || "";
                 const words = value.trim() ? value.trim().split(/\s+/).length : 0;
                 return (
@@ -1632,7 +1566,6 @@ function SheetPage() {
                     key={key}
                     className="tadeon-description-card"
                     data-filled={value.trim() ? "true" : "false"}
-                    style={{ "--description-index": index } as React.CSSProperties}
                   >
                     <div className="tadeon-description-card__heading">
                       <span className="tadeon-description-card__icon" aria-hidden="true">
@@ -1655,6 +1588,7 @@ function SheetPage() {
                         })
                       }
                       rows={6}
+                      aria-label={label}
                       placeholder={placeholder}
                     />
                   </Card>

@@ -24,7 +24,17 @@ const people = [
  {id:"00000000-0000-4000-8000-000000000003",full_name:"Cronista",email:"cronista@nexus.test",role:"espectador"}
 ];
 try {
- await new Promise((ok,fail)=>{server.stdout.on("data",b=>{if(b.toString().includes("Local:"))ok();});server.on("exit",code=>fail(new Error("Vite exited "+code)));setTimeout(()=>fail(new Error("Vite timeout")),30000).unref();});
+ let serverLog="", serverExit=null;
+ const capture=chunk=>{serverLog=(serverLog+chunk.toString()).slice(-12000);};
+ server.stdout.on("data",capture);server.stderr.on("data",capture);
+ server.on("exit",code=>{serverExit=code??-1;});
+ const startupDeadline=Date.now()+120000;let ready=false;
+ while(Date.now()<startupDeadline && serverExit===null) {
+  try {const response=await fetch(`http://127.0.0.1:${port}/`,{signal:AbortSignal.timeout(5000)});if(response.status<500){ready=true;break;}} catch {/* Server startup is still in progress. */}
+  await new Promise(resolve=>setTimeout(resolve,400));
+ }
+ writeFileSync(`${root}/server.log`,serverLog);
+ if(!ready)throw new Error(`Vite did not become ready. Exit: ${serverExit}\n${serverLog}`);
  for(const width of JSON.parse(process.env.NEXUS_AUDIT_WIDTHS||"[320,390,820,1440]")) {
   const context=await browser.newContext({viewport:{width,height:1000},hasTouch:width<768,reducedMotion:"reduce",acceptDownloads:true});
   const page=await context.newPage();page.setDefaultTimeout(45000);
@@ -119,7 +129,16 @@ try {
   await geometry("navigation-travel");await page.emulateMedia({reducedMotion:"reduce"});
 await page.getByText("Cronista",{exact:true}).waitFor();
   assert(listCount>0,"Users must come from mocked server-function transport");await geometry("users");
-  assert(results.at(-1).rows.every(r=>r.inside && (width>=768 || r.height<220)),"Compact user rows stay readable without forced giant heights");
+  if(process.env.NEXUS_EXPECT_UTILITY_REGISTERS === "1") {
+   const roles=await page.locator('.tadeon-user-row__access [role="combobox"]').evaluateAll(items=>items.map(e=>{const text=e.querySelector('span'),icon=e.querySelector('svg'),range=document.createRange();range.selectNodeContents(text);const r=range.getBoundingClientRect();return {text:e.textContent,fits:r.width<=text.getBoundingClientRect().width+1 && r.right<=icon.getBoundingClientRect().left+1};}));
+   assert(roles.length===3 && roles.every(e=>e.fits),'Full role names fit: '+JSON.stringify(roles));
+   await page.emulateMedia({reducedMotion:'no-preference'});
+   const row=page.locator('.tadeon-user-row').last();await row.hover();
+   assert(await row.evaluate(e=>{const c=getComputedStyle(e);return c.transform==='none' && c.filter==='none';}),'Directory rows stay still while operating controls');
+   await page.emulateMedia({reducedMotion:'reduce'});
+   results.push({width,label:'directory-contract',roles});
+  }
+  assert(results.findLast(result=>result.label==="users").rows.every(r=>r.inside && (width>=768 || r.height<220)),"Compact user rows stay readable without forced giant heights");
   await page.getByRole("searchbox").fill("cronista@");assert(!(await page.getByText(people[1].full_name,{exact:true}).count()),"User search filters name/email");
   await page.getByRole("searchbox").fill("none");await page.getByRole("button",{name:"Limpar filtros"}).click();
   const playerRole=page.getByRole("combobox",{name:`Papel de ${people[1].full_name}`});await playerRole.click();await page.getByRole("option",{name:"Mestre",exact:true}).click();await page.getByRole("alertdialog").waitFor();await geometry("users-role-review");await page.getByRole("button",{name:"Cancelar",exact:true}).click();
