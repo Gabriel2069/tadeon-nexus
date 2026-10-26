@@ -1,23 +1,23 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-25",
-  "runtimeReference": "870dd4cd2c9b2db5f565230cb672942b219ebf35",
+  "checkedAt": "2026-10-26",
+  "runtimeReference": "535106f7eb1aaacaa599334d7c8e93287af03a11",
   "integration": {
-    "pr": 304,
-    "branch": "feat/nex-037-equilibrium-axis",
+    "pr": 306,
+    "branch": "feat/nex-038-dossier-density",
     "base": "main",
-    "baseCommit": "788dbf3f86d69227abc5f8651a98f70ca5e110c8",
-    "sourceCommit": "a5313016010e452565db8ec8d45ba83d73308f8a",
-    "headCommit": "a5313016010e452565db8ec8d45ba83d73308f8a",
+    "baseCommit": "237f6747f5bcd30fb69f36c34f0dc38994898876",
+    "sourceCommit": "c67207e931356c64f4d8083dd4b28ba71c81d338",
+    "headCommit": "c67207e931356c64f4d8083dd4b28ba71c81d338",
     "state": "integrated",
-    "mergeCommit": "870dd4cd2c9b2db5f565230cb672942b219ebf35",
-    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40216726191",
-    "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40216726243",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40218832068",
+    "mergeCommit": "535106f7eb1aaacaa599334d7c8e93287af03a11",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40251173586",
+    "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40251173547",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40293915897",
     "production": "confirmed",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40218832040",
-    "productionCommit": "870dd4cd2c9b2db5f565230cb672942b219ebf35",
-    "productionVerifiedAt": "2026-10-25T17:57:48.9704100Z",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40293915696",
+    "productionCommit": "535106f7eb1aaacaa599334d7c8e93287af03a11",
+    "productionVerifiedAt": "2026-10-26T08:43:07.9831728Z",
     "productionHttpStatus": 200
   },
   "domains": [
@@ -1245,7 +1245,7 @@
       "id": "NEX-038",
       "title": "Dossiê compacto, Exposição graduada e utilidades como registros",
       "domain": "sheet",
-      "status": "active",
+      "status": "integrated",
       "priority": 7,
       "dependsOn": [
         "NEX-037"
@@ -1262,9 +1262,14 @@
         "src/components/sheet/sheet-exposure-section.tsx",
         "src/components/sheet/sheet-exposure-section.test.tsx",
         "scripts/verify-sheet-design.mjs",
-        "scripts/verify-navigation-utilities.mjs"
+        "scripts/verify-navigation-utilities.mjs",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/306",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40251173586",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40251173547",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40293915897",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40293915696"
       ],
-      "checkpoint": "Implementação e comparação local em andamento. Dimensões e estilos sob seus proprietários; ainda sem integração ou publicação desta rodada."
+      "checkpoint": "Integrado pela PR #306, fonte c67207e, merge 535106f. Dossiê compacto com radar preservado, Exposição graduada e par de estados alinhado no desktop aberto; altura mínima legada de 240px retirada. Recursos móveis com nomes íntegros e alvos de 44px; Maestria/História e perícias com densidade e tipografia revistas. Offline, Backup e Usuários reorganizados como registros. Dossiê Véu & Trama incorporado como referência; regras/autosave/autorização/rodas preservados. Quality do fonte/main: 157 suítes/634 testes, audit zero. Visual review do fonte exato aprovado; quatro larguras, 40 estados/contratos de utilidades, oito vistas adaptáveis e regressões compartilhadas/Mesa. Artefato final e capturas inspecionados. HTTP 200/SHA exato em 2026-10-26T08:43:07.9831728Z. Fixtures não certificam hardware, contas ou restauração reais; NEX-009/010/011 mantidos. Fechamento documental confirma a própria publicação na PR correspondente."
     }
   ],
   "decisions": [
@@ -2085,6 +2090,24 @@
       "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40150710642",
       "productionCommit": "e01ebf04ffea0e23e7ec0fe29728b76954531646",
       "productionVerifiedAt": "2026-10-25T01:30:26.6140618Z",
+      "productionHttpStatus": 200
+    },
+    {
+      "pr": 304,
+      "branch": "feat/nex-037-equilibrium-axis",
+      "base": "main",
+      "baseCommit": "788dbf3f86d69227abc5f8651a98f70ca5e110c8",
+      "sourceCommit": "a5313016010e452565db8ec8d45ba83d73308f8a",
+      "headCommit": "a5313016010e452565db8ec8d45ba83d73308f8a",
+      "state": "integrated",
+      "mergeCommit": "870dd4cd2c9b2db5f565230cb672942b219ebf35",
+      "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40216726191",
+      "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40216726243",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40218832068",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40218832040",
+      "productionCommit": "870dd4cd2c9b2db5f565230cb672942b219ebf35",
+      "productionVerifiedAt": "2026-10-25T17:57:48.9704100Z",
       "productionHttpStatus": 200
     }
   ]
