@@ -1068,13 +1068,13 @@
       "alignedOpenFrames": true,
       "collapsedPanelIntrinsicHeight": true,
       "plotPreserved": true,
-      "note": "Teste de recolhimento local revelou altura mínima histórica de 240px em interface-layout; removida na origem. Sonda confirmou body ausente e moldura intrínseca. Compactação final dos recursos móveis ainda passa no gate exato."
+      "note": "Regra histórica de 240px retirada de interface-layout. Recolhimento e arcos confirmados localmente; títulos completos exigidos pelo gate do fonte exato."
     },
     "mobileResourceRefinement": {
       "beforeHeight": 846.953125,
-      "afterHeight": 765.265625,
+      "afterHeight": 776.484375,
       "width": 320,
-      "source": "Mesma fixture local; arcos junto ao título, legenda redundante omitida no compacto e controles de edição preservados.",
+      "source": "Mesma fixture em 320px: arcos junto ao título, título em linha própria na largura mais estreita, legenda redundante omitida e alvos de 44px preservados. Capturas finais em 320/390 inspecionadas.",
       "results": [
         {
           "width": 320,
@@ -1406,6 +1406,211 @@
           },
           "errors": []
         }
+      ],
+      "initialPrototypeHeight": 765.265625,
+      "finalDensity": [
+        {
+          "width": 320,
+          "state": "editable",
+          "errors": [],
+          "fixtureWrites": 1,
+          "density": {
+            "height": 8994,
+            "viewportHeight": 1000,
+            "overflow": false,
+            "resourceColumns": "127.797px 127.812px",
+            "attributeColumns": "128.203px 128.203px",
+            "headerActions": [
+              {
+                "name": "Voltar ao painel",
+                "y": 174.59375,
+                "width": 44,
+                "height": 44
+              },
+              {
+                "name": "Jogo",
+                "y": 174.59375,
+                "width": 44,
+                "height": 44
+              },
+              {
+                "name": "Ver mudanças de sessão",
+                "y": 174.59375,
+                "width": 44,
+                "height": 44
+              },
+              {
+                "name": "Abrir ficha em janela dedicada",
+                "y": 174.59375,
+                "width": 44,
+                "height": 44
+              },
+              {
+                "name": "Salvar",
+                "y": 174.59375,
+                "width": 44,
+                "height": 44
+              }
+            ],
+            "tabLabels": [
+              {
+                "label": "Ficha",
+                "width": 25,
+                "scroll": 25,
+                "font": "\"Alegreya Sans\", \"Trebuchet MS\", sans-serif"
+              },
+              {
+                "label": "Maestria",
+                "width": 43,
+                "scroll": 43,
+                "font": "\"Alegreya Sans\", \"Trebuchet MS\", sans-serif"
+              },
+              {
+                "label": "História",
+                "width": 39,
+                "scroll": 39,
+                "font": "\"Alegreya Sans\", \"Trebuchet MS\", sans-serif"
+              }
+            ],
+            "tabLabelsFit": true,
+            "attributeTargetsFit": true,
+            "identity": {
+              "x": 14,
+              "y": 609.109375,
+              "width": 292,
+              "height": 927.765625
+            },
+            "vitals": {
+              "x": 14,
+              "y": 1552.875,
+              "width": 292,
+              "height": 776.484375
+            },
+            "attributes": {
+              "x": 14,
+              "y": 2341.359375,
+              "width": 292,
+              "height": 716.109375
+            },
+            "overview": {
+              "x": 14,
+              "y": 425.765625,
+              "width": 292,
+              "height": 167.34375
+            },
+            "resource": {
+              "x": 27,
+              "y": 1632.859375,
+              "width": 127.796875,
+              "height": 193.359375
+            },
+            "elements": 1759,
+            "permanentFilters": 2
+          }
+        },
+        {
+          "width": 390,
+          "state": "editable",
+          "errors": [],
+          "fixtureWrites": 1,
+          "density": {
+            "height": 8772,
+            "viewportHeight": 1000,
+            "overflow": false,
+            "resourceColumns": "158.297px 158.312px",
+            "attributeColumns": "158.703px 158.703px",
+            "headerActions": [
+              {
+                "name": "Voltar ao painel",
+                "y": 148.6875,
+                "width": 44,
+                "height": 44
+              },
+              {
+                "name": "Jogo",
+                "y": 148.6875,
+                "width": 44,
+                "height": 44
+              },
+              {
+                "name": "Ver mudanças de sessão",
+                "y": 148.6875,
+                "width": 44,
+                "height": 44
+              },
+              {
+                "name": "Abrir ficha em janela dedicada",
+                "y": 148.6875,
+                "width": 44,
+                "height": 44
+              },
+              {
+                "name": "Salvar",
+                "y": 148.6875,
+                "width": 44,
+                "height": 44
+              }
+            ],
+            "tabLabels": [
+              {
+                "label": "Ficha",
+                "width": 25,
+                "scroll": 25,
+                "font": "\"Alegreya Sans\", \"Trebuchet MS\", sans-serif"
+              },
+              {
+                "label": "Maestria",
+                "width": 43,
+                "scroll": 43,
+                "font": "\"Alegreya Sans\", \"Trebuchet MS\", sans-serif"
+              },
+              {
+                "label": "História",
+                "width": 39,
+                "scroll": 39,
+                "font": "\"Alegreya Sans\", \"Trebuchet MS\", sans-serif"
+              }
+            ],
+            "tabLabelsFit": true,
+            "attributeTargetsFit": true,
+            "identity": {
+              "x": 14,
+              "y": 559.203125,
+              "width": 353,
+              "height": 893.765625
+            },
+            "vitals": {
+              "x": 14,
+              "y": 1468.96875,
+              "width": 353,
+              "height": 728.484375
+            },
+            "attributes": {
+              "x": 14,
+              "y": 2209.453125,
+              "width": 353,
+              "height": 777.109375
+            },
+            "overview": {
+              "x": 14,
+              "y": 399.859375,
+              "width": 353,
+              "height": 143.34375
+            },
+            "resource": {
+              "x": 27,
+              "y": 1548.953125,
+              "width": 158.296875,
+              "height": 169.359375
+            },
+            "elements": 1759,
+            "permanentFilters": 2
+          }
+        }
+      ],
+      "manualFinalCaptures": [
+        "resources-320.png",
+        "resources-390.png"
       ]
     }
   },

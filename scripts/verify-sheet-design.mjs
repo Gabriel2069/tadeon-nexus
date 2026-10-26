@@ -553,9 +553,10 @@ try {
             const box = selector => { const r=document.querySelector(selector).getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}; };
             const graph=document.querySelector('.tadeon-attribute-radar-svg');
             const plot=graph.querySelector('g[fill="none"] > polygon:last-of-type').getBoundingClientRect();
-            return {attributes:box('#sec-attr'),vitals:box('#sec-pontos'),equilibrium:box('#equilibrio'),exposure:box('#exposicao'),plotWidth:plot.width,resourceColumns:getComputedStyle(document.querySelector('.tadeon-vitals-grid')).gridTemplateColumns,exposureBases:document.querySelector('.tadeon-exposure-resources')?.textContent};
+            return {attributes:box('#sec-attr'),vitals:box('#sec-pontos'),equilibrium:box('#equilibrio'),exposure:box('#exposicao'),plotWidth:plot.width,resourceNamesFit:[...document.querySelectorAll('.tadeon-stat-block__head h3')].every(e=>{const c=getComputedStyle(e);return e.scrollWidth<=e.clientWidth+1 && e.getBoundingClientRect().height<parseFloat(c.lineHeight)*1.5;}),resourceColumns:getComputedStyle(document.querySelector('.tadeon-vitals-grid')).gridTemplateColumns,exposureBases:document.querySelector('.tadeon-exposure-resources')?.textContent};
           });
           assert(instrument.plotWidth >= 140, "Compact composition preserves the enlarged radar");
+          assert(instrument.resourceNamesFit, "Resource names remain complete without splitting words");
           assert(instrument.exposureBases?.includes("PV") && instrument.exposureBases?.includes("DEF"), "Exposure presents actual resource bases");
           if(width>=1180) {
             assert(Math.abs(instrument.equilibrium.y-instrument.exposure.y)<1 && Math.abs(instrument.equilibrium.height-instrument.exposure.height)<1 && Math.abs(instrument.equilibrium.width-instrument.exposure.width)<1, "Open state pair has aligned frames and equal widths");
@@ -694,6 +695,10 @@ try {
           };
         });
         assert(!density.overflow && density.attributeTargetsFit, "Compact composition keeps controls inside the viewport");
+        if(process.env.NEXUS_EXPECT_COMPACT_DOSSIER === "1") {
+          const namesFit=await page.locator('.tadeon-stat-block__head h3').evaluateAll(items=>items.every(e=>{const c=getComputedStyle(e);return e.scrollWidth<=e.clientWidth+1 && e.getBoundingClientRect().height<parseFloat(c.lineHeight)*1.5;}));
+          assert(namesFit, "Resource names stay complete on a single line");
+        }
         if (width<768) {
           assert(density.headerActions.every(a=>a.width>=44 && a.height>=44), "Compact toolbar keeps 44px actions");
           assert(new Set(density.headerActions.map(a=>Math.round(a.y))).size===1, "Primary sheet actions share one row in the compact fixture");

@@ -2079,3 +2079,11 @@
   .tadeon-description-card__heading { grid-template-columns: auto minmax(0, 1fr); }
   .tadeon-description-card__count { grid-column: 2; }
 }
+@media (max-width: 767px) {
+  @container (max-width: 320px) {
+    .tadeon-stat-block__head > div:first-child { display: contents; }
+    .tadeon-stat-block__symbol { grid-column: 1; grid-row: 1; align-self: center; }
+    .tadeon-stat-block__head h3 { grid-column: 1 / -1; grid-row: 2; }
+    .tadeon-stat-block__dial { grid-column: 2; grid-row: 1; }
+  }
+}
