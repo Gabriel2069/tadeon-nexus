@@ -1,6 +1,6 @@
 {
   "task": "NEX-038",
-  "status": "source-review-pending",
+  "status": "integrated-and-published",
   "baseCommit": "237f6747f5bcd30fb69f36c34f0dc38994898876",
   "designReference": "docs/VEU_E_TRAMA.md",
   "scope": [
@@ -367,7 +367,7 @@
     },
     "preliminaryAdaptiveViews": 8,
     "utilityReferenceStates": 18,
-    "nativeScreenshotLimit": "Algumas capturas Chromium local excederam timeout durante execução simultânea. Fonte exato ainda requer artefato Visual review e inspeção manual antes do merge.",
+    "nativeScreenshotLimit": "Capturas locais tiveram timeouts durante execução simultânea. O executor voltou: ZIP final do fonte exato baixado, hash conferido e oito capturas finais inspecionadas antes do merge.",
     "overrideBudgetReductions": [
       {
         "path": "src/styles/navigation-layout.css",
@@ -1068,14 +1068,219 @@
       "alignedOpenFrames": true,
       "collapsedPanelIntrinsicHeight": true,
       "plotPreserved": true,
-      "note": "Regra histórica de 240px retirada de interface-layout. Recolhimento e arcos confirmados localmente; títulos completos exigidos pelo gate do fonte exato."
+      "note": "Altura histórica de 240px retirada na origem. Recolhimento, alinhamento, títulos e arcos confirmados pelo gate do fonte exato."
     },
     "mobileResourceRefinement": {
       "beforeHeight": 846.953125,
       "afterHeight": 776.484375,
       "width": 320,
       "source": "Mesma fixture em 320px: arcos junto ao título, título em linha própria na largura mais estreita, legenda redundante omitida e alvos de 44px preservados. Capturas finais em 320/390 inspecionadas.",
-      "results": [
+      "initialPrototypeHeight": 765.265625,
+      "finalDensity": [
+        {
+          "width": 320,
+          "state": "editable",
+          "errors": [],
+          "fixtureWrites": 1,
+          "density": {
+            "height": 8994,
+            "viewportHeight": 1000,
+            "overflow": false,
+            "resourceColumns": "127.797px 127.812px",
+            "attributeColumns": "128.203px 128.203px",
+            "headerActions": [
+              {
+                "name": "Voltar ao painel",
+                "y": 174.59375,
+                "width": 44,
+                "height": 44
+              },
+              {
+                "name": "Jogo",
+                "y": 174.59375,
+                "width": 44,
+                "height": 44
+              },
+              {
+                "name": "Ver mudanças de sessão",
+                "y": 174.59375,
+                "width": 44,
+                "height": 44
+              },
+              {
+                "name": "Abrir ficha em janela dedicada",
+                "y": 174.59375,
+                "width": 44,
+                "height": 44
+              },
+              {
+                "name": "Salvar",
+                "y": 174.59375,
+                "width": 44,
+                "height": 44
+              }
+            ],
+            "tabLabels": [
+              {
+                "label": "Ficha",
+                "width": 25,
+                "scroll": 25,
+                "font": "\"Alegreya Sans\", \"Trebuchet MS\", sans-serif"
+              },
+              {
+                "label": "Maestria",
+                "width": 43,
+                "scroll": 43,
+                "font": "\"Alegreya Sans\", \"Trebuchet MS\", sans-serif"
+              },
+              {
+                "label": "História",
+                "width": 39,
+                "scroll": 39,
+                "font": "\"Alegreya Sans\", \"Trebuchet MS\", sans-serif"
+              }
+            ],
+            "tabLabelsFit": true,
+            "attributeTargetsFit": true,
+            "identity": {
+              "x": 14,
+              "y": 609.109375,
+              "width": 292,
+              "height": 927.765625
+            },
+            "vitals": {
+              "x": 14,
+              "y": 1552.875,
+              "width": 292,
+              "height": 776.484375
+            },
+            "attributes": {
+              "x": 14,
+              "y": 2341.359375,
+              "width": 292,
+              "height": 716.109375
+            },
+            "overview": {
+              "x": 14,
+              "y": 425.765625,
+              "width": 292,
+              "height": 167.34375
+            },
+            "resource": {
+              "x": 27,
+              "y": 1632.859375,
+              "width": 127.796875,
+              "height": 193.359375
+            },
+            "elements": 1759,
+            "permanentFilters": 2
+          }
+        },
+        {
+          "width": 390,
+          "state": "editable",
+          "errors": [],
+          "fixtureWrites": 1,
+          "density": {
+            "height": 8772,
+            "viewportHeight": 1000,
+            "overflow": false,
+            "resourceColumns": "158.297px 158.312px",
+            "attributeColumns": "158.703px 158.703px",
+            "headerActions": [
+              {
+                "name": "Voltar ao painel",
+                "y": 148.6875,
+                "width": 44,
+                "height": 44
+              },
+              {
+                "name": "Jogo",
+                "y": 148.6875,
+                "width": 44,
+                "height": 44
+              },
+              {
+                "name": "Ver mudanças de sessão",
+                "y": 148.6875,
+                "width": 44,
+                "height": 44
+              },
+              {
+                "name": "Abrir ficha em janela dedicada",
+                "y": 148.6875,
+                "width": 44,
+                "height": 44
+              },
+              {
+                "name": "Salvar",
+                "y": 148.6875,
+                "width": 44,
+                "height": 44
+              }
+            ],
+            "tabLabels": [
+              {
+                "label": "Ficha",
+                "width": 25,
+                "scroll": 25,
+                "font": "\"Alegreya Sans\", \"Trebuchet MS\", sans-serif"
+              },
+              {
+                "label": "Maestria",
+                "width": 43,
+                "scroll": 43,
+                "font": "\"Alegreya Sans\", \"Trebuchet MS\", sans-serif"
+              },
+              {
+                "label": "História",
+                "width": 39,
+                "scroll": 39,
+                "font": "\"Alegreya Sans\", \"Trebuchet MS\", sans-serif"
+              }
+            ],
+            "tabLabelsFit": true,
+            "attributeTargetsFit": true,
+            "identity": {
+              "x": 14,
+              "y": 559.203125,
+              "width": 353,
+              "height": 893.765625
+            },
+            "vitals": {
+              "x": 14,
+              "y": 1468.96875,
+              "width": 353,
+              "height": 728.484375
+            },
+            "attributes": {
+              "x": 14,
+              "y": 2209.453125,
+              "width": 353,
+              "height": 777.109375
+            },
+            "overview": {
+              "x": 14,
+              "y": 399.859375,
+              "width": 353,
+              "height": 143.34375
+            },
+            "resource": {
+              "x": 27,
+              "y": 1548.953125,
+              "width": 158.296875,
+              "height": 169.359375
+            },
+            "elements": 1759,
+            "permanentFilters": 2
+          }
+        }
+      ],
+      "manualFinalCaptures": [
+        "resources-320.png",
+        "resources-390.png"
+      ],
+      "prototypeResults": [
         {
           "width": 320,
           "state": "editable",
@@ -1406,216 +1611,1080 @@
           },
           "errors": []
         }
-      ],
-      "initialPrototypeHeight": 765.265625,
-      "finalDensity": [
+      ]
+    }
+  },
+  "source": {
+    "commit": "c67207e931356c64f4d8083dd4b28ba71c81d338",
+    "tree": "d07490d3628037faa287740a083fbed07fb45ed7",
+    "quality": {
+      "run": 40251173586,
+      "job": 121343182360,
+      "conclusion": "success",
+      "suites": 157,
+      "tests": 634,
+      "audit": "zero"
+    },
+    "visual": {
+      "run": 40251173547,
+      "job": 121343182315,
+      "conclusion": "success",
+      "artifact": {
+        "id": 12621625200,
+        "name": "visual-review",
+        "bytes": 95341068,
+        "sha256": "91602fae88f006be8cb708b92278e5ddb32944791de07ceacdd340a1b15c85d2",
+        "sha256VerifiedLocally": true,
+        "pngs": 229,
+        "createdAt": "2026-10-26T01:13:03Z",
+        "expiresAt": "2026-11-02T01:12:59Z",
+        "headSha": "c67207e931356c64f4d8083dd4b28ba71c81d338",
+        "manualInspected": true,
+        "manualFiles": [
+          "sheet-adaptive/attributes-editable-1440.png",
+          "sheet-adaptive/states-editable-1440.png",
+          "sheet-adaptive/descricao-editable-320.png",
+          "sheet-adaptive/arvore-editable-390.png",
+          "utility-registers/users-320.png",
+          "utility-registers/offline-320.png",
+          "utility-registers/backup-empty-1440.png",
+          "utility-registers/diagnostics-390.png"
+        ]
+      }
+    },
+    "ciMetrics": {
+      "adaptive": [
         {
           "width": 320,
           "state": "editable",
+          "overflow": false,
           "errors": [],
-          "fixtureWrites": 1,
-          "density": {
-            "height": 8994,
-            "viewportHeight": 1000,
-            "overflow": false,
-            "resourceColumns": "127.797px 127.812px",
-            "attributeColumns": "128.203px 128.203px",
-            "headerActions": [
-              {
-                "name": "Voltar ao painel",
-                "y": 174.59375,
-                "width": 44,
-                "height": 44
-              },
-              {
-                "name": "Jogo",
-                "y": 174.59375,
-                "width": 44,
-                "height": 44
-              },
-              {
-                "name": "Ver mudanças de sessão",
-                "y": 174.59375,
-                "width": 44,
-                "height": 44
-              },
-              {
-                "name": "Abrir ficha em janela dedicada",
-                "y": 174.59375,
-                "width": 44,
-                "height": 44
-              },
-              {
-                "name": "Salvar",
-                "y": 174.59375,
-                "width": 44,
-                "height": 44
-              }
-            ],
-            "tabLabels": [
-              {
-                "label": "Ficha",
-                "width": 25,
-                "scroll": 25,
-                "font": "\"Alegreya Sans\", \"Trebuchet MS\", sans-serif"
-              },
-              {
-                "label": "Maestria",
-                "width": 43,
-                "scroll": 43,
-                "font": "\"Alegreya Sans\", \"Trebuchet MS\", sans-serif"
-              },
-              {
-                "label": "História",
-                "width": 39,
-                "scroll": 39,
-                "font": "\"Alegreya Sans\", \"Trebuchet MS\", sans-serif"
-              }
-            ],
-            "tabLabelsFit": true,
-            "attributeTargetsFit": true,
-            "identity": {
-              "x": 14,
-              "y": 609.109375,
-              "width": 292,
-              "height": 927.765625
-            },
-            "vitals": {
-              "x": 14,
-              "y": 1552.875,
-              "width": 292,
-              "height": 776.484375
-            },
+          "compactInstruments": {
             "attributes": {
               "x": 14,
-              "y": 2341.359375,
+              "y": 184.3125,
               "width": 292,
               "height": 716.109375
             },
-            "overview": {
+            "vitals": {
               "x": 14,
-              "y": 425.765625,
+              "y": -588.171875,
               "width": 292,
-              "height": 167.34375
+              "height": 760.484375
             },
-            "resource": {
-              "x": 27,
-              "y": 1632.859375,
-              "width": 127.796875,
-              "height": 193.359375
+            "equilibrium": {
+              "x": 14,
+              "y": 916.421875,
+              "width": 292,
+              "height": 638.65625
             },
-            "elements": 1759,
-            "permanentFilters": 2
-          }
+            "exposure": {
+              "x": 14,
+              "y": 1567.078125,
+              "width": 292,
+              "height": 587.28125
+            },
+            "plotWidth": 180.77682495117188,
+            "resourceNamesFit": true,
+            "resourceColumns": "127.797px 127.812px",
+            "exposureBases": "Recursos de basePV25PS20PE8PA1DEF11"
+          },
+          "equilibriumAxis": {
+            "neutralNarrative": true,
+            "positiveThreshold": true,
+            "negativeThreshold": true
+          },
+          "linkLabels": [
+            {
+              "text": "Presente",
+              "textWidth": 54.4375,
+              "available": 54.4375,
+              "inside": true
+            },
+            {
+              "text": "Tensionado",
+              "textWidth": 71.6875,
+              "available": 71.6875,
+              "inside": true
+            }
+          ]
+        },
+        {
+          "width": 320,
+          "state": "readonly",
+          "overflow": false,
+          "errors": [],
+          "compactInstruments": {
+            "attributes": {
+              "x": 14,
+              "y": 184.140625,
+              "width": 292,
+              "height": 716.109375
+            },
+            "vitals": {
+              "x": 14,
+              "y": -588.34375,
+              "width": 292,
+              "height": 760.484375
+            },
+            "equilibrium": {
+              "x": 14,
+              "y": 916.25,
+              "width": 292,
+              "height": 611.859375
+            },
+            "exposure": {
+              "x": 14,
+              "y": 1540.109375,
+              "width": 292,
+              "height": 587.28125
+            },
+            "plotWidth": 180.77682495117188,
+            "resourceNamesFit": true,
+            "resourceColumns": "127.797px 127.812px",
+            "exposureBases": "Recursos de basePV21PS17PE7PA1DEF10"
+          },
+          "equilibriumAxis": null,
+          "linkLabels": [
+            {
+              "text": "Presente",
+              "textWidth": 54.4375,
+              "available": 54.4375,
+              "inside": true
+            }
+          ]
         },
         {
           "width": 390,
           "state": "editable",
+          "overflow": false,
           "errors": [],
-          "fixtureWrites": 1,
-          "density": {
-            "height": 8772,
-            "viewportHeight": 1000,
-            "overflow": false,
-            "resourceColumns": "158.297px 158.312px",
-            "attributeColumns": "158.703px 158.703px",
-            "headerActions": [
-              {
-                "name": "Voltar ao painel",
-                "y": 148.6875,
-                "width": 44,
-                "height": 44
-              },
-              {
-                "name": "Jogo",
-                "y": 148.6875,
-                "width": 44,
-                "height": 44
-              },
-              {
-                "name": "Ver mudanças de sessão",
-                "y": 148.6875,
-                "width": 44,
-                "height": 44
-              },
-              {
-                "name": "Abrir ficha em janela dedicada",
-                "y": 148.6875,
-                "width": 44,
-                "height": 44
-              },
-              {
-                "name": "Salvar",
-                "y": 148.6875,
-                "width": 44,
-                "height": 44
-              }
-            ],
-            "tabLabels": [
-              {
-                "label": "Ficha",
-                "width": 25,
-                "scroll": 25,
-                "font": "\"Alegreya Sans\", \"Trebuchet MS\", sans-serif"
-              },
-              {
-                "label": "Maestria",
-                "width": 43,
-                "scroll": 43,
-                "font": "\"Alegreya Sans\", \"Trebuchet MS\", sans-serif"
-              },
-              {
-                "label": "História",
-                "width": 39,
-                "scroll": 39,
-                "font": "\"Alegreya Sans\", \"Trebuchet MS\", sans-serif"
-              }
-            ],
-            "tabLabelsFit": true,
-            "attributeTargetsFit": true,
-            "identity": {
-              "x": 14,
-              "y": 559.203125,
-              "width": 353,
-              "height": 893.765625
-            },
-            "vitals": {
-              "x": 14,
-              "y": 1468.96875,
-              "width": 353,
-              "height": 728.484375
-            },
+          "compactInstruments": {
             "attributes": {
               "x": 14,
-              "y": 2209.453125,
+              "y": 153.40625,
               "width": 353,
               "height": 777.109375
             },
-            "overview": {
+            "vitals": {
               "x": 14,
-              "y": 399.859375,
+              "y": -571.078125,
               "width": 353,
-              "height": 143.34375
+              "height": 712.484375
             },
-            "resource": {
-              "x": 27,
-              "y": 1548.953125,
-              "width": 158.296875,
-              "height": 169.359375
+            "equilibrium": {
+              "x": 14,
+              "y": 946.515625,
+              "width": 353,
+              "height": 638.65625
             },
-            "elements": 1759,
-            "permanentFilters": 2
-          }
+            "exposure": {
+              "x": 14,
+              "y": 1597.171875,
+              "width": 353,
+              "height": 587.28125
+            },
+            "plotWidth": 222.54722595214844,
+            "resourceNamesFit": true,
+            "resourceColumns": "158.297px 158.312px",
+            "exposureBases": "Recursos de basePV25PS20PE8PA1DEF11"
+          },
+          "equilibriumAxis": {
+            "neutralNarrative": true,
+            "positiveThreshold": true,
+            "negativeThreshold": true
+          },
+          "linkLabels": [
+            {
+              "text": "Presente",
+              "textWidth": 54.4375,
+              "available": 54.4375,
+              "inside": true
+            },
+            {
+              "text": "Tensionado",
+              "textWidth": 71.6875,
+              "available": 71.6875,
+              "inside": true
+            }
+          ]
+        },
+        {
+          "width": 390,
+          "state": "readonly",
+          "overflow": false,
+          "errors": [],
+          "compactInstruments": {
+            "attributes": {
+              "x": 14,
+              "y": 153.234375,
+              "width": 353,
+              "height": 777.109375
+            },
+            "vitals": {
+              "x": 14,
+              "y": -571.25,
+              "width": 353,
+              "height": 712.484375
+            },
+            "equilibrium": {
+              "x": 14,
+              "y": 946.34375,
+              "width": 353,
+              "height": 611.859375
+            },
+            "exposure": {
+              "x": 14,
+              "y": 1570.203125,
+              "width": 353,
+              "height": 587.28125
+            },
+            "plotWidth": 222.54722595214844,
+            "resourceNamesFit": true,
+            "resourceColumns": "158.297px 158.312px",
+            "exposureBases": "Recursos de basePV21PS17PE7PA1DEF10"
+          },
+          "equilibriumAxis": null,
+          "linkLabels": [
+            {
+              "text": "Presente",
+              "textWidth": 54.4375,
+              "available": 54.4375,
+              "inside": true
+            }
+          ]
+        },
+        {
+          "width": 820,
+          "state": "editable",
+          "overflow": false,
+          "errors": [],
+          "compactInstruments": {
+            "attributes": {
+              "x": 275.671875,
+              "y": 159.71875,
+              "width": 515.65625,
+              "height": 771
+            },
+            "vitals": {
+              "x": 275.671875,
+              "y": 942.71875,
+              "width": 515.65625,
+              "height": 796.984375
+            },
+            "equilibrium": {
+              "x": 275.671875,
+              "y": 1755.703125,
+              "width": 515.65625,
+              "height": 573.75
+            },
+            "exposure": {
+              "x": 275.671875,
+              "y": 2341.453125,
+              "width": 515.65625,
+              "height": 574.265625
+            },
+            "plotWidth": 283.4909362792969,
+            "resourceNamesFit": true,
+            "resourceColumns": "237.625px 237.641px",
+            "exposureBases": "Recursos de basePV25PS20PE8PA1DEF11"
+          },
+          "equilibriumAxis": {
+            "neutralNarrative": true,
+            "positiveThreshold": true,
+            "negativeThreshold": true
+          },
+          "linkLabels": [
+            {
+              "text": "Presente",
+              "textWidth": 47.640625,
+              "available": 47.640625,
+              "inside": true
+            },
+            {
+              "text": "Tensionado",
+              "textWidth": 62.734375,
+              "available": 62.734375,
+              "inside": true
+            }
+          ]
+        },
+        {
+          "width": 820,
+          "state": "readonly",
+          "overflow": false,
+          "errors": [],
+          "compactInstruments": {
+            "attributes": {
+              "x": 275.671875,
+              "y": 159.359375,
+              "width": 515.65625,
+              "height": 771
+            },
+            "vitals": {
+              "x": 275.671875,
+              "y": 942.359375,
+              "width": 515.65625,
+              "height": 796.984375
+            },
+            "equilibrium": {
+              "x": 275.671875,
+              "y": 1755.34375,
+              "width": 515.65625,
+              "height": 558.34375
+            },
+            "exposure": {
+              "x": 275.671875,
+              "y": 2325.6875,
+              "width": 515.65625,
+              "height": 574.265625
+            },
+            "plotWidth": 283.4909362792969,
+            "resourceNamesFit": true,
+            "resourceColumns": "237.625px 237.641px",
+            "exposureBases": "Recursos de basePV21PS17PE7PA1DEF10"
+          },
+          "equilibriumAxis": null,
+          "linkLabels": [
+            {
+              "text": "Presente",
+              "textWidth": 47.640625,
+              "available": 47.640625,
+              "inside": true
+            }
+          ]
+        },
+        {
+          "width": 1440,
+          "state": "editable",
+          "overflow": false,
+          "errors": [],
+          "compactInstruments": {
+            "attributes": {
+              "x": 290.546875,
+              "y": 280.140625,
+              "width": 1105.90625,
+              "height": 529.625
+            },
+            "vitals": {
+              "x": 290.546875,
+              "y": 821.765625,
+              "width": 1105.90625,
+              "height": 543.078125
+            },
+            "equilibrium": {
+              "x": 290.546875,
+              "y": 1380.84375,
+              "width": 546.953125,
+              "height": 597.625
+            },
+            "exposure": {
+              "x": 849.5,
+              "y": 1380.84375,
+              "width": 546.953125,
+              "height": 597.625
+            },
+            "plotWidth": 283.490966796875,
+            "resourceNamesFit": true,
+            "resourceColumns": "259.172px 259.188px 259.188px 259.188px",
+            "exposureBases": "Recursos de basePV25PS20PE8PA1DEF11"
+          },
+          "equilibriumAxis": {
+            "neutralNarrative": true,
+            "positiveThreshold": true,
+            "negativeThreshold": true
+          },
+          "linkLabels": [
+            {
+              "text": "Presente",
+              "textWidth": 47.640625,
+              "available": 47.640625,
+              "inside": true
+            },
+            {
+              "text": "Tensionado",
+              "textWidth": 62.734375,
+              "available": 62.734375,
+              "inside": true
+            }
+          ]
+        },
+        {
+          "width": 1440,
+          "state": "readonly",
+          "overflow": false,
+          "errors": [],
+          "compactInstruments": {
+            "attributes": {
+              "x": 290.546875,
+              "y": 280.359375,
+              "width": 1105.90625,
+              "height": 529.625
+            },
+            "vitals": {
+              "x": 290.546875,
+              "y": 821.984375,
+              "width": 1105.90625,
+              "height": 543.078125
+            },
+            "equilibrium": {
+              "x": 290.546875,
+              "y": 1381.0625,
+              "width": 546.953125,
+              "height": 597.625
+            },
+            "exposure": {
+              "x": 849.5,
+              "y": 1381.0625,
+              "width": 546.953125,
+              "height": 597.625
+            },
+            "plotWidth": 283.490966796875,
+            "resourceNamesFit": true,
+            "resourceColumns": "259.172px 259.188px 259.188px 259.188px",
+            "exposureBases": "Recursos de basePV21PS17PE7PA1DEF10"
+          },
+          "equilibriumAxis": null,
+          "linkLabels": [
+            {
+              "text": "Presente",
+              "textWidth": 47.640625,
+              "available": 47.640625,
+              "inside": true
+            }
+          ]
         }
       ],
-      "manualFinalCaptures": [
-        "resources-320.png",
-        "resources-390.png"
-      ]
-    }
+      "utilityContracts": [
+        {
+          "width": 320,
+          "label": "directory-contract",
+          "roles": [
+            {
+              "text": "Mestre",
+              "fits": true
+            },
+            {
+              "text": "Jogador",
+              "fits": true
+            },
+            {
+              "text": "Espectador",
+              "fits": true
+            }
+          ]
+        },
+        {
+          "width": 390,
+          "label": "directory-contract",
+          "roles": [
+            {
+              "text": "Mestre",
+              "fits": true
+            },
+            {
+              "text": "Jogador",
+              "fits": true
+            },
+            {
+              "text": "Espectador",
+              "fits": true
+            }
+          ]
+        },
+        {
+          "width": 820,
+          "label": "directory-contract",
+          "roles": [
+            {
+              "text": "Mestre",
+              "fits": true
+            },
+            {
+              "text": "Jogador",
+              "fits": true
+            },
+            {
+              "text": "Espectador",
+              "fits": true
+            }
+          ]
+        },
+        {
+          "width": 1440,
+          "label": "directory-contract",
+          "roles": [
+            {
+              "text": "Mestre",
+              "fits": true
+            },
+            {
+              "text": "Jogador",
+              "fits": true
+            },
+            {
+              "text": "Espectador",
+              "fits": true
+            }
+          ]
+        }
+      ],
+      "utilityCases": 40,
+      "fullFlows": [
+        {
+          "width": 320,
+          "state": "editable",
+          "errors": []
+        },
+        {
+          "width": 1440,
+          "state": "editable",
+          "errors": []
+        }
+      ],
+      "compositionStates": 31,
+      "radarBase": {
+        "fixtureOnly": true,
+        "results": [
+          {
+            "width": 320,
+            "state": "editable",
+            "power": false,
+            "initial": {
+              "plotWidth": 180.77682495117188,
+              "plotHeight": 171.928955078125,
+              "nodes": 41,
+              "width": 264,
+              "height": 264,
+              "x": 28,
+              "right": 292,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "current": {
+              "plotWidth": 180.77682495117188,
+              "plotHeight": 171.92898559570312,
+              "nodes": 41,
+              "width": 264,
+              "height": 264,
+              "x": 28,
+              "right": 292,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "errors": []
+          },
+          {
+            "width": 320,
+            "state": "readonly",
+            "power": false,
+            "initial": {
+              "plotWidth": 180.77682495117188,
+              "plotHeight": 171.928955078125,
+              "nodes": 41,
+              "width": 264,
+              "height": 264,
+              "x": 28,
+              "right": 292,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "current": {
+              "plotWidth": 180.77682495117188,
+              "plotHeight": 171.92898559570312,
+              "nodes": 41,
+              "width": 264,
+              "height": 264,
+              "x": 28,
+              "right": 292,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "errors": []
+          },
+          {
+            "width": 390,
+            "state": "editable",
+            "power": false,
+            "initial": {
+              "plotWidth": 222.54722595214844,
+              "plotHeight": 211.655029296875,
+              "nodes": 41,
+              "width": 325,
+              "height": 325,
+              "x": 28,
+              "right": 353,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "current": {
+              "plotWidth": 222.54722595214844,
+              "plotHeight": 211.65496826171875,
+              "nodes": 41,
+              "width": 325,
+              "height": 325,
+              "x": 28,
+              "right": 353,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "errors": []
+          },
+          {
+            "width": 390,
+            "state": "readonly",
+            "power": false,
+            "initial": {
+              "plotWidth": 222.54722595214844,
+              "plotHeight": 211.655029296875,
+              "nodes": 41,
+              "width": 325,
+              "height": 325,
+              "x": 28,
+              "right": 353,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "current": {
+              "plotWidth": 222.54722595214844,
+              "plotHeight": 211.65496826171875,
+              "nodes": 41,
+              "width": 325,
+              "height": 325,
+              "x": 28,
+              "right": 353,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "errors": []
+          },
+          {
+            "width": 820,
+            "state": "editable",
+            "power": false,
+            "initial": {
+              "plotWidth": 283.4909362792969,
+              "plotHeight": 269.615966796875,
+              "nodes": 41,
+              "width": 414,
+              "height": 414,
+              "x": 326.5,
+              "right": 740.5,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "current": {
+              "plotWidth": 283.4909362792969,
+              "plotHeight": 269.6159362792969,
+              "nodes": 41,
+              "width": 414,
+              "height": 414,
+              "x": 326.5,
+              "right": 740.5,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "errors": []
+          },
+          {
+            "width": 820,
+            "state": "readonly",
+            "power": false,
+            "initial": {
+              "plotWidth": 283.4909362792969,
+              "plotHeight": 269.615966796875,
+              "nodes": 41,
+              "width": 414,
+              "height": 414,
+              "x": 326.5,
+              "right": 740.5,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "current": {
+              "plotWidth": 283.4909362792969,
+              "plotHeight": 269.6159362792969,
+              "nodes": 41,
+              "width": 414,
+              "height": 414,
+              "x": 326.5,
+              "right": 740.5,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "errors": []
+          },
+          {
+            "width": 1440,
+            "state": "editable",
+            "power": false,
+            "initial": {
+              "plotWidth": 283.490966796875,
+              "plotHeight": 269.615966796875,
+              "nodes": 41,
+              "width": 414,
+              "height": 414,
+              "x": 962.453125,
+              "right": 1376.453125,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "current": {
+              "plotWidth": 283.490966796875,
+              "plotHeight": 269.6159362792969,
+              "nodes": 41,
+              "width": 414,
+              "height": 414,
+              "x": 962.453125,
+              "right": 1376.453125,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "errors": []
+          },
+          {
+            "width": 1440,
+            "state": "readonly",
+            "power": false,
+            "initial": {
+              "plotWidth": 283.490966796875,
+              "plotHeight": 269.615966796875,
+              "nodes": 41,
+              "width": 414,
+              "height": 414,
+              "x": 962.453125,
+              "right": 1376.453125,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "current": {
+              "plotWidth": 283.490966796875,
+              "plotHeight": 269.6159362792969,
+              "nodes": 41,
+              "width": 414,
+              "height": 414,
+              "x": 962.453125,
+              "right": 1376.453125,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "errors": []
+          }
+        ]
+      },
+      "radarPower": {
+        "fixtureOnly": true,
+        "results": [
+          {
+            "width": 320,
+            "state": "editable",
+            "power": true,
+            "initial": {
+              "plotWidth": 179.4073028564453,
+              "plotHeight": 170.62646484375,
+              "nodes": 41,
+              "width": 262,
+              "height": 262,
+              "x": 29,
+              "right": 291,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "current": {
+              "plotWidth": 179.4073028564453,
+              "plotHeight": 170.62646484375,
+              "nodes": 41,
+              "width": 262,
+              "height": 262,
+              "x": 29,
+              "right": 291,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "errors": []
+          },
+          {
+            "width": 320,
+            "state": "readonly",
+            "power": true,
+            "initial": {
+              "plotWidth": 179.4073028564453,
+              "plotHeight": 170.62646484375,
+              "nodes": 41,
+              "width": 262,
+              "height": 262,
+              "x": 29,
+              "right": 291,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "current": {
+              "plotWidth": 179.4073028564453,
+              "plotHeight": 170.62646484375,
+              "nodes": 41,
+              "width": 262,
+              "height": 262,
+              "x": 29,
+              "right": 291,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "errors": []
+          },
+          {
+            "width": 390,
+            "state": "editable",
+            "power": true,
+            "initial": {
+              "plotWidth": 221.17771911621094,
+              "plotHeight": 210.3525390625,
+              "nodes": 41,
+              "width": 323,
+              "height": 323,
+              "x": 29,
+              "right": 352,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "current": {
+              "plotWidth": 221.17771911621094,
+              "plotHeight": 210.35250854492188,
+              "nodes": 41,
+              "width": 323,
+              "height": 323,
+              "x": 29,
+              "right": 352,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "errors": []
+          },
+          {
+            "width": 390,
+            "state": "readonly",
+            "power": true,
+            "initial": {
+              "plotWidth": 221.17771911621094,
+              "plotHeight": 210.3525390625,
+              "nodes": 41,
+              "width": 323,
+              "height": 323,
+              "x": 29,
+              "right": 352,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "current": {
+              "plotWidth": 221.17771911621094,
+              "plotHeight": 210.35250854492188,
+              "nodes": 41,
+              "width": 323,
+              "height": 323,
+              "x": 29,
+              "right": 352,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "errors": []
+          },
+          {
+            "width": 820,
+            "state": "editable",
+            "power": true,
+            "initial": {
+              "plotWidth": 160.801025390625,
+              "plotHeight": 152.930908203125,
+              "nodes": 41,
+              "width": 234.828125,
+              "height": 234.828125,
+              "x": 539.5,
+              "right": 774.328125,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "current": {
+              "plotWidth": 160.801025390625,
+              "plotHeight": 152.930908203125,
+              "nodes": 41,
+              "width": 234.828125,
+              "height": 234.828125,
+              "x": 539.5,
+              "right": 774.328125,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "errors": []
+          },
+          {
+            "width": 820,
+            "state": "readonly",
+            "power": true,
+            "initial": {
+              "plotWidth": 160.801025390625,
+              "plotHeight": 152.930908203125,
+              "nodes": 41,
+              "width": 234.828125,
+              "height": 234.828125,
+              "x": 539.5,
+              "right": 774.328125,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "current": {
+              "plotWidth": 160.801025390625,
+              "plotHeight": 152.930908203125,
+              "nodes": 41,
+              "width": 234.828125,
+              "height": 234.828125,
+              "x": 539.5,
+              "right": 774.328125,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "errors": []
+          },
+          {
+            "width": 1440,
+            "state": "editable",
+            "power": true,
+            "initial": {
+              "plotWidth": 284.86041259765625,
+              "plotHeight": 270.91845703125,
+              "nodes": 41,
+              "width": 416,
+              "height": 416,
+              "x": 906.46875,
+              "right": 1322.46875,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "current": {
+              "plotWidth": 284.86041259765625,
+              "plotHeight": 270.91839599609375,
+              "nodes": 41,
+              "width": 416,
+              "height": 416,
+              "x": 906.46875,
+              "right": 1322.46875,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 2; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "errors": []
+          },
+          {
+            "width": 1440,
+            "state": "readonly",
+            "power": true,
+            "initial": {
+              "plotWidth": 284.86041259765625,
+              "plotHeight": 270.91845703125,
+              "nodes": 41,
+              "width": 416,
+              "height": 416,
+              "x": 906.46875,
+              "right": 1322.46875,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "current": {
+              "plotWidth": 284.86041259765625,
+              "plotHeight": 270.91839599609375,
+              "nodes": 41,
+              "width": 416,
+              "height": 416,
+              "x": 906.46875,
+              "right": 1322.46875,
+              "viewBox": "0 0 250 250",
+              "accessibleName": "Distribuição dos atributos",
+              "description": "COR: 1; MEN: 1; INS: 1; PRE: 1; ERU: 1. Escala de 0 a 5.",
+              "labelsFit": true
+            },
+            "errors": []
+          }
+        ]
+      }
+    },
+    "gameModeFix": "Mínimo de 80px do nome restaurado no proprietário. Fluxos completos antecipados no workflow e aprovados em 320/1440.",
+    "fixtureStartup": "Utilidades verificam prontidão HTTP e registram stdout/stderr; o gate não depende da linha Local: do console."
   },
-  "source": {},
-  "publication": {},
+  "publication": {
+    "pr": 306,
+    "mergeCommit": "535106f7eb1aaacaa599334d7c8e93287af03a11",
+    "mainQualityRun": 40293915897,
+    "mainQualityJob": 121475232290,
+    "productionRun": 40293915696,
+    "productionJob": 121475231330,
+    "httpStatus": 200,
+    "buildSha": "535106f7eb1aaacaa599334d7c8e93287af03a11",
+    "verifiedAt": "2026-10-26T08:43:07.9831728Z",
+    "proof": [
+      "2026-10-26T08:43:07.9830766Z Attempt 1/12: HTTP 200, build 535106f7eb1aaacaa599334d7c8e93287af03a11.",
+      "2026-10-26T08:43:07.9831728Z Production confirmed at SHA 535106f7eb1aaacaa599334d7c8e93287af03a11."
+    ],
+    "docsClosure": "A publicação do fechamento documental é confirmada no corpo de sua própria PR, evitando recursão de SHA."
+  },
   "limits": [
     "Geometria, capturas e fixtures não certificam FPS/INP físicos, contas reais ou restauração de infraestrutura.",
     "NEX-009/010/011 continuam com suas validações específicas."

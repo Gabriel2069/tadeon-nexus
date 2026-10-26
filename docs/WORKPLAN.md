@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-25; referência de runtime: `870dd4cd2c9b2db5f565230cb672942b219ebf35`. PR #304 em `feat/nex-037-equilibrium-axis`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-26; referência de runtime: `535106f7eb1aaacaa599334d7c8e93287af03a11`. PR #306 em `feat/nex-038-dossier-density`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -47,7 +47,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-035 | Atributos: instrumento vetorial leve e leitura acessível | Integrado | 7 | sheet | NEX-034 |
 | NEX-036 | Ficha: registros de identidade, vínculos e instrumentos de estado | Integrado | 7 | sheet | NEX-035 |
 | NEX-037 | Atributos em escala legível e Equilíbrio como relação entre polos | Integrado | 7 | sheet | NEX-036 |
-| NEX-038 | Dossiê compacto, Exposição graduada e utilidades como registros | Em andamento | 7 | sheet | NEX-037 |
+| NEX-038 | Dossiê compacto, Exposição graduada e utilidades como registros | Integrado | 7 | sheet | NEX-037 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -374,7 +374,7 @@ Evidências: [src/components/sheet/sheet-equilibrium-section.tsx](../src/compone
 - Organizar Offline, Backup e Usuários por tarefa, com disponibilidade real, registro contínuo de pessoas, histórico e importação distintos; preservar contratos e confirmações.
 - Incorporar o dossiê Véu & Trama como referência do sistema, retirar escritores concorrentes e verificar quatro larguras, foco/portais/redução de movimento, check e audit antes da publicação.
 
-Evidências: [docs/VEU_E_TRAMA.md](../docs/VEU_E_TRAMA.md), [docs/dossier-density-validation.json](../docs/dossier-density-validation.json), [src/components/sheet/sheet-exposure-section.tsx](../src/components/sheet/sheet-exposure-section.tsx), [src/components/sheet/sheet-exposure-section.test.tsx](../src/components/sheet/sheet-exposure-section.test.tsx), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [scripts/verify-navigation-utilities.mjs](../scripts/verify-navigation-utilities.mjs).
+Evidências: [docs/VEU_E_TRAMA.md](../docs/VEU_E_TRAMA.md), [docs/dossier-density-validation.json](../docs/dossier-density-validation.json), [src/components/sheet/sheet-exposure-section.tsx](../src/components/sheet/sheet-exposure-section.tsx), [src/components/sheet/sheet-exposure-section.test.tsx](../src/components/sheet/sheet-exposure-section.test.tsx), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [scripts/verify-navigation-utilities.mjs](../scripts/verify-navigation-utilities.mjs), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/306), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40251173586), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40251173547), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40293915897), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40293915696).
 
 ## Decisões vigentes
 
