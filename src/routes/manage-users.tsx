@@ -216,9 +216,14 @@ function ManageUsersPageContent() {
             ))}
           </SelectContent>
         </Select>
-        <Button variant="outline" disabled={loading || Boolean(busyId)} onClick={() => void load()}>
+        <Button
+          variant="outline"
+          aria-label="Atualizar lista"
+          disabled={loading || Boolean(busyId)}
+          onClick={() => void load()}
+        >
           <RefreshCw className={loading ? "animate-spin" : ""} />
-          Atualizar lista
+          Atualizar
         </Button>
       </div>
       <p role="status" className="text-sm text-muted-foreground">
@@ -262,16 +267,13 @@ function ManageUsersPageContent() {
           )}
         </Card>
       ) : (
-        <div className="tadeon-users-list space-y-3">
+        <div className="tadeon-users-list">
           {filtered.map((row) => {
             const isSelf = row.id === user?.id;
             const Icon = icons[row.role];
             return (
-              <Card
-                key={row.id}
-                className="tadeon-user-row grid gap-4 border-border/70 bg-card/65 p-4 sm:p-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
-              >
-                <div className="flex min-w-0 items-center gap-3">
+              <Card key={row.id} className="tadeon-user-row" data-user-role={row.role}>
+                <div className="tadeon-user-row__identity">
                   <span className="tadeon-user-row__sigil" aria-hidden>
                     {(row.full_name || row.email || "?").trim().charAt(0).toUpperCase()}
                   </span>
@@ -290,7 +292,7 @@ function ManageUsersPageContent() {
                     )}
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="tadeon-user-row__access">
                   <Icon className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
                   <Select
                     value={row.role}

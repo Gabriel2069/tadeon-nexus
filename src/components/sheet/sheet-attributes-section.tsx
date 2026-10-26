@@ -60,7 +60,7 @@ export function SheetAttributesSection({
       )}
       <div className="tadeon-attributes-composition">
         <div
-          className="tadeon-attribute-grid grid grid-cols-2 gap-2 sm:grid-cols-3"
+          className="tadeon-attribute-grid"
           role="group"
           aria-label="Distribuição dos atributos"
         >

@@ -38,8 +38,8 @@ export function SheetConditionsSection({
                         .map((part) => part.trim())
                         .join(" "),
                       borderColor: meta.color,
-                      background: `linear-gradient(145deg, rgba(${meta.rgb}, 0.2), rgba(${meta.rgb}, 0.04))`,
-                      boxShadow: `0 0 0 1px ${meta.color}44, inset 0 0 24px rgba(${meta.rgb}, 0.1)`,
+                      background: `linear-gradient(145deg, rgba(${meta.rgb}, 0.1), rgba(${meta.rgb}, 0.03))`,
+                      boxShadow: `inset 2px 0 0 ${meta.color}, inset 0 1px rgba(${meta.rgb}, 0.12)`,
                     }
                   : undefined) as CSSProperties | undefined
               }

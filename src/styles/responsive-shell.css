@@ -341,32 +341,6 @@
     padding: 0.9rem 0.75rem calc(6.4rem + env(safe-area-inset-bottom));
   }
 
-  .tadeon-users-list {
-    display: grid;
-    gap: 0.75rem;
-  }
-
-  .tadeon-user-row {
-    padding: 1rem;
-  }
-
-  .tadeon-user-row__sigil {
-    display: grid;
-    width: 2.75rem;
-    aspect-ratio: 1;
-    flex: 0 0 auto;
-    place-items: center;
-    border: 1px solid color-mix(in srgb, var(--section-accent) 25%, var(--border));
-    border-radius: 0.85rem 0.28rem 0.85rem 0.28rem;
-    color: color-mix(in srgb, var(--foreground) 75%, var(--section-accent));
-    background:
-      radial-gradient(circle at 30% 20%, rgb(255 255 255 / 9%), transparent 45%),
-      rgb(var(--section-accent-rgb) / 11%);
-    font-family: var(--font-cinzel);
-    font-size: 1.05rem;
-    font-weight: 700;
-  }
-
   [data-radix-dialog-content],
   [data-slot="dialog-content"] {
     max-height: calc(100dvh - 1rem);
@@ -408,9 +382,6 @@
     animation: none;
     transition: none;
   }
-}
-
-@media (prefers-reduced-transparency: reduce) and (max-width: 767px) {
 }
 
 /* Compact mobile dashboard: readable hierarchy without poster-sized cards. */

@@ -1,0 +1,390 @@
+{
+  "task": "NEX-038",
+  "status": "local-checks-completed-review-pending",
+  "baseCommit": "237f6747f5bcd30fb69f36c34f0dc38994898876",
+  "designReference": "docs/VEU_E_TRAMA.md",
+  "scope": [
+    "Ficha: Identidade, Atributos, recursos/Defesa, Equilíbrio, Exposição, condições, perícias e registros; Maestria e História",
+    "Offline: disponibilidade e recursos locais",
+    "Usuários: diretório e ações protegidas",
+    "Backup: criação, histórico, importação e diagnóstico"
+  ],
+  "protected": [
+    "Radar SVG raio 90/viewBox 250, escala e memoização",
+    "Eixo bipolar, tensão ±4 e limites de cargo",
+    "Regras, autosave, autorização, histórico/importação",
+    "Botões e rodas aprovados; Dashboard sem hero adicional"
+  ],
+  "local": {
+    "quality": {
+      "command": "npm run check",
+      "suites": 157,
+      "tests": 634,
+      "passed": true,
+      "note": "Check completo, incluindo build. Alterações visuais finais e verificadores também devem passar no fonte da PR."
+    },
+    "audit": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "baseline": {
+      "commit": "237f6747f5bcd30fb69f36c34f0dc38994898876",
+      "tree": "7f854f7fbe978eb4b40c130199c9078793c6b940",
+      "metrics": [
+        {
+          "width": 1440,
+          "state": "editable",
+          "initial": {
+            "overflow": false,
+            "header": {
+              "x": 290.546875,
+              "y": 98.390625,
+              "width": 1105.90625,
+              "height": 115.1875,
+              "position": "relative"
+            },
+            "identity": {
+              "x": 290.546875,
+              "y": 514.53125,
+              "width": 1105.90625,
+              "height": 1104.578125,
+              "position": "relative"
+            },
+            "attributes": {
+              "x": 290.546875,
+              "y": 1635.109375,
+              "width": 501.34375,
+              "height": 806.359375,
+              "position": "relative"
+            },
+            "equilibrium": {
+              "x": 290.546875,
+              "y": 2485.40625,
+              "width": 738.375,
+              "height": 633.90625,
+              "position": "relative"
+            },
+            "exposure": {
+              "x": 1040.921875,
+              "y": 2485.40625,
+              "width": 355.53125,
+              "height": 491.265625,
+              "position": "relative"
+            },
+            "attributesColumns": "144.047px 144.047px 144.047px",
+            "headings": [
+              {
+                "text": "Identidade",
+                "width": 157.0625,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Atributos",
+                "width": 116.109375,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Pontos Vitais",
+                "width": 149.34375,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Equilíbrio",
+                "width": 114.671875,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Exposição",
+                "width": 135.515625,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Condições",
+                "width": 118.65625,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Perícias",
+                "width": 142.1875,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Armas",
+                "width": 122.796875,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Inventário",
+                "width": 118.65625,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Habilidades",
+                "width": 134.953125,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Tramas",
+                "width": 161.484375,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Anotações Rápidas",
+                "width": 216.46875,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              }
+            ],
+            "stateTargets": [
+              {
+                "width": 72,
+                "height": 44
+              },
+              {
+                "width": 604.375,
+                "height": 44
+              },
+              {
+                "width": 44,
+                "height": 44
+              },
+              {
+                "width": 44,
+                "height": 44
+              },
+              {
+                "width": 72,
+                "height": 44
+              },
+              {
+                "width": 221.53125,
+                "height": 44
+              }
+            ],
+            "targetsFit": true
+          },
+          "scrolled": {
+            "overflow": false,
+            "header": {
+              "x": 290.546875,
+              "y": -1394.609375,
+              "width": 1105.90625,
+              "height": 115.1875,
+              "position": "relative"
+            },
+            "identity": {
+              "x": 290.546875,
+              "y": -978.46875,
+              "width": 1105.90625,
+              "height": 1104.578125,
+              "position": "relative"
+            },
+            "attributes": {
+              "x": 290.546875,
+              "y": 142.109375,
+              "width": 501.34375,
+              "height": 806.359375,
+              "position": "relative"
+            },
+            "equilibrium": {
+              "x": 290.546875,
+              "y": 992.40625,
+              "width": 738.375,
+              "height": 628.3125,
+              "position": "relative"
+            },
+            "exposure": {
+              "x": 1040.921875,
+              "y": 992.40625,
+              "width": 355.53125,
+              "height": 491.265625,
+              "position": "relative"
+            },
+            "attributesColumns": "144.047px 144.047px 144.047px",
+            "headings": [
+              {
+                "text": "Identidade",
+                "width": 157.0625,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Atributos",
+                "width": 116.109375,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Pontos Vitais",
+                "width": 149.34375,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Equilíbrio",
+                "width": 114.671875,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Exposição",
+                "width": 135.515625,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Condições",
+                "width": 118.65625,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Perícias",
+                "width": 142.1875,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Armas",
+                "width": 122.796875,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Inventário",
+                "width": 118.65625,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Habilidades",
+                "width": 134.953125,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Tramas",
+                "width": 161.484375,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              },
+              {
+                "text": "Anotações Rápidas",
+                "width": 216.46875,
+                "height": 31.671875,
+                "lineHeight": 31.68
+              }
+            ],
+            "stateTargets": [
+              {
+                "width": 72,
+                "height": 44
+              },
+              {
+                "width": 604.375,
+                "height": 44
+              },
+              {
+                "width": 44,
+                "height": 44
+              },
+              {
+                "width": 44,
+                "height": 44
+              },
+              {
+                "width": 72,
+                "height": 44
+              },
+              {
+                "width": 221.53125,
+                "height": 44
+              }
+            ],
+            "targetsFit": true
+          },
+          "linkLabels": [
+            {
+              "text": "Presente",
+              "textWidth": 67.203125,
+              "available": 67.203125,
+              "inside": true
+            },
+            {
+              "text": "Tensionado",
+              "textWidth": 84,
+              "available": 84,
+              "inside": true
+            }
+          ],
+          "composition": {
+            "links": [
+              {
+                "state": "Presente",
+                "width": 292.578125,
+                "height": 340.390625,
+                "textFits": true,
+                "fits": true
+              },
+              {
+                "state": "Costurado",
+                "width": 292.578125,
+                "height": 340.390625,
+                "textFits": true,
+                "fits": true
+              },
+              {
+                "state": "Rompido",
+                "width": 292.578125,
+                "height": 292.390625,
+                "textFits": true,
+                "fits": true
+              }
+            ]
+          },
+          "errors": []
+        }
+      ],
+      "manualCaptures": [
+        "Atributos e estados anteriores em 390/1440",
+        "Offline anterior em 390"
+      ]
+    },
+    "preliminaryAdaptiveViews": 8,
+    "utilityReferenceStates": 18,
+    "nativeScreenshotLimit": "Algumas capturas Chromium local excederam timeout durante execução simultânea. Fonte exato ainda requer artefato Visual review e inspeção manual antes do merge.",
+    "overrideBudgetReductions": [
+      {
+        "path": "src/styles/navigation-layout.css",
+        "before": 6,
+        "after": 3
+      },
+      {
+        "path": "src/styles/sheet-premium.css",
+        "before": 9,
+        "after": 8
+      }
+    ]
+  },
+  "source": {},
+  "publication": {},
+  "limits": [
+    "Geometria, capturas e fixtures não certificam FPS/INP físicos, contas reais ou restauração de infraestrutura.",
+    "NEX-009/010/011 continuam com suas validações específicas."
+  ]
+}

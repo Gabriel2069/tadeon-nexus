@@ -536,8 +536,9 @@
 @keyframes tdv-state-pop{0%{transform:scale(.78) rotate(-6deg)}48%{transform:scale(1.18) rotate(2deg)}76%{transform:scale(.96)}100%{transform:scale(1) rotate(0)}}
 
 /* Cards / rows: distinct lift, lateral drift and material sheen. */
-.tadeon-shell .tadeon-surface,.tadeon-shell .tadeon-user-row,.tadeon-shell .tadeon-state-panel:not([data-material-surface]){transition:transform 340ms var(--tdv-spring),box-shadow 440ms var(--tdv-soft),border-color 260ms ease,filter 340ms ease}
-@media (hover:hover) and (pointer:fine){.tadeon-shell .tadeon-surface:hover{transform:translateY(-8px) rotate(-.18deg) scale(1.012);filter:brightness(1.035)}.tadeon-shell .tadeon-user-row:hover{transform:translateX(8px) translateY(-2px);filter:brightness(1.025)}.tadeon-shell .tadeon-state-panel:not([data-material-surface]):hover{transform:translateY(-6px) scale(1.008)}}
+.tadeon-shell .tadeon-surface,
+.tadeon-shell .tadeon-state-panel:not([data-material-surface]){transition:transform 340ms var(--tdv-spring),box-shadow 440ms var(--tdv-soft),border-color 260ms ease,filter 340ms ease}
+@media (hover:hover) and (pointer:fine){.tadeon-shell .tadeon-surface:hover{transform:translateY(-8px) rotate(-.18deg) scale(1.012);filter:brightness(1.035)}.tadeon-shell .tadeon-state-panel:not([data-material-surface]):hover{transform:translateY(-6px) scale(1.008)}}
 
 /* Navigation: active destination arrives with a directional sweep. */
 
@@ -576,7 +577,11 @@
 @keyframes tdv-saving{0%,100%{box-shadow:0 0 0 0 rgb(217 215 164 / 0%)}50%{box-shadow:0 0 34px -14px rgb(217 215 164 / 48%)}}@keyframes tdv-success{0%{opacity:.55;transform:scale(.88)}45%{opacity:1;transform:scale(1.1)}75%{transform:scale(.97)}100%{transform:scale(1)}}@keyframes tdv-error{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px) rotate(-.4deg)}40%{transform:translateX(7px) rotate(.4deg)}60%{transform:translateX(-4px)}80%{transform:translateX(2px)}}
 
 /* Tables / lists: rows arrive as a visible procession. */
-.tadeon-shell .tadeon-users-list > *, .tadeon-shell .tadeon-inventory-list > *, .tadeon-shell .tadeon-skill-list > *{animation:tdv-row-in 560ms var(--tdv-in) both}.tadeon-shell .tadeon-users-list > :nth-child(2),.tadeon-shell .tadeon-inventory-list > :nth-child(2),.tadeon-shell .tadeon-skill-list > :nth-child(2){animation-delay:50ms}.tadeon-shell .tadeon-users-list > :nth-child(3),.tadeon-shell .tadeon-inventory-list > :nth-child(3),.tadeon-shell .tadeon-skill-list > :nth-child(3){animation-delay:100ms}.tadeon-shell .tadeon-users-list > :nth-child(4),.tadeon-shell .tadeon-inventory-list > :nth-child(4),.tadeon-shell .tadeon-skill-list > :nth-child(4){animation-delay:150ms}@keyframes tdv-row-in{from{opacity:0;transform:translateX(-28px) translateY(14px) scale(.97);filter:blur(5px)}65%{opacity:1;transform:translateX(4px) translateY(-2px) scale(1.01);filter:blur(0)}to{transform:none}}
+.tadeon-shell .tadeon-inventory-list > *,
+.tadeon-shell .tadeon-skill-list > *{animation:tdv-row-in 560ms var(--tdv-in) both}.tadeon-shell .tadeon-inventory-list > :nth-child(2),
+.tadeon-shell .tadeon-skill-list > :nth-child(2){animation-delay:50ms}.tadeon-shell .tadeon-inventory-list > :nth-child(3),
+.tadeon-shell .tadeon-skill-list > :nth-child(3){animation-delay:100ms}.tadeon-shell .tadeon-inventory-list > :nth-child(4),
+.tadeon-shell .tadeon-skill-list > :nth-child(4){animation-delay:150ms}@keyframes tdv-row-in{from{opacity:0;transform:translateX(-28px) translateY(14px) scale(.97);filter:blur(5px)}65%{opacity:1;transform:translateX(4px) translateY(-2px) scale(1.01);filter:blur(0)}to{transform:none}}
 
 /* Nexus: selection becomes a focal event. */
 .tadeon-shell [data-tadeon-node][data-selected=true],.tadeon-shell [data-tadeon-map-element][data-selected=true]{animation:tdv-node-focus 700ms var(--tdv-spring) both;transform-origin:center;filter:drop-shadow(0 18px 32px rgb(217 215 164 / 28%))}.tadeon-shell [data-tadeon-node][data-related=true],.tadeon-shell [data-tadeon-map-element][data-related=true]{transition:opacity 420ms var(--tdv-soft),filter 520ms var(--tdv-soft),transform 500ms var(--tdv-spring)}@keyframes tdv-node-focus{0%{opacity:.55;transform:scale(.72);filter:drop-shadow(0 0 0 rgb(217 215 164 / 0%))}55%{opacity:1;transform:scale(1.15);filter:drop-shadow(0 20px 36px rgb(217 215 164 / 34%))}100%{transform:scale(1)}}
@@ -633,12 +638,6 @@
 @keyframes tp-tool-hit{0%{transform:translateY(0) scale(1)}38%{transform:translateY(5px) scale(.9) rotate(1.4deg)}72%{transform:translateY(-2px) scale(1.045) rotate(-.4deg)}100%{transform:none}}
 
 /* USERS - rows behave like records being selected. */
-.tadeon-shell[data-section="Usuários"] .tadeon-user-row:hover,
-.tadeon-shell[data-section="Backup"] .tadeon-user-row:hover,
-.tadeon-shell[data-section="Offline"] .tadeon-user-row:hover{transform:translateX(10px) translateY(-3px);box-shadow:14px 20px 48px -38px rgb(122 129 135 / 45%)}
-.tadeon-shell[data-section="Usuários"] .tadeon-user-row:active,
-.tadeon-shell[data-section="Backup"] .tadeon-user-row:active,
-.tadeon-shell[data-section="Offline"] .tadeon-user-row:active{transform:translateX(5px) scale(.985)}
 
 /* HEALTH / STATUS - living archive states. */
 .tadeon-shell[data-section="Saúde do arquivo"] .tadeon-state-panel[data-tadeon-state="saving"]{animation:tp-saving 1.55s ease-in-out infinite}

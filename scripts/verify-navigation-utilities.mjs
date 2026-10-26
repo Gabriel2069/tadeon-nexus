@@ -119,7 +119,16 @@ try {
   await geometry("navigation-travel");await page.emulateMedia({reducedMotion:"reduce"});
 await page.getByText("Cronista",{exact:true}).waitFor();
   assert(listCount>0,"Users must come from mocked server-function transport");await geometry("users");
-  assert(results.at(-1).rows.every(r=>r.inside && (width>=768 || r.height<220)),"Compact user rows stay readable without forced giant heights");
+  if(process.env.NEXUS_EXPECT_UTILITY_REGISTERS === "1") {
+   const roles=await page.locator('.tadeon-user-row__access [role="combobox"]').evaluateAll(items=>items.map(e=>{const text=e.querySelector('span'),icon=e.querySelector('svg'),range=document.createRange();range.selectNodeContents(text);const r=range.getBoundingClientRect();return {text:e.textContent,fits:r.width<=text.getBoundingClientRect().width+1 && r.right<=icon.getBoundingClientRect().left+1};}));
+   assert(roles.length===3 && roles.every(e=>e.fits),'Full role names fit: '+JSON.stringify(roles));
+   await page.emulateMedia({reducedMotion:'no-preference'});
+   const row=page.locator('.tadeon-user-row').last();await row.hover();
+   assert(await row.evaluate(e=>{const c=getComputedStyle(e);return c.transform==='none' && c.filter==='none';}),'Directory rows stay still while operating controls');
+   await page.emulateMedia({reducedMotion:'reduce'});
+   results.push({width,label:'directory-contract',roles});
+  }
+  assert(results.findLast(result=>result.label==="users").rows.every(r=>r.inside && (width>=768 || r.height<220)),"Compact user rows stay readable without forced giant heights");
   await page.getByRole("searchbox").fill("cronista@");assert(!(await page.getByText(people[1].full_name,{exact:true}).count()),"User search filters name/email");
   await page.getByRole("searchbox").fill("none");await page.getByRole("button",{name:"Limpar filtros"}).click();
   const playerRole=page.getByRole("combobox",{name:`Papel de ${people[1].full_name}`});await playerRole.click();await page.getByRole("option",{name:"Mestre",exact:true}).click();await page.getByRole("alertdialog").waitFor();await geometry("users-role-review");await page.getByRole("button",{name:"Cancelar",exact:true}).click();

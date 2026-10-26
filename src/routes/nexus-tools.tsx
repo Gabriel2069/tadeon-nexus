@@ -591,9 +591,16 @@ function NexusToolsPageContent() {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="backup" className="space-y-5">
-          <Card className="tadeon-surface rounded-2xl p-4 md:p-6">
-            <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
+        <TabsContent value="backup" className="tadeon-backup-workspace">
+          <Card className="tadeon-backup-create">
+            <div className="tadeon-backup-create__heading">
+              <FileClock aria-hidden="true" />
+              <div>
+                <p className="tadeon-eyebrow">Preservar o arquivo</p>
+                <h2>Criar uma cópia</h2>
+              </div>
+            </div>
+            <div className="tadeon-backup-create__form">
               <div>
                 <Label htmlFor="snapshot-label">Nome do ponto de restauração</Label>
                 <Input
@@ -635,8 +642,8 @@ function NexusToolsPageContent() {
             </div>
           </Card>
 
-          <div className="grid gap-5 lg:grid-cols-[1.4fr_.6fr]">
-            <Card className="tadeon-surface rounded-2xl p-4 md:p-6">
+          <div className="tadeon-backup-archive">
+            <Card className="tadeon-backup-history">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
                   <p className="tadeon-eyebrow">Versões locais</p>
@@ -666,12 +673,9 @@ function NexusToolsPageContent() {
               ) : (
                 <div className="space-y-2">
                   {snapshots.map((snapshot) => (
-                    <div
-                      key={snapshot.id}
-                      className="flex flex-col gap-3 rounded-xl border border-border/70 bg-background/35 p-3 sm:flex-row sm:items-center"
-                    >
+                    <div key={snapshot.id} className="tadeon-backup-entry">
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium">{snapshot.label}</p>
+                        <p className="break-words text-sm font-medium">{snapshot.label}</p>
                         <p className="text-[11px] text-muted-foreground">
                           {new Date(snapshot.createdAt).toLocaleString("pt-BR")} ·{" "}
                           {snapshot.sheetCount} ficha(s)
@@ -709,7 +713,7 @@ function NexusToolsPageContent() {
               )}
             </Card>
 
-            <Card className="tadeon-surface rounded-2xl p-4 md:p-6">
+            <Card className="tadeon-backup-import">
               <FileUp className="mb-4 h-6 w-6 text-primary" />
               <h2 className="font-cinzel text-xl font-semibold">Importar backup</h2>
               <p className="mt-2 text-sm text-muted-foreground">
@@ -947,7 +951,7 @@ function DiagnosticCard({ result }: { result: DiagnosticResult }) {
     );
 
   return (
-    <Card className="tadeon-surface rounded-2xl p-4">
+    <Card className="tadeon-diagnostic-record" data-diagnostic-level={result.level}>
       <div className="flex items-start gap-3">
         <div
           className={`mt-0.5 rounded-lg p-2 ${
@@ -961,7 +965,16 @@ function DiagnosticCard({ result }: { result: DiagnosticResult }) {
           {icon}
         </div>
         <div>
-          <p className="text-sm font-semibold">{result.label}</p>
+          <div className="tadeon-diagnostic-record__heading">
+            <p className="text-sm font-semibold">{result.label}</p>
+            <span>
+              {result.level === "healthy"
+                ? "Disponível"
+                : result.level === "warning"
+                  ? "Atenção"
+                  : "Falha"}
+            </span>
+          </div>
           <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{result.detail}</p>
         </div>
       </div>

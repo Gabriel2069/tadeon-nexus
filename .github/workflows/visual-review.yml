@@ -16,7 +16,7 @@ permissions:
 jobs:
   browser:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
     env:
       NEXUS_BROWSER_MODULE: file:///tmp/tadeon-browser/node_modules/playwright/index.mjs
     steps:
@@ -66,6 +66,13 @@ jobs:
           NEXUS_MATERIAL_AUDIT: "1"
           NEXUS_LAYOUT_AUDIT: "1"
         run: node scripts/verify-header-ownership.mjs current
+      - name: Validar registros Offline, Usuários e Backup
+        env:
+          NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/utility-registers
+          NEXUS_AUDIT_WIDTHS: "[320,390,820,1440]"
+          NEXUS_AUDIT_SCOPE: utilities
+          NEXUS_EXPECT_UTILITY_REGISTERS: "1"
+        run: node scripts/verify-navigation-utilities.mjs
       - name: Comparar composição anterior da Mesa
         env:
           NEXUS_AUDIT_REPO: /tmp/tadeon-baseline
@@ -97,6 +104,7 @@ jobs:
           NEXUS_EXPECT_ADAPTIVE: "1"
           NEXUS_EXPECT_COMPOSITION: "1"
           NEXUS_EXPECT_EQUILIBRIUM_AXIS: "1"
+          NEXUS_EXPECT_COMPACT_DOSSIER: "1"
         run: node scripts/verify-sheet-design.mjs
       - name: Conferir radar vetorial na Ficha
         env:

@@ -1237,9 +1237,7 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
 .tadeon-shell h2,
 .tadeon-shell h3 { font-family: var(--font-cinzel, "Cormorant Garamond", Georgia, serif); }
 .tadeon-shell .tadeon-eyebrow,
-.tadeon-shell .tadeon-mono,
-.tadeon-shell [data-state],
-.tadeon-shell [aria-live] { font-family: var(--font-mono, "PT Mono", ui-monospace, monospace); }
+.tadeon-shell .tadeon-mono { font-family: var(--font-mono, "PT Mono", ui-monospace, monospace); }
 .tadeon-shell button,
 .tadeon-shell input,
 .tadeon-shell textarea,

@@ -110,9 +110,6 @@
    Mobile remains deliberate
    -------------------------------------------------------------------------- */
 
-@media (max-width: 767px) {
-}
-
 @media (prefers-reduced-motion: reduce) {
   .tadeon-surface[data-tadeon-material],
   .tadeon-state-panel[data-tadeon-material] { transition: none !important; }
@@ -551,7 +548,6 @@
 .tadeon-auth-hero,
 .tadeon-surface,
 .tadeon-state-panel,
-.tadeon-user-row,
 .tadeon-shell button,
 .tadeon-shell [role="button"],
 .tadeon-shell input,
@@ -606,7 +602,6 @@
 }
 
 /* Utility heads - quiet breathing rather than dramatic movement. */
-.tadeon-route-users .tadeon-user-row,
 .tadeon-route-offline .tadeon-surface,
 .tadeon-route-tools .tadeon-surface {
   transition: transform 360ms var(--tadeon-motion-material, cubic-bezier(.23,1,.32,1)),
@@ -615,9 +610,8 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-route-users .tadeon-user-row:hover,
   .tadeon-route-offline .tadeon-surface:hover,
-  .tadeon-route-tools .tadeon-surface[data-tadeon-interactive="true"]:hover {
+.tadeon-route-tools .tadeon-surface[data-tadeon-interactive="true"]:hover {
     transform: translateY(-1px);
   }
 }
@@ -967,8 +961,7 @@
 
 /* Surfaces: elevation changes are continuous, not jumpy. */
 .tadeon-shell .tadeon-surface,
-.tadeon-shell .tadeon-state-panel:not([data-material-surface]),
-.tadeon-shell .tadeon-user-row {
+.tadeon-shell .tadeon-state-panel:not([data-material-surface]) {
   transform-origin: center;
   backface-visibility: hidden;
 }
@@ -1015,15 +1008,13 @@
 
 /* Tables/lists: row focus tracks across the list with a small lateral gesture. */
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-users-list > *,
   .tadeon-inventory-list > *,
-  .tadeon-skill-list > * {
+.tadeon-skill-list > * {
     transition: transform 260ms var(--tadeon-motion-settle), background-color 220ms ease, border-color 260ms ease, box-shadow 280ms var(--tadeon-motion-settle);
   }
 
-  .tadeon-users-list > *:hover,
   .tadeon-inventory-list > *:hover,
-  .tadeon-skill-list > *:hover {
+.tadeon-skill-list > *:hover {
     transform: translateX(2px) translateY(-1px);
   }
 }
@@ -1146,7 +1137,6 @@
 .tadeon-route-stage > .tadeon-page,
 .tadeon-shell .tadeon-surface,
 .tadeon-shell .tadeon-state-panel,
-.tadeon-shell .tadeon-user-row,
 .tadeon-shell .tadeon-skill-modifier-panel,
 .tadeon-shell button,
 .tadeon-shell [role="button"],
@@ -1343,17 +1333,15 @@
    Lists: adjacent rows stay stable while the focused row gains depth.
    -------------------------------------------------------------------------- */
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-users-list:hover > *,
   .tadeon-inventory-list:hover > *,
-  .tadeon-skill-list:hover > * {
+.tadeon-skill-list:hover > * {
     transition: opacity 260ms var(--tadeon-relational-soft),
       transform 260ms var(--tadeon-relational-soft),
       filter 260ms var(--tadeon-relational-soft);
   }
 
-  .tadeon-users-list:hover > *:not(:hover),
   .tadeon-inventory-list:hover > *:not(:hover),
-  .tadeon-skill-list:hover > *:not(:hover) {
+.tadeon-skill-list:hover > *:not(:hover) {
     filter: saturate(.92);
   }
 }

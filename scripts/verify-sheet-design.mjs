@@ -542,12 +542,32 @@ try {
             })};
           }));
           assert(composition.links.every(row=>row.fits && row.textFits), "Long relationship fields and actions fit each folio");
-          await page.locator('#sec-info').screenshot({path: `${output}/identity-register-${state}-${width}.png`});
+          if(process.env.NEXUS_SKIP_SCREENSHOTS!=="1") await page.locator('#sec-info').screenshot({path: `${output}/identity-register-${state}-${width}.png`});
         }
 
         await page.locator("#sec-attr").scrollIntoViewIfNeeded();
         await captureAdaptive({ path: `${output}/attributes-${state}-${width}.png` });
         const scrolled = await measure();
+        if (process.env.NEXUS_EXPECT_COMPACT_DOSSIER === "1") {
+          const instrument = await page.evaluate(() => {
+            const box = selector => { const r=document.querySelector(selector).getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}; };
+            const graph=document.querySelector('.tadeon-attribute-radar-svg');
+            const plot=graph.querySelector('g[fill="none"] > polygon:last-of-type').getBoundingClientRect();
+            return {attributes:box('#sec-attr'),vitals:box('#sec-pontos'),equilibrium:box('#equilibrio'),exposure:box('#exposicao'),plotWidth:plot.width,resourceColumns:getComputedStyle(document.querySelector('.tadeon-vitals-grid')).gridTemplateColumns,exposureBases:document.querySelector('.tadeon-exposure-resources')?.textContent};
+          });
+          assert(instrument.plotWidth >= 140, "Compact composition preserves the enlarged radar");
+          assert(instrument.exposureBases?.includes("PV") && instrument.exposureBases?.includes("DEF"), "Exposure presents actual resource bases");
+          if(width>=1180) {
+            assert(Math.abs(instrument.equilibrium.y-instrument.exposure.y)<1 && Math.abs(instrument.equilibrium.height-instrument.exposure.height)<1 && Math.abs(instrument.equilibrium.width-instrument.exposure.width)<1, "Open state pair has aligned frames and equal widths");
+            assert(instrument.attributes.height<650 && instrument.vitals.height<650, "Wide instruments use horizontal composition instead of giant stacked cards");
+            await page.getByRole('button',{name:'Recolher seção Equilíbrio',exact:true}).click();
+            await page.waitForFunction(() => document.querySelector('#equilibrio').getBoundingClientRect().height < 150, undefined, {timeout: 5000});
+            const collapsed=await page.locator('#equilibrio').boundingBox();
+            assert(collapsed.height<150, "A collapsed instrument never stretches to the adjacent open panel");
+            await page.getByRole('button',{name:'Expandir seção Equilíbrio',exact:true}).click();
+          }
+          composition.compactInstruments=instrument;
+        }
         await page.locator("#equilibrio").scrollIntoViewIfNeeded();
         await captureAdaptive({ path: `${output}/states-${state}-${width}.png` });
         await page.locator("#exposicao").scrollIntoViewIfNeeded();

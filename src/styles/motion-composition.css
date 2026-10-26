@@ -1693,9 +1693,6 @@
   100% { opacity: .62; transform: translate3d(.18rem,-.1rem,0); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-}
-
 /* end-source: src/styles/tadeon-motion-heroes.css */
 
 /* source: src/styles/tadeon-motion-workspace.css */
@@ -1973,16 +1970,6 @@
 }
 
 /* Users - relational movement: links converge rather than float. */
-.tadeon-shell[data-section="Usuários"] .tadeon-user-row:hover {
-  border-color: rgb(var(--section-motion-rgb) / 28%);
-  box-shadow: inset 1px 0 rgb(var(--section-motion-rgb) / 45%);
-}
-.tadeon-shell[data-section="Usuários"] .tadeon-user-row__sigil {
-  transition: filter 320ms ease, opacity 320ms ease;
-}
-.tadeon-shell[data-section="Usuários"] .tadeon-user-row:hover .tadeon-user-row__sigil {
-  filter: drop-shadow(0 0 10px rgb(var(--section-motion-rgb) / 26%));
-}
 
 /* Backup - technical scan: precise linear motion, no levitation. */
 .tadeon-shell[data-section="Saúde do arquivo"] [data-tadeon-status="checking"],
@@ -2046,12 +2033,6 @@
 @keyframes td-ghost-breathe {
   0%,100% { opacity: .52; filter: blur(0); }
   50% { opacity: .82; filter: blur(.25px); }
-}
-
-@media (hover: none), (pointer: coarse) {
-  .tadeon-shell[data-section="Usuários"] .tadeon-user-row:hover .tadeon-user-row__sigil {
-    filter: none;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2185,9 +2166,6 @@
   to { background-position: 4.5rem -.8rem, -2rem .6rem; opacity: .28; }
 }
 
-@media (hover: hover) and (pointer: fine) {
-}
-
 @media (prefers-reduced-motion: reduce) {
   .tadeon-shell .tadeon-auth-hero::before,
   .tadeon-shell .tadeon-auth-hero::after,
@@ -2218,9 +2196,6 @@
   animation: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-}
-
 /* end-source: src/styles/tadeon-hero-atmosphere-elements.css */
 
 /* source: src/styles/tadeon-sidebar-symbol-authority.css */
@@ -2233,15 +2208,6 @@
 /* source: src/styles/tadeon-hero-type-contract.css */
 /* Tadeon Hero Type Contract - O Nexus is the canonical reference.
    Dashboard and Mesa retain their authored typography; utility/master heroes inherit this contract. */
-
-@media (max-width: 767px) {
-}
-
-@media (min-width: 1024px) {
-}
-
-@media (prefers-reduced-motion: reduce) {
-}
 
 /* end-source: src/styles/tadeon-hero-type-contract.css */
 
@@ -2274,9 +2240,6 @@
 @keyframes tadeon-dashboard-seam-scan {
   from { opacity: .18; transform: translate3d(-1.5%,0,0) scaleX(.98); }
   to { opacity: .58; transform: translate3d(1.5%,-.25%,0) scaleX(1); }
-}
-
-@media (prefers-reduced-motion: reduce) {
 }
 
 /* end-source: src/styles/tadeon-hero-microinteraction-system.css */
@@ -2523,9 +2486,6 @@
 /* Final Hero type authority.
    The O Nexus Hero is the canonical scale; utility/master Heroes inherit it.
    Higher specificity intentionally defeats legacy repair sheets without changing layout. */
-
-@media (max-width: 767px) {
-}
 
 /* end-source: src/styles/tadeon-hero-type-authority-final.css */
 
@@ -3232,9 +3192,6 @@ html body .tadeon-shell .tadeon-route-offline > main {
   animation: tadeon-luminar-drift 36s ease-in-out infinite alternate;
 }
 
-@media (prefers-reduced-motion: reduce) {
-}
-
 /* end-source: src/styles/tadeon-cinematic-backgrounds.css */
 
 /* source: src/styles/tadeon-signature-effects.css */
@@ -3350,9 +3307,6 @@ html body .tadeon-shell .tadeon-route-offline > main {
 
 /* PAGE FIELD: motion remains visible after the hero, tying the whole site together. */
 
-@media(prefers-reduced-motion:reduce){
-}
-
 /* end-source: src/styles/tadeon-signature-effects.css */
 
 /* source: src/styles/tadeon-signature-atmosphere.css */
@@ -3360,7 +3314,6 @@ html body .tadeon-shell .tadeon-route-offline > main {
 @keyframes tdv-atmo-thread-a{from{background-position:0 0,0 0}to{background-position:160px -90px,-120px 70px}}
 @keyframes tdv-atmo-lumen{0%,100%{background-position:10% 20%,90% 80%;opacity:.55}50%{background-position:42% 58%,62% 28%;opacity:.82}}
 @keyframes tdv-atmo-sweep{0%{transform:translateX(-120%);opacity:0}18%{opacity:.38}82%{opacity:.18}100%{transform:translateX(120%);opacity:0}}
-@media(prefers-reduced-motion:reduce){}
 
 /* end-source: src/styles/tadeon-signature-atmosphere.css */
 
@@ -3658,9 +3611,6 @@ html body .tadeon-shell .tadeon-route-offline > main {
 /* A slow atmospheric ring can be attached to existing decorative circles without touching symbols. */
 @keyframes tdv-orbit-breathe{0%{opacity:.2}100%{opacity:.52}}
 @keyframes tdv-orbit-turn{to{transform:rotate(360deg)}}
-
-@media (prefers-reduced-motion:reduce){
-}
 
 /* end-source: src/styles/tadeon-hero-living-fields.css */
 
@@ -4160,9 +4110,6 @@ html body .tadeon-shell .tadeon-route-offline > main {
 /* TdV Hero Nexus typography parity.
    Mesa is intentionally excluded. The Nexus Hero remains the canonical title
    reference; this file does not alter emblem, orbital, ring, or symbol scale. */
-
-@media (max-width: 767px) {
-}
 
 /* end-source: src/styles/tadeon-hero-nexus-parity-scale.css */
 
