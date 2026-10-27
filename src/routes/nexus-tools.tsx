@@ -354,7 +354,7 @@ function NexusToolsPageContent() {
     try {
       const { data, error } = await supabase
         .from("game_settings")
-        .select("id,rules_version,updated_at")
+        .select("id,tdv2_state,updated_at")
         .eq("key", "global")
         .maybeSingle();
       results.push({
@@ -362,7 +362,7 @@ function NexusToolsPageContent() {
         label: "Dados do mestre",
         detail:
           !error && data
-            ? `Configuração global acessível · regras v${data.rules_version}.`
+            ? "Configuração global e estrutura TdV II acessíveis."
             : "A configuração global não respondeu corretamente.",
         level: !error && data ? "healthy" : "error",
       });

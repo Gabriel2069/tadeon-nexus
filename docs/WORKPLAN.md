@@ -395,7 +395,7 @@ Evidências: [docs/navigation-presence-validation.json](../docs/navigation-prese
 - Propagar a edição correta à Mesa autorizada, histórico, acervo/offline e Nexus; preservar segredos, permissões e conteúdo personalizado.
 - Validar regras, banco/guardas e fluxos editáveis/somente leitura em quatro larguras; registrar migração, Edge Function, CI, integração e produção separadamente.
 
-Evidências: [docs/rules/tdv-ii-v2.md](../docs/rules/tdv-ii-v2.md), [docs/tdv-ii-migration.md](../docs/tdv-ii-migration.md), [docs/tdv-ii-validation.json](../docs/tdv-ii-validation.json), [src/lib/tdv2.ts](../src/lib/tdv2.ts), [src/lib/tdv2.test.ts](../src/lib/tdv2.test.ts), [supabase/migrations/20261027093709_tdv_ii_versioned_rules.sql](../supabase/migrations/20261027093709_tdv_ii_versioned_rules.sql), [scripts/verify-tdv2.mjs](../scripts/verify-tdv2.mjs), [scripts/verify-tdv2-postgres.mjs](../scripts/verify-tdv2-postgres.mjs), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/310).
+Evidências: [docs/rules/tdv-ii-v2.md](../docs/rules/tdv-ii-v2.md), [docs/tdv-ii-migration.md](../docs/tdv-ii-migration.md), [docs/tdv-ii-validation.json](../docs/tdv-ii-validation.json), [src/lib/tdv2.ts](../src/lib/tdv2.ts), [src/lib/tdv2.test.ts](../src/lib/tdv2.test.ts), [supabase/migrations/20261027093709_tdv_ii_versioned_rules.sql](../supabase/migrations/20261027093709_tdv_ii_versioned_rules.sql), [scripts/verify-tdv2.mjs](../scripts/verify-tdv2.mjs), [scripts/verify-tdv2-postgres.mjs](../scripts/verify-tdv2-postgres.mjs), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/310), [src/lib/mcp/tools/list-my-sheets.test.ts](../src/lib/mcp/tools/list-my-sheets.test.ts), [src/lib/nexus-backup.test.ts](../src/lib/nexus-backup.test.ts).
 
 ## Decisões vigentes
 

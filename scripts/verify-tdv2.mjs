@@ -186,6 +186,15 @@ try {
       });
       await installDesignFonts(page);
       const geometry = async (label) => {
+        const target = {
+          "sheet-critical": ".tdv-result",
+          "sheet-records": "#tdv-expressao",
+          "master-round": "#tdv-master-round",
+          "master-pessoas": "#tdv-master-opposition",
+          "master-investigação": "#tdv-master-sealing",
+          "master-referência": "#tdv-master-reference",
+        }[label];
+        if (target) await page.locator(target).scrollIntoViewIfNeeded();
         const g = await page.evaluate(() => ({
           overflow: document.documentElement.scrollWidth > innerWidth,
           h1: document.querySelectorAll("h1").length,
@@ -445,6 +454,37 @@ try {
         await page.waitForTimeout(3500);
         assert(writes.length === attempts, "Conflict retried stale writes");
         await geometry("sheet-conflict");
+        if (width === 1440) {
+          row = {
+            ...row,
+            exposure: 95,
+            tdv2_data: {
+              ...row.tdv2_data,
+              milestones: Array.from({ length: 3 }, (_, i) => ({
+                id: `fixture-marco-${i}`,
+                event: `Acontecimento ${i}`,
+                incorporation: `Mudança ${i}`,
+              })),
+            },
+          };
+          await page.goto(`http://127.0.0.1:${port}/`);
+          await page.locator(".tadeon-character-card").first().waitFor();
+          const progress = await page
+            .locator(".tadeon-continuity-facts dd:not(.tadeon-continuity-facts__detail)")
+            .nth(2)
+            .textContent();
+          assert(
+            progress === "15",
+            "Archive used the historical exposure for a TdV II character: " + progress,
+          );
+          assert(
+            (await page.locator(".tadeon-character-card").first().innerText()).includes(
+              "Desenvolvimento",
+            ),
+            "Archive lost rules edition",
+          );
+          await geometry("archive-versioned");
+        }
       }
       await context.close();
     }

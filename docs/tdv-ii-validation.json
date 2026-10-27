@@ -7,15 +7,15 @@
     "reference": "docs/rules/tdv-ii-v2.md"
   },
   "verification": {
-    "engineTests": 20,
+    "engineTests": 21,
     "postgresLocalChecks": 23,
     "status": "CI-in-progress",
-    "unitSuites": 158,
-    "unitTests": 658,
+    "unitSuites": 159,
+    "unitTests": 661,
     "build": true,
     "auditHigh": 0,
     "browser": {
-      "cases": 54,
+      "cases": 55,
       "widths": [
         320,
         390,
@@ -32,8 +32,18 @@
       ],
       "overflow": false,
       "pageErrors": 0,
-      "status": "passed-local"
-    }
+      "status": "passed-local",
+      "coverage": [
+        "canonical sheet",
+        "mestre scene and round",
+        "read-only",
+        "explicit legacy conversion",
+        "CAS conflict without overwrite/retry",
+        "archive ignores legacy exposure for TdV II"
+      ]
+    },
+    "mcp": "authenticated edition-aware summaries; no payload secrets or legacy Rank",
+    "backup": "serialized versioned payload and mestre state preserved; no real restore certification"
   },
   "migration": {
     "path": "supabase/migrations/20261027093709_tdv_ii_versioned_rules.sql",

@@ -382,14 +382,13 @@ export function HomePage() {
             detail: "Fichas que pertencem a você",
           },
           {
-            label: "Maior exposição",
+            label: "Maior progresso",
             value:
               loading || loadError
                 ? "--"
-                : String(Math.max(0, ...sheets.map((sheet) => sheet.exposure || 0))).padStart(
-                    2,
-                    "0",
-                  ),
+                : String(
+                    Math.max(0, ...sheets.map((sheet) => sheet.development ?? sheet.exposure ?? 0)),
+                  ).padStart(2, "0"),
             detail: "Entre as fichas disponíveis",
           },
         ]}

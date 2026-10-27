@@ -27,3 +27,5 @@ O site calcula o que o livro define numericamente. Não inventa tabelas de Reflu
 A fonte da regra não altera a identidade visual aprovada do site. O livro possui edição própria; Cormorant/Alegreya, símbolos, rodas e materiais do Tadeon são preservados.
 
 A migração aditiva foi aplicada em `nkxpstyfrzufsnowjrdi` sob a versão `20261027093709`; as cinco fichas existentes permanecem na edição 1, sem novo payload. A função protegida `tabletop-view` mantém JWT obrigatório. A interface ainda depende da conclusão dos gates da NEX-040 antes de publicação.
+
+O indicador e a ordenação do acervo usam Desenvolvimento para TdV II, sem reaproveitar Exposição histórica. `list_my_sheets` retorna edição e progresso, sem Rank nem payload completo; `get_sheet` explicita qual payload é normativo, sob o acesso já existente do chamador. O formato de backup preserva campos versionados e o estado do Mestre em uma serialização JSON; essa verificação não equivale a restauração real.
