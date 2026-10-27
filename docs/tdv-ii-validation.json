@@ -1,17 +1,17 @@
 {
   "task": "NEX-040",
-  "state": "local-validation-passed",
+  "state": "expanded-scope-validation",
   "source": {
     "file": "02_Livro_de_Regras(3).docx",
     "sha256": "8846b485dc528e3998de9227a033bea746eb439d6519ea7f3362a7a8f9515c0f",
     "reference": "docs/rules/tdv-ii-v2.md"
   },
   "verification": {
-    "engineTests": 21,
-    "postgresLocalChecks": 23,
-    "status": "CI-in-progress",
-    "unitSuites": 159,
-    "unitTests": 661,
+    "engineTests": 44,
+    "postgresLocalChecks": 41,
+    "status": "expanded-local-validation-in-progress",
+    "unitSuites": 161,
+    "unitTests": 682,
     "build": true,
     "auditHigh": 0,
     "browser": {
@@ -32,7 +32,7 @@
       ],
       "overflow": false,
       "pageErrors": 0,
-      "status": "passed-local",
+      "status": "new-five-area-and-procedure-checks-in-progress",
       "coverage": [
         "canonical sheet",
         "mestre scene and round",
@@ -84,5 +84,12 @@
     "pr": 310,
     "url": "https://github.com/Gabriel2069/tadeon-nexus/pull/310",
     "status": "draft"
-  }
+  },
+  "operationalMigration": {
+    "path": "supabase/migrations/20261027191353_tdv_ii_operational_play.sql",
+    "applied": true,
+    "project": "nkxpstyfrzufsnowjrdi",
+    "version": "20261027191353"
+  },
+  "coverage": "docs/tdv-ii-coverage.md"
 }

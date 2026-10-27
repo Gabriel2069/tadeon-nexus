@@ -104,6 +104,7 @@ try {
         key: "global",
         campaign_id: null,
         tdv2_state: {},
+        tdv2_revision: 0,
       };
       const writes = [],
         errors = [];
@@ -159,8 +160,12 @@ try {
             body = { id: sheetId, updated_at: row.updated_at };
           } else if (path.includes("/game_settings")) {
             assert(Object.keys(patch).join(",") === "tdv2_state", "Legacy master mutation");
-            settings = { ...settings, ...patch };
-            body = { id: settings.id };
+            assert(
+              url.searchParams.get("tdv2_revision") === "eq." + settings.tdv2_revision,
+              "Missing/stale master CAS",
+            );
+            settings = { ...settings, ...patch, tdv2_revision: settings.tdv2_revision + 1 };
+            body = { id: settings.id, tdv2_revision: settings.tdv2_revision };
           } else throw Error("Unexpected PATCH " + path);
         } else if (path.endsWith("/user")) body = user;
         else if (path.includes("/user_roles")) body = [{ user_id: userId, role }];
@@ -195,6 +200,22 @@ try {
           "master-referência": "#tdv-master-reference",
         }[label];
         if (target) await page.locator(target).scrollIntoViewIfNeeded();
+        await page.evaluate(async () => {
+          await document.fonts.ready;
+          await Promise.all(
+            document
+              .getAnimations()
+              .filter(
+                (a) =>
+                  a.playState === "running" &&
+                  Number.isFinite(a.effect?.getComputedTiming().endTime),
+              )
+              .map((a) => a.finished.catch(() => undefined)),
+          );
+          await new Promise((resolve) =>
+            requestAnimationFrame(() => requestAnimationFrame(resolve)),
+          );
+        });
         const g = await page.evaluate(() => ({
           overflow: document.documentElement.scrollWidth > innerWidth,
           h1: document.querySelectorAll("h1").length,
@@ -264,9 +285,13 @@ try {
         await page.getByRole("button", { name: "Ancorar e abalar Âncora" }).waitFor();
         console.log("anchor resettled");
         await saved(() => !row.tdv2_data.face.anchor.shaken);
+        await page.getByRole("tab", { name: "Constituição", exact: true }).click();
+        await geometry("sheet-constitution");
         for (let i = 0; i < 4; i++)
           await page.getByRole("button", { name: "Tensão +1", exact: true }).click();
         await saved(() => row.tdv2_data.equilibrium === 1 && row.tdv2_data.tension === 0);
+        await page.getByRole("tab", { name: "Percurso", exact: true }).click();
+        await geometry("sheet-path");
         await page.locator("summary").filter({ hasText: "Reconhecer um Marco" }).click();
         await page.getByLabel("Acontecimento do Marco").fill("Resgate do arquivo");
         await page.getByLabel("Mudança incorporada").fill("Assumir o testemunho");
@@ -284,6 +309,7 @@ try {
           .fill("Assumi a dianteira no resgate");
         await page.getByRole("button", { name: "Registrar investimento", exact: true }).click();
         await saved(() => row.tdv2_data.investments.length === 1);
+        await page.getByRole("tab", { name: "Constituição", exact: true }).click();
         await page.getByLabel("PE atual", { exact: true }).fill("0");
         await saved(() => row.tdv2_data.resources.pe === 0);
       } else {
@@ -300,9 +326,25 @@ try {
           "Readonly fields enabled",
         );
       }
+      if (role === "espectador")
+        for (const name of ["Constituição", "Percurso", "Expressão"]) {
+          await page.getByRole("tab", { name, exact: true }).click();
+          assert(
+            (await page
+              .locator(
+                ".tadeon-tdv2-sheet input:not([disabled]),.tadeon-tdv2-sheet textarea:not([disabled]),.tadeon-tdv2-sheet select:not([disabled])",
+              )
+              .count()) === 0,
+            "Readonly fields enabled in " + name,
+          );
+          await geometry("sheet-readonly-" + name.toLowerCase());
+        }
       await page.getByRole("tab", { name: "Ação", exact: true }).click();
       await geometry("sheet-action");
       if (role === "mestre") {
+        await page.getByLabel("Intenção", { exact: true }).fill("Abrir o arquivo");
+        await page.getByLabel("Abordagem", { exact: true }).fill("Ler as relações entre as travas");
+        await page.getByLabel("Existe risco ou oposição relevante", { exact: true }).check();
         await page.locator("summary").filter({ hasText: "Proveito, Desproveito e Forçar" }).click();
         await page.getByLabel("Forçar um Fio", { exact: true }).selectOption("Prumo");
         await page
@@ -319,13 +361,81 @@ try {
         );
         await geometry("sheet-critical");
       }
-      await page.getByRole("tab", { name: "Expressão e memória" }).click();
+      await page.getByRole("tab", { name: "Expressão", exact: true }).click();
       if (role === "mestre") {
         await page.getByRole("button", { name: "Adicionar registro", exact: true }).click();
         const name = page.getByLabel(/^Nome do registro /).last();
         await name.pressSequentially("O fio que permanece");
         assert(await name.isVisible(), "Record collapsed while typing");
         await saved(() => row.tdv2_data.records.at(-1)?.name === "O fio que permanece");
+      }
+      if (role === "mestre" && [320, 1440].includes(width)) {
+        await page.getByRole("tab", { name: "Constituição", exact: true }).click();
+        await page.getByLabel("PE atual", { exact: true }).fill("5");
+        await page
+          .locator("summary")
+          .filter({ hasText: "Proteção, cobertura e ausência de Guarda" })
+          .click();
+        await page.getByLabel("Proteção ordinária combinada", { exact: true }).selectOption("2");
+        await page
+          .getByLabel("Escudo ou cobertura efetivamente interposta", { exact: true })
+          .fill("Parede de pedra dominante");
+        await page.getByRole("button", { name: "Aplicar proteção declarada", exact: true }).click();
+        await saved(() => row.tdv2_data.guard.protection === 2 && row.tdv2_data.resources.pe === 5);
+        await page.getByRole("tab", { name: "Ação", exact: true }).click();
+        await page.locator("summary").filter({ hasText: "Da resolução ao Resto" }).click();
+        await page
+          .getByLabel("Consequência principal", { exact: true })
+          .fill("A porta não cede e o alarme revela a tentativa");
+        await page.getByRole("button", { name: "Incorporar Resto do teste", exact: true }).click();
+        await saved(() =>
+          row.tdv2_data.records.some((r) => r.fields.Teste === row.tdv2_data.scene.tests.at(-1).id),
+        );
+        await geometry("sheet-outcome");
+        await page.getByRole("tab", { name: "Expressão", exact: true }).click();
+        await page.getByLabel("Tipo de registro", { exact: true }).selectOption("Trama");
+        await page.getByRole("button", { name: "Adicionar registro", exact: true }).click();
+        await page.getByLabel("Nome do registro 1", { exact: true }).fill("Passagem do cais");
+        await saved(() => row.tdv2_data.records.at(-1).name === "Passagem do cais");
+        await page
+          .locator("summary")
+          .filter({ hasText: "Preparar uma expressão ou Costura" })
+          .click();
+        await page.getByLabel("Trama: Passagem do cais", { exact: true }).check();
+        await page
+          .getByLabel("Intenção única da expressão", { exact: true })
+          .fill("Sustentar a passagem");
+        await page.getByLabel("Alvo e acesso concreto", { exact: true }).fill("O portão acessível");
+        await page
+          .getByLabel("Preços, gatilhos, Puxagem e limites declarados", { exact: true })
+          .fill("Acesso seguro; custo escrito de 1 PE, sem PI");
+        await page.getByLabel("Custo declarado em PE", { exact: true }).fill("1");
+        await page
+          .getByLabel("Gatilhos válidos e preços de todas as práticas conferidos", { exact: true })
+          .check();
+        await page.getByLabel("A expressão permanece sustentada", { exact: true }).check();
+        await page.getByLabel("PE por janela de sustentação", { exact: true }).fill("1");
+        await page
+          .getByLabel("Condição de término, Fixação ou Relaxamento", { exact: true })
+          .fill("Relaxar após a travessia");
+        await page
+          .getByRole("button", { name: "Expressar pela ficção e pagar custos", exact: true })
+          .click();
+        await saved(
+          () => row.tdv2_data.activeExpressions?.length === 1 && row.tdv2_data.resources.pe === 4,
+        );
+        await page
+          .getByLabel("Nova janela de sustentação", { exact: true })
+          .fill("Segunda travessia");
+        await page
+          .getByLabel("Continuidade que sustenta ou encerra a expressão", { exact: true })
+          .fill("Continuo junto ao portão");
+        await page.getByRole("button", { name: "Sustentar nesta janela", exact: true }).click();
+        await saved(() => row.tdv2_data.resources.pe === 3);
+        await page.getByRole("button", { name: "Relaxar", exact: true }).click();
+        await saved(() => row.tdv2_data.activeExpressions[0].state === "Relaxada");
+        assert(row.tdv2_data.resources.pe === 3, "Relaxamento refunded PE");
+        await geometry("sheet-expression-use");
       }
       await geometry("sheet-records");
       assert(
@@ -366,8 +476,37 @@ try {
           "Round not reset",
         );
         await geometry("master-round");
-        for (const tab of ["Pessoas e ameaças", "Investigação e Selagem", "Referência"]) {
+        for (const tab of [
+          "Resolução e operações",
+          "Pessoas e ameaças",
+          "Investigação e Selagem",
+          "Referência",
+        ]) {
           await page.getByRole("tab", { name: tab, exact: true }).click();
+          if (tab === "Resolução e operações") {
+            await page.getByRole("button", { name: "Abrir operação", exact: true }).click();
+            await page.getByLabel("Nome da operação", { exact: true }).fill("Reabrir o arquivo");
+            await page
+              .getByLabel("Objetivo e condição de conclusão", { exact: true })
+              .fill("Acesso seguro ao testemunho");
+            await page.getByLabel("Esta intervenção abrange Acesso", { exact: true }).check();
+            await page.locator("summary").filter({ hasText: "Registrar uma intervenção" }).click();
+            await page
+              .getByLabel("Intenção desta intervenção", { exact: true })
+              .fill("Abrir a porta exterior");
+            await page
+              .getByLabel("Abordagem e acesso", { exact: true })
+              .fill("A testemunha conhece a chave");
+            await page
+              .getByLabel("Mudança verificável produzida ou consequência da falha", { exact: true })
+              .fill("A porta está aberta");
+            await page
+              .getByRole("button", {
+                name: "Registrar intervenção e preservar progresso",
+                exact: true,
+              })
+              .click();
+          }
           if (tab === "Pessoas e ameaças") {
             await page.getByRole("button", { name: "Novo Ameaça", exact: true }).click();
             await page.getByLabel("Identidade da presença 1").pressSequentially("A voz do cais");
@@ -382,6 +521,11 @@ try {
           const saveConduction = page.getByRole("button", { name: "Salvar condução", exact: true });
           if (await saveConduction.isEnabled()) await saveConduction.click();
           await page.waitForFunction(() => document.body.textContent.includes("Salvo"));
+          if (tab === "Resolução e operações")
+            assert(
+              settings.tdv2_state.operations[0].stages[0].done,
+              "Operation progress not saved",
+            );
           await geometry("master-" + tab.split(" ")[0].toLowerCase());
         }
       }
@@ -419,6 +563,10 @@ try {
         await page.getByRole("dialog").waitFor();
         await geometry("conversion-dialog");
         await page.keyboard.press("Escape");
+        await page.getByRole("dialog").waitFor({ state: "hidden" });
+        await page.waitForFunction(
+          () => document.activeElement?.textContent?.trim() === "Preparar ficha TdV II",
+        );
         assert(
           await prepare.evaluate((el) => document.activeElement === el),
           "Conversion dismissal lost focus",

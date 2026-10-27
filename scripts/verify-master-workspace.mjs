@@ -145,7 +145,7 @@ try {
       else if (url.pathname.includes("/user_roles")) body = [{ user_id: userId, role: "mestre" }];
       else if (url.pathname.includes("/feature_flags"))
         body = [{ key: "nexus_knowledge_enabled", enabled: true }];
-      else if (url.pathname.includes("/character_sheets")) body = sheets;
+      else if (url.pathname.includes("/character_sheets")) body = [...sheets,{...sheets[0],id:"00000000-0000-4000-8000-000000000088",name:"Ficha TdV II fora do arquivo anterior",rules_version:2}];
       else if (url.pathname.includes("/game_settings")) {
         if (failLoad) {
           await r.fulfill({
@@ -230,6 +230,7 @@ try {
       .getByRole("heading", { name: "Painel do Mestre", exact: true, level: 1 })
       .waitFor({ timeout: 180000 });
     await page.getByLabel("Campanha", { exact: true }).waitFor();
+    assert(await page.getByText("Ficha TdV II fora do arquivo anterior",{exact:true}).count()===0,"Legacy workspace mixed a TdV II character into old mechanics");
     if (width < 768) {
       await page.getByRole("button", { name: "Abrir menu", exact: true }).click();
       const drawer = page.getByRole("dialog", { name: "Navegação principal", exact: true });

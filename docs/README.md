@@ -32,6 +32,7 @@ Comece pelo [estado de continuidade](ai/00_ESTADO_ATUAL.md), [mapa do código](P
 | [VEU_E_TRAMA.md](VEU_E_TRAMA.md) | reference | Dossiê de direção fornecido por Tadeu em 25/10/2026: gramática formal e aprofundamento sistêmico. Confrontar cada hipótese com o runtime; a fila continua exclusivamente neste registro. |
 | [rules/tdv-ii-v2.md](rules/tdv-ii-v2.md) | reference | Extração do Livro de Regras TdV II v2.0 fornecido por Tadeu; procedimentos normativos e tabelas com hash da fonte. |
 | [tdv-ii-migration.md](tdv-ii-migration.md) | active | Contrato de edição, compatibilidade e mapa das regras implementadas; a fila permanece em project-continuity. |
+| [tdv-ii-coverage.md](tdv-ii-coverage.md) | active | Cobertura por capítulo do livro TdV II, fluxos operacionais e fronteiras entre cálculo, procedimento assistido e decisão ficcional. |
 
 ## Contratos e evidências
 

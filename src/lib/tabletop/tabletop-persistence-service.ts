@@ -1,3 +1,4 @@
+import { publicTdvRound } from "@/lib/tdv2-round";
 import {
   tabletopEntityColor,
   tabletopColorProperties,
@@ -521,6 +522,19 @@ export class TabletopPersistenceService {
         };
       }),
     );
+  }
+
+  async loadRoundProjection(sceneId: string) {
+    const { data, error } = await this.database
+      .from("tabletop_entities")
+      .select("id,properties,version")
+      .eq("scene_id", sceneId);
+    if (error) throw serviceError(error);
+    return (data ?? []).map((row) => ({
+      id: String(row.id),
+      version: Number(row.version),
+      round: publicTdvRound(row.properties?.tdv2_round),
+    }));
   }
 
   async listScenes(campaignId: string): Promise<TabletopSceneSummary[]> {

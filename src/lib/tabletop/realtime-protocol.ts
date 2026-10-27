@@ -68,9 +68,7 @@ export const tabletopRealtimeEventSchema = z.discriminatedUnion("type", [
     payload: z
       .object({
         points: z
-          .array(
-            z.object({ x: coordinateSchema, y: coordinateSchema }).strict(),
-          )
+          .array(z.object({ x: coordinateSchema, y: coordinateSchema }).strict())
           .min(1)
           .max(128),
         color: colorSchema,
@@ -94,6 +92,12 @@ export const tabletopRealtimeEventSchema = z.discriminatedUnion("type", [
         wallType: z.enum(["door_open", "door_closed"]),
         version: z.number().int().positive(),
       })
+      .strict(),
+  }),
+  eventBaseSchema.extend({
+    type: z.literal("round.state"),
+    payload: z
+      .object({ revision: z.number().int().positive().max(Number.MAX_SAFE_INTEGER) })
       .strict(),
   }),
   eventBaseSchema.extend({
@@ -139,8 +143,7 @@ export function parseTabletopRealtimeEvent(
 
   const now = options.now ?? Date.now();
   const maxAgeMs = options.maxAgeMs ?? TABLETOP_REALTIME_EVENT_MAX_AGE_MS;
-  const maxFutureSkewMs =
-    options.maxFutureSkewMs ?? TABLETOP_REALTIME_FUTURE_SKEW_MS;
+  const maxFutureSkewMs = options.maxFutureSkewMs ?? TABLETOP_REALTIME_FUTURE_SKEW_MS;
   const age = now - parsed.data.sentAt;
   if (age > maxAgeMs || age < -maxFutureSkewMs) return null;
 

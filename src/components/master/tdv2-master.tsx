@@ -1,3 +1,5 @@
+import { tabletopPersistenceService } from "@/lib/tabletop/tabletop-persistence-service";
+import { TdvOperations, TdvPhysicalResolution, TdvOppositionRead } from "./tdv2-procedures";
 import { cacheTdv2MasterState } from "@/lib/offline-cache";
 import { WorkspaceActions } from "@/components/workspace-actions";
 import { AssetLibraryPanel } from "@/components/assets/asset-library-panel";
@@ -72,16 +74,26 @@ function TdvMasterWorkspace() {
     [pressureCause, setPressureCause] = useState(""),
     [busy, setBusy] = useState<string | null>(null),
     [tab, setTab] = useState("scene");
+  const revision = useRef(0);
+  const [conflict, setConflict] = useState(false);
+  const [scenes, setScenes] = useState<{ id: string; name: string }[]>([]);
   const draft = useMasterDraft<{ id: string; state: TdvMasterState }>(async (snapshot, signal) => {
+    if (conflict) throw new Error("A condução mudou em outra janela.");
     const parsed = tdvMasterSchema.parse(snapshot.state);
     const { data, error } = await supabase
       .from("game_settings")
       .update({ tdv2_state: parsed as never })
       .eq("id", snapshot.id)
-      .select("id")
+      .eq("tdv2_revision", revision.current)
+      .select("id,tdv2_revision")
       .abortSignal(signal)
       .maybeSingle();
-    if (error || !data) throw error ?? new Error("Salvamento não confirmado.");
+    if (error) throw error;
+    if (!data) {
+      setConflict(true);
+      throw new Error("A condução mudou em outra janela.");
+    }
+    revision.current = data.tdv2_revision;
   });
   useEffect(() => {
     if (!draft.value || !user || role !== "mestre") return;
@@ -115,7 +127,7 @@ function TdvMasterWorkspace() {
         const [settings, sheets] = await Promise.all([
           supabase
             .from("game_settings")
-            .select("id,campaign_id,tdv2_state")
+            .select("id,campaign_id,tdv2_state,tdv2_revision")
             .eq("key", "global")
             .abortSignal(abort.signal)
             .maybeSingle(),
@@ -130,7 +142,14 @@ function TdvMasterWorkspace() {
         const raw = settings.data.tdv2_state;
         const empty = !raw || (typeof raw === "object" && Object.keys(raw).length === 0);
         const state = empty ? newTdvMaster() : tdvMasterSchema.parse(raw);
+        revision.current = settings.data.tdv2_revision ?? 0;
+        setConflict(false);
         setCampaignId(settings.data.campaign_id);
+        if (settings.data.campaign_id) {
+          const result = await tabletopPersistenceService.listScenes(settings.data.campaign_id);
+          if (abort.signal.aborted) return;
+          setScenes(result);
+        } else setScenes([]);
         load({ id: settings.data.id, state });
         setLegacy(
           (sheets.data ?? [])
@@ -239,6 +258,13 @@ function TdvMasterWorkspace() {
         force: "",
         extraordinary: false,
         counterpart: "",
+        context: {
+          intention: "Disputar Iniciativa",
+          approach: "Cadência e Iniciativa",
+          change: `Rodada ${s.round}`,
+          point: s.objective,
+          risk: true,
+        },
       });
       const { data, error } = await supabase
         .from("character_sheets")
@@ -275,6 +301,41 @@ function TdvMasterWorkspace() {
       if (!controller.signal.aborted) setBusy(null);
     }
   };
+  const applyToSheet = async (row: RosterRow, character: TdvCharacter) => {
+    if (busy) return false;
+    setBusy(row.id);
+    const controller = new AbortController();
+    initiativeAbort.current = controller;
+    try {
+      const { data, error } = await supabase
+        .from("character_sheets")
+        .update({ tdv2_data: tdv2CharacterSchema.parse(character) as never })
+        .eq("id", row.id)
+        .eq("updated_at", row.updated_at)
+        .select("updated_at")
+        .abortSignal(controller.signal)
+        .maybeSingle();
+      if (controller.signal.aborted) return false;
+      if (error || !data)
+        throw new Error(
+          "A ficha mudou durante a ação. Recarregue a condução antes de aplicar a consequência; seus dados originais continuam na ferramenta.",
+        );
+      setRoster((previous) =>
+        previous.map((r) =>
+          r.id === row.id ? { ...r, tdv2_data: character, updated_at: data.updated_at } : r,
+        ),
+      );
+      toast.success(
+        "Consequência incorporada à ficha. Não aplique novamente o mesmo acontecimento.",
+      );
+      return true;
+    } catch (e) {
+      if (!controller.signal.aborted) toast.error((e as Error).message);
+      return false;
+    } finally {
+      if (!controller.signal.aborted) setBusy(null);
+    }
+  };
   return (
     <div data-page-layout className="tadeon-page tadeon-master-panel tadeon-tdv2-master">
       <PageHeader
@@ -292,7 +353,10 @@ function TdvMasterWorkspace() {
               savedAt={draft.savedAt}
               onRetry={() => void draft.save()}
             />
-            <Button disabled={!draft.dirty || draft.saving} onClick={() => void draft.save()}>
+            <Button
+              disabled={!draft.dirty || draft.saving || conflict}
+              onClick={() => void draft.save()}
+            >
               Salvar condução
             </Button>
             <Button variant="outline" asChild>
@@ -306,9 +370,38 @@ function TdvMasterWorkspace() {
           </div>
         }
       />
+      {conflict && (
+        <div className="tdv-legacy-notice" role="alert">
+          <h2>A condução mudou em outra janela</h2>
+          <p>
+            Seu rascunho continua aqui. Guarde uma cópia antes de carregar a versão atual; salvar
+            por cima está bloqueado.
+          </p>
+          <div className="tdv-actions">
+            <Button
+              onClick={() => {
+                const url = URL.createObjectURL(
+                  new Blob([JSON.stringify(s, null, 2)], { type: "application/json" }),
+                );
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "conducao-tdv2-rascunho.json";
+                a.click();
+                URL.revokeObjectURL(url);
+              }}
+            >
+              Guardar rascunho
+            </Button>
+            <Button variant="outline" onClick={() => setAttempt((n) => n + 1)}>
+              Carregar versão atual
+            </Button>
+          </div>
+        </div>
+      )}
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="tdv-tabs">
           <TabsTrigger value="scene">Cena e rodada</TabsTrigger>
+          <TabsTrigger value="procedures">Resolução e operações</TabsTrigger>
           <TabsTrigger value="world">Pessoas e ameaças</TabsTrigger>
           <TabsTrigger value="investigation">Investigação e Selagem</TabsTrigger>
           <TabsTrigger value="reference">Referência</TabsTrigger>
@@ -336,6 +429,29 @@ function TdvMasterWorkspace() {
                 <TdvField key={key} label={label} value={s[key]} onChange={(v) => field(key, v)} />
               ))}
             </div>
+          </Section>
+          <Section id="tdv-master-public-round" title="Rodada pública na Mesa">
+            <div className="tdv-field">
+              <label htmlFor="tdv-public-scene">Cena que recebe os contadores</label>
+              <select
+                id="tdv-public-scene"
+                value={s.tabletopSceneId ?? ""}
+                onChange={(e) => update({ ...s, tabletopSceneId: e.target.value })}
+              >
+                <option value="">Manter rodada apenas na condução privada</option>
+                {scenes.map((scene) => (
+                  <option key={scene.id} value={scene.id}>
+                    {scene.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <p className="tdv-note">
+              Ao salvar, somente rodada, Impulsos, Resposta e Posição serão publicados nos tokens
+              vinculados às fichas participantes. Objetivos, pistas e notas continuam privados. Com
+              a sala ativa, a Mesa recebe a atualização; fora dela, carregue a cena para obter o
+              estado salvo.
+            </p>
           </Section>
           <Section id="tdv-master-pressure" title="Frentes de Pressão">
             <TdvField
@@ -558,6 +674,11 @@ function TdvMasterWorkspace() {
               </details>
             )}
           </Section>
+        </TabsContent>
+        <TabsContent value="procedures" data-sheet-content>
+          <TdvOperations state={s} onChange={update} />
+          <TdvPhysicalResolution roster={roster} onApply={applyToSheet} busy={!!busy} />
+          <TdvOppositionRead />
         </TabsContent>
         <TabsContent value="world" data-sheet-content>
           <Section id="tdv-master-opposition" title="Estado suficiente da oposição">

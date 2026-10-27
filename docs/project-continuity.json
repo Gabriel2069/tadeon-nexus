@@ -387,6 +387,12 @@
       "path": "docs/tdv-ii-migration.md",
       "status": "active",
       "purpose": "Contrato de edição, compatibilidade e mapa das regras implementadas; a fila permanece em project-continuity."
+    },
+    {
+      "path": "docs/tdv-ii-coverage.md",
+      "status": "active",
+      "role": "reference",
+      "purpose": "Cobertura por capítulo do livro TdV II, fluxos operacionais e fronteiras entre cálculo, procedimento assistido e decisão ficcional."
     }
   ],
   "tasks": [
@@ -1329,6 +1335,7 @@
         "Aplicar o Livro de Regras fornecido: Feição, Matrizes/Alinhavos, dois Fios, PV/PI/PE, Defesas/Guarda, Marcos/PU, Equilíbrio/Tensão e procedimentos de continuidade.",
         "Preservar dados da edição anterior e oferecer conversão revisável, sem equivalência numérica inventada nem alterações em massa de personagens.",
         "Atualizar a condução do Mestre para objetivos, Posição, Pressão 0–4, 2 Impulsos/1 Resposta, prioridade contestada, Ameaças 0–4, Investigação e Selagem.",
+        "Oferecer fluxos de Auxílio, Resto/Redobra, consequências físicas, operações prolongadas, Lavor/Costura, Tramas, sustentação e Refluxo, com custos e saídas explícitos e sem automatismos contrários ao livro.",
         "Propagar a edição correta à Mesa autorizada, histórico, acervo/offline e Nexus; preservar segredos, permissões e conteúdo personalizado.",
         "Validar regras, banco/guardas e fluxos editáveis/somente leitura em quatro larguras; registrar migração, Edge Function, CI, integração e produção separadamente."
       ],
@@ -1343,9 +1350,15 @@
         "scripts/verify-tdv2-postgres.mjs",
         "https://github.com/Gabriel2069/tadeon-nexus/pull/310",
         "src/lib/mcp/tools/list-my-sheets.test.ts",
-        "src/lib/nexus-backup.test.ts"
+        "src/lib/nexus-backup.test.ts",
+        "docs/tdv-ii-coverage.md",
+        "src/lib/tdv2-play.ts",
+        "src/lib/tdv2-play.test.ts",
+        "src/lib/tdv2-operations.ts",
+        "src/lib/tdv2-round.ts",
+        "supabase/migrations/20261027191353_tdv_ii_operational_play.sql"
       ],
-      "checkpoint": "PR #310 em validação de CI. Checagem local: 159 suítes/661 testes, build, lint/typecheck, audit zero e 23 verificações em PostgreSQL isolado. Os 55 estados/fluxos em 320/390/820/1440 passaram, incluindo conversão explícita, somente leitura, conflito sem sobrescrita e acervo por edição. MCP retorna progresso correto sem Rank ou payload privado; backup serializado preserva TdV II. Migração 20261027093709 aplicada, cinco fichas preservadas na edição anterior; tabletop-view v14, JWT obrigatório e anônimo 401. Interface nova ainda não publicada."
+      "checkpoint": "Escopo ampliado pelo pedido de cobertura integral do livro e liberdade estrutural. Ficha em cinco áreas; procedimentos operacionais de Auxílio/Resto, proteção/consequências, expressões/custos e operações no Mestre. Primeira checagem local: 161 suítes/682 testes e build; 44 testes de regras após os últimos casos. PostgreSQL isolado: 41 verificações. Migração operacional 20261027191353 aplicada, sem conversão de personagens. Revisão visual ampliada em andamento; PR #310 continua rascunho, sem interface nova publicada."
     }
   ],
   "decisions": [
@@ -1482,6 +1495,11 @@
       "id": "DEC-020",
       "decision": "O cabeçalho grande da Ficha rola com o dossiê em todas as larguras; instrumentos usam hierarquia adaptável pela largura do cartão.",
       "reason": "Pedido explícito de Tadeu para retirar o topo fixo exagerado, melhorar celulares e reorganizar Identidade/vínculos, Atributos, Equilíbrio e Exposição. PageHeader preserva anatomia compartilhada; controles e regras permanecem estáveis."
+    },
+    {
+      "id": "DEC-021",
+      "decision": "A estrutura TdV II segue os procedimentos do livro: Pessoa, Constituição, Ação, Expressão e Percurso, com ferramentas operacionais próprias na condução.",
+      "reason": "Pedido explícito de Tadeu em 27/10/2026 autoriza mudar a estrutura antiga para comportar o novo sistema. Identidade Véu & Trama, rodas, fontes e cabeçalho não fixo são preservados; cálculos comuns têm uma autoridade e decisões ficcionais exigem declaração."
     }
   ],
   "bridges": [

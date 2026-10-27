@@ -137,6 +137,11 @@ jobs:
           NEXUS_EXPECT_LARGE_RADAR: "1"
           NEXUS_POWER_HEADER: "1"
         run: node scripts/verify-sheet-design.mjs
+      - name: Conferir isolamento do painel da edição anterior
+        env:
+          NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/master-legacy
+          NEXUS_AUDIT_WIDTHS: "[320,1440]"
+        run: node scripts/verify-master-workspace.mjs
       - name: Validar TdV II, continuidade e condução em quatro larguras
         env:
           NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/tdv2

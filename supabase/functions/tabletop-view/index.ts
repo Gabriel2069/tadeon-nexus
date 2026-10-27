@@ -1,3 +1,4 @@
+import { publicTdvRound } from "../../../src/lib/tdv2-round.ts";
 import { tdv2CharacterSchema, constitution } from "../../../src/lib/tdv2.ts";
 import { tabletopEntityColor } from "../_shared/tabletop-entity-color.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.110.3";
@@ -332,6 +333,7 @@ function publicProperties(value: unknown) {
       ? properties.audio_url.trim().slice(0, 2048)
       : undefined;
   return {
+    ...(publicTdvRound(properties.tdv2_round) ? {tdv2_round:publicTdvRound(properties.tdv2_round)} : {}),
     ...(status ? { status } : {}),
     ...(mimeType ? { mime_type: mimeType } : {}),
     ...(icons.length ? { icons } : {}),

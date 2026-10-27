@@ -306,7 +306,7 @@ export function TabletopParticipantWorkspace({ realtimeEnabled }: { realtimeEnab
         if (session) void loadView(session);
         return;
       }
-      if (event.type === "director.state") {
+      if (event.type === "director.state" || event.type === "round.state") {
         if (session) void loadView(session);
         return;
       }

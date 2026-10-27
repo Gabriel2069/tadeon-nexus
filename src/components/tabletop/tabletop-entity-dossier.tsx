@@ -1,3 +1,4 @@
+import { publicTdvRound } from "@/lib/tdv2-round";
 import { useState, type CSSProperties } from "react";
 import {
   Activity,
@@ -84,6 +85,7 @@ export function TabletopEntityDossier({
   const [sheetOpen, setSheetOpen] = useState(false);
   if (!entity) return null;
   const properties = objectValue(entity.properties);
+  const round = publicTdvRound(properties.tdv2_round);
   const status = textValue(properties.status, 80);
   const notes = textValue(properties.notes, 700);
   const icons = stringList(properties.icons, 4);
@@ -144,6 +146,22 @@ export function TabletopEntityDossier({
                 </div>
               )}
 
+              {round && (
+                <div className="tadeon-entity-dossier__indices" aria-label="Rodada TdV II">
+                  <span>
+                    Rodada <strong>{round.round}</strong>
+                  </span>
+                  <span>
+                    Impulsos <strong>{round.impulses}</strong>
+                  </span>
+                  <span>
+                    Resposta <strong>{round.responses}</strong>
+                  </span>
+                  <span>
+                    Posição <strong>{round.position}</strong>
+                  </span>
+                </div>
+              )}
               {sheetSummary && (
                 <div className="tadeon-entity-dossier__sheet">
                   <div

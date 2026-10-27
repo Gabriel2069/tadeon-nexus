@@ -2097,6 +2097,10 @@
 .tadeon-tdv2-sheet [data-slot="tabs-content"][data-state="inactive"] { display: none; }
 .tdv-tabs { display: flex; width: 100%; min-height: 44px; height: auto; overflow-x: auto; }
 .tdv-tabs > button { flex: 1 0 auto; min-height: 44px; }
+.tdv-tabs--sheet { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); overflow: visible; }
+.tdv-tabs--sheet > button { min-width: 0; white-space: normal; padding-inline: .35rem; }
+@media (max-width: 639px) { .tdv-tabs--sheet { grid-template-columns: repeat(6,minmax(0,1fr)); } .tdv-tabs--sheet > button { grid-column: span 2; } .tdv-tabs--sheet > button:nth-of-type(n+4) { grid-column: span 3; } }
+.tdv-grid--identity { grid-template-columns: repeat(2,minmax(0,1fr)); }
 .tdv-overview { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); padding: .8rem 0; border-block: 1px solid var(--border); }
 .tdv-overview > div { display: grid; gap: .25rem; min-width: 0; padding-inline: .65rem; }
 .tdv-overview > div + div { border-left: 1px solid var(--border); }

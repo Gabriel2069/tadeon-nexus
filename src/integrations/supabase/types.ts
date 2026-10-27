@@ -383,6 +383,7 @@ export type Database = {
       };
       game_settings: {
         Row: {
+          tdv2_revision: number;
           tdv2_state: Json;
           campaign_id: string | null;
           campaign_phase: string;
@@ -416,6 +417,7 @@ export type Database = {
           upgrade_costs: Json;
         };
         Insert: {
+          tdv2_revision?: number;
           tdv2_state?: Json;
           campaign_id?: string | null;
           campaign_phase?: string;
@@ -449,6 +451,7 @@ export type Database = {
           upgrade_costs?: Json;
         };
         Update: {
+          tdv2_revision?: number;
           tdv2_state?: Json;
           campaign_id?: string | null;
           campaign_phase?: string;

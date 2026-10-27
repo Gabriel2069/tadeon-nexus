@@ -1,3 +1,4 @@
+import { operationSchema } from "./tdv2-operations";
 import { z } from "zod";
 import { POSITIONS, uid } from "./tdv2";
 const text = z.string().max(12000);
@@ -71,6 +72,8 @@ export const tdvMasterSchema = z.object({
     .array(z.object({ id: z.string(), name: text, fields: z.record(z.string(), text) }))
     .max(100),
   notes: text,
+  operations: z.array(operationSchema).max(50).optional(),
+  tabletopSceneId: z.string().uuid().or(z.literal("")).optional(),
 });
 export type TdvMasterState = z.infer<typeof tdvMasterSchema>;
 export function newTdvMaster(): TdvMasterState {

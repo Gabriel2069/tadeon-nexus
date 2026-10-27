@@ -2681,6 +2681,7 @@ details.tadeon-utility-note { padding-block: .35rem; }
 
 /* TdV II forms: shared field grammar, kept in the workspace owner. */
 .tdv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); align-items: start; gap: .85rem; min-width: 0; }
+.tdv-grid--three { grid-template-columns: repeat(3,minmax(0,1fr)); }
 .tdv-field { display: grid; gap: .35rem; min-width: 0; }
 .tdv-field > label { color: var(--muted-foreground); font: 400 .875rem/1.4 var(--font-inter); }
 .tdv-field :is(input,textarea,select) { min-width: 0; width: 100%; font-family: var(--font-inter); font-size: 1rem; }

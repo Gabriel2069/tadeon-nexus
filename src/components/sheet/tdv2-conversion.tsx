@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogTrigger,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -23,10 +24,12 @@ export function Tdv2Conversion({
         <strong>Ficha da edição anterior.</strong> Matrizes, Alinhavos, recursos e progressão
         mudaram no TdV II.
       </p>
-      <Button variant="outline" disabled={!canEdit} onClick={() => setOpen(true)}>
-        Preparar ficha TdV II
-      </Button>
       <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button variant="outline" disabled={!canEdit}>
+            Preparar ficha TdV II
+          </Button>
+        </DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Preparar a conversão para TdV II</DialogTitle>

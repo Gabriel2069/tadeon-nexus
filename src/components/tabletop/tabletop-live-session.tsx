@@ -66,6 +66,7 @@ export function TabletopLiveSession({
   sceneName,
   getCurrentCamera,
   onRemoteEntityMove,
+  onRemoteRound,
 }: {
   enabled: boolean;
   campaignId?: string | null;
@@ -73,6 +74,7 @@ export function TabletopLiveSession({
   sceneId?: string | null;
   sceneName?: string | null;
   getCurrentCamera?: () => TabletopDirectorCamera | null | undefined;
+  onRemoteRound?: () => void;
   onRemoteEntityMove?: (payload: {
     entityId: string;
     x: number;
@@ -83,25 +85,18 @@ export function TabletopLiveSession({
   const { user, profile } = useAuth();
   const [expanded, setExpanded] = useState(false);
   const [session, setSession] = useState<TabletopSession | null>(null);
-  const [participants, setParticipants] = useState<
-    TabletopSessionParticipant[]
-  >([]);
+  const [participants, setParticipants] = useState<TabletopSessionParticipant[]>([]);
   const [roomName, setRoomName] = useState("Sessão ao vivo");
   const [loading, setLoading] = useState(false);
-  const [lastEvent, setLastEvent] = useState<
-    TabletopRealtimeEvent["type"] | null
-  >(null);
+  const [lastEvent, setLastEvent] = useState<TabletopRealtimeEvent["type"] | null>(null);
   const [presenceStartedAt, setPresenceStartedAt] = useState(() => Date.now());
 
   const currentParticipant = useMemo(
     () => participants.find((participant) => participant.userId === user?.id),
     [participants, user?.id],
   );
-  const activeParticipant =
-    currentParticipant?.state === "active" ? currentParticipant : null;
-  const activeCount = participants.filter(
-    (participant) => participant.state === "active",
-  ).length;
+  const activeParticipant = currentParticipant?.state === "active" ? currentParticipant : null;
+  const activeCount = participants.filter((participant) => participant.state === "active").length;
 
   const refresh = useCallback(async () => {
     if (!enabled || !campaignId) {
@@ -110,13 +105,10 @@ export function TabletopLiveSession({
       return;
     }
     try {
-      const nextSession =
-        await tabletopSessionService.findOpenSession(campaignId);
+      const nextSession = await tabletopSessionService.findOpenSession(campaignId);
       setSession(nextSession);
       setParticipants(
-        nextSession
-          ? await tabletopSessionService.listParticipants(nextSession.id)
-          : [],
+        nextSession ? await tabletopSessionService.listParticipants(nextSession.id) : [],
       );
     } catch (error) {
       setSession(null);
@@ -160,16 +152,16 @@ export function TabletopLiveSession({
         void refresh().catch(() => undefined);
         return;
       }
+      if (event.type === "round.state") onRemoteRound?.();
       if (event.type === "token.move-commit") {
         onRemoteEntityMove?.(event.payload);
       }
     },
-    [onRemoteEntityMove, refresh],
+    [onRemoteEntityMove, onRemoteRound, refresh],
   );
 
   const realtimePresence = useMemo(() => {
-    if (!user?.id || !activeParticipant || !session?.currentSceneId)
-      return null;
+    if (!user?.id || !activeParticipant || !session?.currentSceneId) return null;
     const fallbackName = user.email?.split("@")[0] || "Participante";
     return {
       userId: user.id,
@@ -198,10 +190,7 @@ export function TabletopLiveSession({
     onEvent: onRealtimeEvent,
   });
 
-  const runOperation = async (
-    operation: () => Promise<unknown>,
-    successMessage: string,
-  ) => {
+  const runOperation = async (operation: () => Promise<unknown>, successMessage: string) => {
     setLoading(true);
     try {
       await operation();
@@ -249,9 +238,7 @@ export function TabletopLiveSession({
           <Radio />
         </span>
         <span className="min-w-0 flex-1 text-left">
-          <span className="tadeon-live-session__eyebrow">
-            Mesa sincronizada
-          </span>
+          <span className="tadeon-live-session__eyebrow">Mesa sincronizada</span>
           <strong>
             {!enabled
               ? "Sala ao vivo em canário"
@@ -265,10 +252,7 @@ export function TabletopLiveSession({
             {activeCount} {activeCount === 1 ? "presente" : "presentes"}
           </span>
         )}
-        <ChevronDown
-          className="tadeon-live-session__chevron"
-          aria-hidden="true"
-        />
+        <ChevronDown className="tadeon-live-session__chevron" aria-hidden="true" />
       </button>
 
       {expanded && (
@@ -277,8 +261,8 @@ export function TabletopLiveSession({
             <div className="tadeon-live-session__notice">
               <Lock className="h-4 w-4" aria-hidden="true" />
               <span>
-                A interface está pronta, mas conexões permanecem desligadas até
-                a liberação segura da flag Realtime para sua conta.
+                A interface está pronta, mas conexões permanecem desligadas até a liberação segura
+                da flag Realtime para sua conta.
               </span>
             </div>
           ) : !campaignId ? (
@@ -352,9 +336,7 @@ export function TabletopLiveSession({
                           !session.joinLocked,
                           session.version,
                         ),
-                      session.joinLocked
-                        ? "Entrada da sala liberada."
-                        : "Entrada da sala travada.",
+                      session.joinLocked ? "Entrada da sala liberada." : "Entrada da sala travada.",
                     )
                   }
                 >
@@ -371,9 +353,7 @@ export function TabletopLiveSession({
                   size="sm"
                   variant="outline"
                   className="gap-2"
-                  disabled={
-                    loading || !sceneId || session.currentSceneId === sceneId
-                  }
+                  disabled={loading || !sceneId || session.currentSceneId === sceneId}
                   onClick={() => {
                     if (!sceneId) return;
                     void runOperation(
@@ -388,9 +368,7 @@ export function TabletopLiveSession({
                   }}
                 >
                   <DoorOpen className="h-4 w-4" />
-                  {session.currentSceneId === sceneId
-                    ? "Cena no ar"
-                    : "Transmitir cena"}
+                  {session.currentSceneId === sceneId ? "Cena no ar" : "Transmitir cena"}
                 </Button>
 
                 <Button
@@ -402,11 +380,7 @@ export function TabletopLiveSession({
                   onClick={() => {
                     if (!window.confirm("Encerrar esta sala ao vivo?")) return;
                     void runOperation(
-                      () =>
-                        tabletopSessionService.closeSession(
-                          session.id,
-                          session.version,
-                        ),
+                      () => tabletopSessionService.closeSession(session.id, session.version),
                       "Sala ao vivo encerrada.",
                     );
                   }}
@@ -421,16 +395,9 @@ export function TabletopLiveSession({
                   variant="ghost"
                   aria-label="Atualizar estado da sala"
                   disabled={loading}
-                  onClick={() =>
-                    void runOperation(
-                      () => refresh(),
-                      "Estado da sala atualizado.",
-                    )
-                  }
+                  onClick={() => void runOperation(() => refresh(), "Estado da sala atualizado.")}
                 >
-                  <RefreshCw
-                    className={`h-4 w-4 ${loading ? "animate-spin" : ""}`}
-                  />
+                  <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
                 </Button>
               </div>
 

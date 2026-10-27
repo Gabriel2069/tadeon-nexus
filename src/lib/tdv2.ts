@@ -43,11 +43,53 @@ export const tdvInvestmentSchema = z.object({
 });
 export const tdvRecordSchema = z.object({
   id: z.string(),
-  kind: z.enum(["Lavor", "Trama", "Fragmento", "Selo", "Equipamento", "Reputação", "Resto"]),
+  kind: z.enum([
+    "Lavor",
+    "Trama",
+    "Fragmento",
+    "Selo",
+    "Arma",
+    "Equipamento",
+    "Reputação",
+    "Preparo",
+    "Costura",
+    "Resto",
+  ]),
   name: z.string().max(200),
   fields: z.record(z.string(), text),
 });
 export type TdvRecord = z.infer<typeof tdvRecordSchema>;
+export const sceneTestSchema = z.object({
+  id: z.string(),
+  signature: text,
+  intention: text,
+  approach: text,
+  change: text,
+  point: text,
+  prumo: z.number().int().min(1).max(20),
+  tento: z.number().int().min(1).max(20),
+  dt: z.number().min(2).max(1000),
+  matrix: z.enum(MATRICES),
+  alinhavo: z.string(),
+  helper: z.string().optional(),
+});
+export const activeExpressionSchema = z.object({
+  id: z.string(),
+  recordIds: z.array(z.string()).min(1).max(10),
+  name: text,
+  target: text,
+  state: z.enum(["Em curso", "Sustentada", "Relaxada", "Interrompida"]),
+  sustainPE: z.number().int().min(0).max(1000),
+  sustainPI: z.number().int().min(0).max(1000),
+  lastWindow: text,
+  signature: text,
+  reflux: text,
+  exit: text,
+  pullEventId: z.string().optional(),
+  paidConsequences: z.array(z.string()).max(100),
+  paidWindows: z.array(z.string()).max(200).optional(),
+});
+export type TdvActiveExpression = z.infer<typeof activeExpressionSchema>;
 export const tdv2CharacterSchema = z
   .object({
     version: z.literal(2),
@@ -84,6 +126,9 @@ export const tdv2CharacterSchema = z
       modifier: z.number().int().min(-100).max(100),
       source: text,
       broken: z.boolean(),
+      protection: z.number().int().min(0).max(2).optional(),
+      protectionSource: text.optional(),
+      totalCover: text.optional(),
     }),
     equilibrium: z.number().int().min(-10).max(10),
     tension: z.number().int().min(-3).max(3),
@@ -106,7 +151,20 @@ export const tdv2CharacterSchema = z
       shaken: z.array(z.enum(MATRICES)).max(4),
       forcedAtZero: z.boolean(),
       recoveryWindow: text,
+      tests: z.array(sceneTestSchema).max(200).optional(),
+      paidEvents: z
+        .array(
+          z.object({
+            id: z.string(),
+            source: text,
+            pe: z.number().int().min(0),
+            pi: z.number().int().min(0),
+          }),
+        )
+        .max(200)
+        .optional(),
     }),
+    activeExpressions: z.array(activeExpressionSchema).max(100).optional(),
     critical: z.enum(["Ativa", "Incapacitada", "À Beira", "Morta"]),
     deathWindow: text,
     history: text,
@@ -199,7 +257,9 @@ export function constitution(character: TdvCharacter) {
     alinhavos,
     maximums: { pv, pi, pe },
     defenses: { Resistência: pv, Evasão: evasion, Lucidez: pi, Firmeza: pi },
-    guard: character.guard.broken ? null : Math.max(0, evasion + character.guard.modifier),
+    guard: character.guard.broken
+      ? null
+      : Math.max(0, evasion + character.guard.modifier + (character.guard.protection ?? 0)),
     development: character.milestones.length * 5,
     pu: character.milestones.length * 2 - spent,
     spent,
@@ -391,6 +451,9 @@ export interface TestRequest {
   force: Thread | "";
   extraordinary: boolean;
   counterpart: string;
+  helper?: { name: string; grade: number; contribution: string };
+  context?: { intention: string; approach: string; change: string; point: string; risk: boolean };
+  costs?: { pe: number; pi: number; source: string; eventId: string };
 }
 function shift(die: number, direction: number, extraordinary: boolean) {
   const index = DICE.indexOf(die as (typeof DICE)[number]);
@@ -401,8 +464,48 @@ export function prepareTest(c: TdvCharacter, r: TestRequest) {
   const current = constitution(c);
   if (!ALINHAVOS.includes(r.alinhavo as (typeof ALINHAVOS)[number]))
     throw new Error("Alinhavo inválido.");
+  if (
+    r.helper &&
+    (!r.helper.name.trim() ||
+      !r.helper.contribution.trim() ||
+      !Number.isInteger(r.helper.grade) ||
+      r.helper.grade < 0 ||
+      r.helper.grade > 4)
+  )
+    throw new Error("Auxílio exige uma pessoa, contribuição concreta e grau válido de Tento.");
+  if (r.context) {
+    if (!r.context.risk)
+      throw new Error("Sem risco ou oposição relevante, resolva diretamente pela ficção.");
+    if (!r.context.intention.trim() || !r.context.approach.trim())
+      throw new Error("Declare intenção e abordagem antes de rolar.");
+    const signature = testSignature(r.context);
+    if (c.scene.tests?.some((test) => test.signature === signature))
+      throw new Error(
+        "A mesma intervenção já foi resolvida. Declare uma mudança real na situação antes de outro teste.",
+      );
+    if ((c.scene.tests?.length ?? 0) >= 200)
+      throw new Error("Encerre ou organize a cena antes de registrar novos testes.");
+  }
+  const declaredPE = r.costs?.pe ?? 0,
+    declaredPI = r.costs?.pi ?? 0;
+  if (
+    !Number.isInteger(declaredPE) ||
+    !Number.isInteger(declaredPI) ||
+    declaredPE < 0 ||
+    declaredPI < 0
+  )
+    throw new Error("Custos declarados precisam ser inteiros não negativos.");
+  if (
+    r.costs &&
+    (!r.costs.source.trim() ||
+      !r.costs.eventId ||
+      c.scene.paidEvents?.some((event) => event.id === r.costs!.eventId))
+  )
+    throw new Error("O custo precisa de fonte e de um acontecimento ainda não pago.");
+  if (r.costs && (c.scene.paidEvents?.length ?? 0) >= 200)
+    throw new Error("Organize a cena antes de novos pagamentos.");
   let prumo: number = DICE[current.matrices[r.matrix]],
-    tento: number = DICE[current.alinhavos[r.alinhavo] ?? 0];
+    tento: number = DICE[r.helper?.grade ?? current.alinhavos[r.alinhavo] ?? 0];
   const shaken = c.scene.shaken.includes(r.matrix) ? 1 : 0;
   prumo = shift(prumo, Math.sign(r.prumoPro - r.prumoDes - shaken), r.extraordinary);
   tento = shift(tento, Math.sign(r.tentoPro - r.tentoDes), r.extraordinary);
@@ -423,7 +526,14 @@ export function prepareTest(c: TdvCharacter, r: TestRequest) {
     if (r.force === "Prumo") prumo = shift(prumo, 1, r.extraordinary);
     else tento = shift(tento, 1, r.extraordinary);
   }
-  return { prumo, tento, cost, zero };
+  if (c.resources.pe < cost + declaredPE || c.resources.pi < declaredPI)
+    throw new Error("Não há PE ou PI para pagar os custos declarados; esta abordagem não começa.");
+  return { prumo, tento, cost: cost + declaredPE, forcingCost: cost, piCost: declaredPI, zero };
+}
+export function testSignature(context: NonNullable<TestRequest["context"]>) {
+  return [context.intention, context.approach, context.change]
+    .map((value) => value.trim().normalize("NFC").toLocaleLowerCase("pt-BR"))
+    .join(" | ");
 }
 export function readTest(prumo: number, tento: number, dt: number) {
   const enlace = prumo + tento,
@@ -468,7 +578,11 @@ export function resolveTest(c: TdvCharacter, r: TestRequest, random: () => numbe
     dice,
     character: {
       ...c,
-      resources: { ...c.resources, pe: c.resources.pe - dice.cost },
+      resources: {
+        ...c.resources,
+        pe: c.resources.pe - dice.cost,
+        pi: c.resources.pi - dice.piCost,
+      },
       records: dice.zero
         ? [
             ...c.records,
@@ -482,6 +596,35 @@ export function resolveTest(c: TdvCharacter, r: TestRequest, random: () => numbe
         : c.records,
       scene: {
         ...c.scene,
+        ...(r.context
+          ? {
+              tests: [
+                ...(c.scene.tests ?? []),
+                {
+                  id: uid(),
+                  signature: testSignature(r.context),
+                  intention: r.context.intention.trim(),
+                  approach: r.context.approach.trim(),
+                  change: r.context.change.trim(),
+                  point: r.context.point.trim(),
+                  prumo: result.prumo,
+                  tento: result.tento,
+                  dt: r.dt,
+                  matrix: r.matrix,
+                  alinhavo: r.alinhavo,
+                  ...(r.helper ? { helper: r.helper.name } : {}),
+                },
+              ],
+            }
+          : {}),
+        ...(r.costs
+          ? {
+              paidEvents: [
+                ...(c.scene.paidEvents ?? []),
+                { id: r.costs.eventId, source: r.costs.source, pe: r.costs.pe, pi: r.costs.pi },
+              ],
+            }
+          : {}),
         forcedAtZero: c.scene.forcedAtZero || dice.zero,
         shaken: result.criticalFailure
           ? [...new Set([...c.scene.shaken, r.matrix])]
@@ -524,6 +667,29 @@ export const RECORD_FIELDS: Record<TdvRecord["kind"], string[]> = {
     "Resto e Permanência",
     "Manutenção",
   ],
+  Arma: [
+    "Família",
+    "Alcance",
+    "Manejo",
+    "Impacto",
+    "Propriedades",
+    "Porte e acesso",
+    "Dano-base",
+    "Integridade",
+    "Função comprometida",
+    "Reparo necessário",
+    "Redução numérica expressa",
+  ],
+  Preparo: ["Gesto", "Gatilho", "Mudança permitida", "Continuidade e consumo", "Estado"],
+  Costura: [
+    "Intenção única",
+    "Lavores envolvidos",
+    "Contribuição de cada Lavor",
+    "Gatilhos válidos",
+    "Preços e limites",
+    "Expressão híbrida",
+    "Risco adicional",
+  ],
   Equipamento: [
     "Forma",
     "Uso",
@@ -533,6 +699,39 @@ export const RECORD_FIELDS: Record<TdvRecord["kind"], string[]> = {
     "Integridade",
     "Preço/limite",
   ],
-  Reputação: ["Quem reconhece", "Motivo", "Expectativa", "Consequência"],
+  Reputação: ["Rede", "Imagem", "Peso", "Cobrança"],
   Resto: ["Acontecimento", "Consequência", "O que permanece", "Relações", "Incorporação"],
 };
+
+export function characterStateLabel(c: TdvCharacter) {
+  return (
+    [c.critical !== "Ativa" ? c.critical : "", c.resources.pi === 0 ? "Colapso" : ""]
+      .filter(Boolean)
+      .join(" · ") || "Ativa"
+  );
+}
+export function probabilityProfile(prumo: number, tento: number, dt: number) {
+  if (
+    !DICE.includes(prumo as (typeof DICE)[number]) ||
+    !DICE.includes(tento as (typeof DICE)[number]) ||
+    !Number.isFinite(dt)
+  )
+    throw new Error("Dados ou limiar inválidos.");
+  let success = 0,
+    critical = 0,
+    criticalFailure = 0;
+  for (let p = 1; p <= prumo; p++)
+    for (let t = 1; t <= tento; t++) {
+      const r = readTest(p, t, dt);
+      success += Number(r.success);
+      critical += Number(r.critical);
+      criticalFailure += Number(r.criticalFailure);
+    }
+  const total = prumo * tento;
+  return {
+    success: success / total,
+    critical: critical / total,
+    criticalFailure: criticalFailure / total,
+    total,
+  };
+}

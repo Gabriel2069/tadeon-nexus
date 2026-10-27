@@ -1,7 +1,15 @@
-import { useId, useState, type ReactNode } from "react";
+import { useState } from "react";
+import { TdvDisclosure, TdvField, TdvSelect, TdvNumber, TdvCheck } from "./tdv2-fields";
+import {
+  TdvGuard,
+  TdvLinkUse,
+  TdvOutcome,
+  TdvRecordActions,
+  TdvExpressionUse,
+} from "./tdv2-procedures";
+import { TdvTestPanel } from "./tdv2-test-panel";
+export { TdvTestPanel } from "./tdv2-test-panel";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Section } from "./sheet-ui";
 import {
@@ -21,344 +29,16 @@ import {
   equilibriumBand,
   finishCreation,
   invest,
-  prepareTest,
   recover,
-  resolveTest,
   setResource,
   uid,
   type Matrix,
   type TdvCharacter,
   type TdvRecord,
-  type TestRequest,
 } from "@/lib/tdv2";
 import { toast } from "sonner";
 
-export function TdvDisclosure({
-  initiallyOpen,
-  children,
-}: {
-  initiallyOpen: boolean;
-  children: ReactNode;
-}) {
-  const [open, setOpen] = useState(initiallyOpen);
-  return (
-    <details className="tdv-disclosure" open={open} onToggle={(e) => setOpen(e.currentTarget.open)}>
-      {children}
-    </details>
-  );
-}
-
-export function TdvField({
-  label,
-  value,
-  onChange,
-  disabled = false,
-  short = false,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  disabled?: boolean;
-  short?: boolean;
-}) {
-  const id = useId();
-  return (
-    <div className="tdv-field">
-      <label className="tadeon-dossier-label" htmlFor={id}>
-        {label}
-      </label>
-      {short ? (
-        <Input
-          className="tadeon-dossier-field"
-          id={id}
-          value={value}
-          disabled={disabled}
-          onChange={(e) => onChange(e.target.value)}
-        />
-      ) : (
-        <Textarea
-          className="tadeon-dossier-field"
-          id={id}
-          value={value}
-          disabled={disabled}
-          onChange={(e) => onChange(e.target.value)}
-        />
-      )}
-    </div>
-  );
-}
-export function TdvSelect({
-  label,
-  value,
-  options,
-  onChange,
-  disabled = false,
-}: {
-  label: string;
-  value: string;
-  options: readonly string[];
-  onChange: (value: string) => void;
-  disabled?: boolean;
-}) {
-  const id = useId();
-  return (
-    <div className="tdv-field">
-      <label className="tadeon-dossier-label" htmlFor={id}>
-        {label}
-      </label>
-      <select id={id} value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)}>
-        {options.map((option) => (
-          <option key={option}>{option}</option>
-        ))}
-      </select>
-    </div>
-  );
-}
-export function TdvNumber({
-  label,
-  value,
-  onChange,
-  disabled = false,
-  min = 0,
-  max = 100,
-}: {
-  label: string;
-  value: number;
-  onChange: (value: number) => void;
-  disabled?: boolean;
-  min?: number;
-  max?: number;
-}) {
-  const id = useId();
-  return (
-    <div className="tdv-field">
-      <label className="tadeon-dossier-label" htmlFor={id}>
-        {label}
-      </label>
-      <Input
-        className="tadeon-dossier-field"
-        id={id}
-        type="number"
-        min={min}
-        max={max}
-        value={value}
-        disabled={disabled}
-        onChange={(e) =>
-          onChange(Math.max(min, Math.min(max, Math.round(Number(e.target.value) || 0))))
-        }
-      />
-    </div>
-  );
-}
-export function TdvCheck({
-  label,
-  value,
-  onChange,
-  disabled = false,
-}: {
-  label: string;
-  value: boolean;
-  onChange: (value: boolean) => void;
-  disabled?: boolean;
-}) {
-  return (
-    <label className="tdv-check">
-      <input
-        type="checkbox"
-        checked={value}
-        disabled={disabled}
-        onChange={(e) => onChange(e.target.checked)}
-      />
-      <span>{label}</span>
-    </label>
-  );
-}
-export function TdvTestPanel({
-  character,
-  onChange,
-  canEdit,
-}: {
-  character: TdvCharacter;
-  onChange: (value: TdvCharacter) => void;
-  canEdit: boolean;
-}) {
-  const [request, setRequest] = useState<TestRequest>({
-    matrix: "Nexo",
-    alinhavo: "Investigação",
-    dt: 10,
-    prumoPro: 0,
-    prumoDes: 0,
-    tentoPro: 0,
-    tentoDes: 0,
-    force: "",
-    extraordinary: false,
-    counterpart: "",
-  });
-  const [last, setLast] = useState<ReturnType<typeof resolveTest> | null>(null);
-  const upd = <K extends keyof TestRequest>(key: K, value: TestRequest[K]) =>
-    setRequest((p) => ({ ...p, [key]: value }));
-  let prepared: ReturnType<typeof prepareTest> | null = null,
-    error = "";
-  try {
-    prepared = prepareTest(character, request);
-  } catch (e) {
-    error = (e as Error).message;
-  }
-  return (
-    <div className="tdv-test-panel">
-      <p className="tdv-note">
-        Declare intenção, abordagem e limiar antes de rolar. Sem risco relevante, resolva
-        diretamente pela ficção.
-      </p>
-      <div className="tdv-grid tdv-grid--three">
-        <TdvSelect
-          label="Matriz de Prumo"
-          value={request.matrix}
-          options={MATRICES}
-          onChange={(v) => upd("matrix", v as Matrix)}
-          disabled={!canEdit}
-        />
-        <TdvSelect
-          label="Alinhavo de Tento"
-          value={request.alinhavo}
-          options={ALINHAVOS}
-          onChange={(v) => upd("alinhavo", v)}
-          disabled={!canEdit}
-        />
-        <TdvNumber
-          label="DT ou Defesa"
-          value={request.dt}
-          min={2}
-          max={100}
-          onChange={(v) => upd("dt", v)}
-          disabled={!canEdit}
-        />
-      </div>
-      <details className="tdv-disclosure">
-        <summary>Proveito, Desproveito e Forçar</summary>
-        <div className="tdv-grid">
-          {(["Prumo", "Tento"] as const).map((thread) => (
-            <div key={thread} className="tdv-grid">
-              <TdvNumber
-                label={`Fontes de Proveito em ${thread}`}
-                value={request[thread === "Prumo" ? "prumoPro" : "tentoPro"]}
-                max={20}
-                onChange={(v) => upd(thread === "Prumo" ? "prumoPro" : "tentoPro", v)}
-                disabled={!canEdit}
-              />
-              <TdvNumber
-                label={`Fontes de Desproveito em ${thread}`}
-                value={request[thread === "Prumo" ? "prumoDes" : "tentoDes"]}
-                max={20}
-                onChange={(v) => upd(thread === "Prumo" ? "prumoDes" : "tentoDes", v)}
-                disabled={!canEdit}
-              />
-            </div>
-          ))}
-        </div>
-        <p className="tdv-note">
-          Fontes opostas se cancelam por Fio; aplique no máximo um deslocamento líquido. Matriz
-          Abalada é incluída no Prumo.
-        </p>
-        <TdvSelect
-          label="Forçar um Fio"
-          options={["Não forçar", "Prumo", "Tento"]}
-          value={request.force || "Não forçar"}
-          onChange={(v) => upd("force", v === "Não forçar" ? "" : (v as "Prumo" | "Tento"))}
-          disabled={!canEdit}
-        />
-        <TdvCheck
-          label="Existe autorização extraordinária expressa para d20"
-          value={request.extraordinary}
-          onChange={(v) => upd("extraordinary", v)}
-          disabled={!canEdit}
-        />
-        {request.force && character.resources.pe === 0 && (
-          <TdvField
-            label="Contrapartida acordada para Forçar a 0 PE"
-            value={request.counterpart}
-            onChange={(v) => upd("counterpart", v)}
-            disabled={!canEdit}
-          />
-        )}
-      </details>
-      <div className="tdv-test-dice">
-        <div>
-          <small>Fio de Prumo</small>
-          <strong>{prepared ? `d${prepared.prumo}` : "~"}</strong>
-        </div>
-        <span aria-hidden="true">+</span>
-        <div>
-          <small>Fio de Tento</small>
-          <strong>{prepared ? `d${prepared.tento}` : "~"}</strong>
-        </div>
-        <Button
-          disabled={!canEdit || !prepared}
-          onClick={() => {
-            try {
-              const rolled = resolveTest(character, request);
-              onChange(rolled.character);
-              setLast(rolled);
-            } catch (e) {
-              toast.error((e as Error).message);
-            }
-          }}
-        >
-          Rolar os dois Fios{prepared?.cost ? ` · ${prepared.cost} PE` : ""}
-        </Button>
-      </div>
-      {error && (
-        <p className="tdv-note" role="status">
-          {error}
-        </p>
-      )}
-      {last && (
-        <div className="tdv-result" aria-live="polite">
-          <p>
-            {last.result.quality}
-            {last.result.critical ? " · Consonância crítica" : ""}
-          </p>
-          <div className="tdv-grid tdv-grid--three">
-            {Object.entries({
-              Prumo: last.result.prumo,
-              Tento: last.result.tento,
-              Enlace: last.result.enlace,
-              Ascendente: last.result.ascendente,
-              Retorno: last.result.retorno,
-              Desvio: last.result.desvio,
-            }).map(([name, value]) => (
-              <div className="tdv-reading" key={name}>
-                <small>{name}</small>
-                <strong>{value}</strong>
-              </div>
-            ))}
-          </div>
-          <p>
-            Enlace {last.result.enlace} / DT {last.result.dt} · margem{" "}
-            {last.result.margin >= 0 ? "+" : ""}
-            {last.result.margin}
-          </p>
-          {last.result.criticalFailure ? (
-            <p>
-              Matriz {request.matrix} Abalada até o fim da cena. A dupla unidade prevalece sobre o
-              limiar e sobre Consonância.
-            </p>
-          ) : (
-            <p>
-              {last.result.success
-                ? "Intenção alcançada."
-                : "Intenção não alcançada como pretendida."}{" "}
-              {last.result.consonance && !last.result.success
-                ? "Consonância sem alcance não é crítico."
-                : "A consequência depende da ação e da situação; Retorno baixo não cobra preço automático."}
-            </p>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
+export { TdvDisclosure, TdvField, TdvSelect, TdvNumber, TdvCheck } from "./tdv2-fields";
 export function Tdv2Sheet({
   character: c,
   onChange,
@@ -439,14 +119,16 @@ export function Tdv2Sheet({
         </div>
       )}
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList className="tdv-tabs">
+        <TabsList className="tdv-tabs tdv-tabs--sheet">
           <TabsTrigger value="pessoa">Pessoa</TabsTrigger>
+          <TabsTrigger value="constituicao">Constituição</TabsTrigger>
           <TabsTrigger value="acao">Ação</TabsTrigger>
-          <TabsTrigger value="expressao">Expressão e memória</TabsTrigger>
+          <TabsTrigger value="expressao">Expressão</TabsTrigger>
+          <TabsTrigger value="percurso">Percurso</TabsTrigger>
         </TabsList>
         <TabsContent value="pessoa" data-sheet-content>
           <Section id="tdv-feicao" title="Feição">
-            <div className="tdv-grid">
+            <div className="tdv-grid tdv-grid--identity">
               {(
                 [
                   ["origin", "Origem"],
@@ -458,6 +140,7 @@ export function Tdv2Sheet({
                 <TdvField
                   key={key}
                   label={label}
+                  short={key === "origin" || key === "occupation"}
                   value={c.face[key]}
                   onChange={(v) => face(key, v)}
                   disabled={disabled}
@@ -562,7 +245,7 @@ export function Tdv2Sheet({
             <div className="tdv-folios">
               {c.face.links.map((link, index) => (
                 <div key={link.id} className="tdv-folio">
-                  <div className="tdv-grid">
+                  <div className="tdv-grid tdv-grid--identity">
                     {(
                       [
                         ["node", "Nó"],
@@ -585,7 +268,7 @@ export function Tdv2Sheet({
                           })
                         }
                         disabled={disabled}
-                        short={key === "node"}
+                        short={key === "node" || key === "nature"}
                       />
                     ))}
                     <TdvSelect
@@ -603,6 +286,12 @@ export function Tdv2Sheet({
                       disabled={disabled}
                     />
                   </div>
+                  <TdvLinkUse
+                    character={c}
+                    linkId={link.id}
+                    onChange={onChange}
+                    canEdit={canEdit}
+                  />
                   <Button
                     variant="ghost"
                     disabled={disabled}
@@ -642,6 +331,8 @@ export function Tdv2Sheet({
               Novo vínculo
             </Button>
           </Section>
+        </TabsContent>
+        <TabsContent value="constituicao" data-sheet-content>
           <Section id="tdv-constituicao" title="Matrizes e Alinhavos">
             <div className="tdv-matrices">
               {MATRICES.map((matrix) => (
@@ -722,29 +413,7 @@ export function Tdv2Sheet({
                   </div>
                 ))}
               </dl>
-              <div className="tdv-grid">
-                <TdvNumber
-                  label="Modificação situacional de Guarda"
-                  value={c.guard.modifier}
-                  min={-100}
-                  max={100}
-                  onChange={(v) => upd("guard", { ...c.guard, modifier: v })}
-                  disabled={disabled}
-                />
-                <TdvField
-                  label="Fonte da proteção"
-                  value={c.guard.source}
-                  onChange={(v) => upd("guard", { ...c.guard, source: v })}
-                  disabled={disabled}
-                  short
-                />
-              </div>
-              <TdvCheck
-                label="Guarda quebrada ou ausente"
-                value={c.guard.broken}
-                onChange={(v) => upd("guard", { ...c.guard, broken: v })}
-                disabled={disabled}
-              />
+              <TdvGuard character={c} onChange={onChange} canEdit={canEdit} />
               <p>
                 Guarda atual: <strong>{stats.guard ?? "sem proteção imediata"}</strong>
               </p>
@@ -848,6 +517,249 @@ export function Tdv2Sheet({
               </p>
             </Section>
           </div>
+        </TabsContent>
+        <TabsContent value="acao" data-sheet-content>
+          <Section id="tdv-motor" title="Motor de dois Fios">
+            <TdvTestPanel character={c} onChange={onChange} canEdit={canEdit} />
+            <TdvOutcome character={c} onChange={onChange} canEdit={canEdit} />
+          </Section>
+          <Section id="tdv-cena" title="Continuidade da cena">
+            <p>
+              Matrizes Abaladas: {c.scene.shaken.join(", ") || "nenhuma"}. Forçar a 0 PE:{" "}
+              {c.scene.forcedAtZero ? "já utilizado" : "disponível, mediante contrapartida"}.
+            </p>
+            <Button
+              disabled={disabled}
+              variant="outline"
+              onClick={() =>
+                upd("scene", {
+                  ...c.scene,
+                  shaken: [],
+                  forcedAtZero: false,
+                  tests: [],
+                  paidEvents: [],
+                })
+              }
+            >
+              Encerrar cena e liberar efeitos de cena
+            </Button>
+            <p className="tdv-note">
+              Encerrar cena não recupera recursos, não remove Condições e não Reassenta a Âncora.
+            </p>
+          </Section>
+          <Section id="tdv-recuperacao" title="Recuperação">
+            <TdvSelect
+              label="Profundidade da recuperação"
+              value={recovery}
+              options={["Pausa breve", "Repouso profundo", "Recuperação plena"]}
+              onChange={setRecovery}
+              disabled={disabled}
+            />
+            <TdvField
+              label="Nova janela real de recuperação"
+              value={window}
+              onChange={setWindow}
+              disabled={disabled}
+            />
+            <TdvCheck
+              label="Houve cuidado corporal adequado"
+              value={care}
+              onChange={setCare}
+              disabled={disabled}
+            />
+            <TdvCheck
+              label="Houve reconstrução real da continuidade para PI pleno"
+              value={rebuilt}
+              onChange={setRebuilt}
+              disabled={disabled}
+            />
+            <Button
+              disabled={disabled || !c.ready}
+              onClick={() =>
+                run(() =>
+                  recover(
+                    c,
+                    recovery as "Pausa breve" | "Repouso profundo" | "Recuperação plena",
+                    care,
+                    rebuilt,
+                    window,
+                  ),
+                )
+              }
+            >
+              Aplicar recuperação
+            </Button>
+            <p className="tdv-note">
+              Repetir o mesmo intervalo não multiplica recuperação. Pausa: PE +2, PI +1, PV +2 só
+              com cuidado. Repouso: PE máximo, PI +3, PV +5 com cuidado ou +2 sem.
+            </p>
+          </Section>
+          <Section id="tdv-condicoes" title="Condições">
+            <div className="tdv-folios">
+              {c.conditions.map((condition, index) => (
+                <div key={condition.id} className="tdv-folio">
+                  <div className="tdv-grid">
+                    {(["name", "origin", "effect", "exit"] as const).map((key, i) => (
+                      <TdvField
+                        key={key}
+                        label={`${["Nome", "Origem", "Efeito", "Saída"][i]} da condição ${index + 1}`}
+                        value={condition[key]}
+                        disabled={disabled}
+                        onChange={(v) =>
+                          upd(
+                            "conditions",
+                            c.conditions.map((x) =>
+                              x.id === condition.id ? { ...x, [key]: v } : x,
+                            ),
+                          )
+                        }
+                      />
+                    ))}
+                    <TdvSelect
+                      label={`Intensidade da condição ${index + 1}`}
+                      value={condition.intensity}
+                      options={["Leve", "Grave", "Crítica"]}
+                      disabled={disabled}
+                      onChange={(v) =>
+                        upd(
+                          "conditions",
+                          c.conditions.map((x) =>
+                            x.id === condition.id
+                              ? { ...x, intensity: v as typeof condition.intensity }
+                              : x,
+                          ),
+                        )
+                      }
+                    />
+                  </div>
+                  <Button
+                    variant="ghost"
+                    disabled={disabled || !condition.exit.trim()}
+                    onClick={() =>
+                      upd(
+                        "conditions",
+                        c.conditions.filter((x) => x.id !== condition.id),
+                      )
+                    }
+                  >
+                    Registrar saída da condição {index + 1}
+                  </Button>
+                </div>
+              ))}
+            </div>
+            <Button
+              variant="outline"
+              disabled={disabled}
+              onClick={() =>
+                upd("conditions", [
+                  ...c.conditions,
+                  { id: uid(), name: "", origin: "", effect: "", exit: "", intensity: "Leve" },
+                ])
+              }
+            >
+              Nova condição
+            </Button>
+          </Section>
+        </TabsContent>
+        <TabsContent value="expressao" data-sheet-content>
+          <Section id="tdv-uso" title="Expressar e sustentar">
+            <TdvExpressionUse character={c} onChange={onChange} canEdit={canEdit} />
+          </Section>
+          <Section id="tdv-expressao" title="Repertório e Permanência">
+            <div className="tdv-actions">
+              <TdvSelect
+                label="Tipo de registro"
+                value={recordKind}
+                options={Object.keys(RECORD_FIELDS)}
+                disabled={disabled}
+                onChange={(v) => setRecordKind(v as TdvRecord["kind"])}
+              />
+              <Button
+                variant="outline"
+                disabled={disabled || c.records.length >= 200}
+                onClick={() =>
+                  upd("records", [
+                    ...c.records,
+                    {
+                      id: uid(),
+                      kind: recordKind,
+                      name: "",
+                      fields: Object.fromEntries(RECORD_FIELDS[recordKind].map((k) => [k, ""])),
+                    },
+                  ])
+                }
+              >
+                Adicionar registro
+              </Button>
+            </div>
+            {c.records
+              .filter((record) => record.kind === recordKind)
+              .map((record, index) => (
+                <TdvDisclosure key={record.id} initiallyOpen={!record.name}>
+                  <summary>
+                    {record.kind} · {record.name || `Registro ${index + 1}`}
+                  </summary>
+                  <TdvField
+                    label={`Nome do registro ${index + 1}`}
+                    value={record.name}
+                    short
+                    disabled={disabled}
+                    onChange={(v) =>
+                      upd(
+                        "records",
+                        c.records.map((x) => (x.id === record.id ? { ...x, name: v } : x)),
+                      )
+                    }
+                  />
+                  <div className="tdv-grid">
+                    {[
+                      ...new Set([...RECORD_FIELDS[record.kind], ...Object.keys(record.fields)]),
+                    ].map((field) => (
+                      <TdvField
+                        key={field}
+                        label={`${field} · registro ${index + 1}`}
+                        value={record.fields[field] || ""}
+                        disabled={disabled}
+                        onChange={(v) =>
+                          upd(
+                            "records",
+                            c.records.map((x) =>
+                              x.id === record.id
+                                ? { ...x, fields: { ...x.fields, [field]: v } }
+                                : x,
+                            ),
+                          )
+                        }
+                      />
+                    ))}
+                  </div>
+                  <TdvRecordActions
+                    character={c}
+                    record={record}
+                    onChange={onChange}
+                    canEdit={canEdit}
+                  />
+                  <Button
+                    variant="ghost"
+                    disabled={disabled}
+                    onClick={() =>
+                      upd(
+                        "records",
+                        c.records.filter((x) => x.id !== record.id),
+                      )
+                    }
+                  >
+                    Remover registro {index + 1}
+                  </Button>
+                </TdvDisclosure>
+              ))}
+            <p className="tdv-note">
+              Registrar conteúdo não compra Lavor nem autoriza efeito extraordinário: aquisição fica
+              no histórico de PU; custos em PE e condições são os escritos no próprio conteúdo.
+            </p>
+          </Section>
+        </TabsContent>
+        <TabsContent value="percurso" data-sheet-content>
           <Section id="tdv-desenvolvimento" title="Desenvolvimento e Ponto de Urdume">
             <div
               className="tdv-development"
@@ -969,227 +881,6 @@ export function Tdv2Sheet({
                 </p>
               ))}
             </details>
-          </Section>
-        </TabsContent>
-        <TabsContent value="acao" data-sheet-content>
-          <Section id="tdv-motor" title="Motor de dois Fios">
-            <TdvTestPanel character={c} onChange={onChange} canEdit={canEdit} />
-          </Section>
-          <Section id="tdv-cena" title="Continuidade da cena">
-            <p>
-              Matrizes Abaladas: {c.scene.shaken.join(", ") || "nenhuma"}. Forçar a 0 PE:{" "}
-              {c.scene.forcedAtZero ? "já utilizado" : "disponível, mediante contrapartida"}.
-            </p>
-            <Button
-              disabled={disabled}
-              variant="outline"
-              onClick={() => upd("scene", { ...c.scene, shaken: [], forcedAtZero: false })}
-            >
-              Encerrar cena e liberar efeitos de cena
-            </Button>
-            <p className="tdv-note">
-              Encerrar cena não recupera recursos, não remove Condições e não Reassenta a Âncora.
-            </p>
-          </Section>
-          <Section id="tdv-recuperacao" title="Recuperação">
-            <TdvSelect
-              label="Profundidade da recuperação"
-              value={recovery}
-              options={["Pausa breve", "Repouso profundo", "Recuperação plena"]}
-              onChange={setRecovery}
-              disabled={disabled}
-            />
-            <TdvField
-              label="Nova janela real de recuperação"
-              value={window}
-              onChange={setWindow}
-              disabled={disabled}
-            />
-            <TdvCheck
-              label="Houve cuidado corporal adequado"
-              value={care}
-              onChange={setCare}
-              disabled={disabled}
-            />
-            <TdvCheck
-              label="Houve reconstrução real da continuidade para PI pleno"
-              value={rebuilt}
-              onChange={setRebuilt}
-              disabled={disabled}
-            />
-            <Button
-              disabled={disabled || !c.ready}
-              onClick={() =>
-                run(() =>
-                  recover(
-                    c,
-                    recovery as "Pausa breve" | "Repouso profundo" | "Recuperação plena",
-                    care,
-                    rebuilt,
-                    window,
-                  ),
-                )
-              }
-            >
-              Aplicar recuperação
-            </Button>
-            <p className="tdv-note">
-              Repetir o mesmo intervalo não multiplica recuperação. Pausa: PE +2, PI +1, PV +2 só
-              com cuidado. Repouso: PE máximo, PI +3, PV +5 com cuidado ou +2 sem.
-            </p>
-          </Section>
-        </TabsContent>
-        <TabsContent value="expressao" data-sheet-content>
-          <Section id="tdv-condicoes" title="Condições">
-            <div className="tdv-folios">
-              {c.conditions.map((condition, index) => (
-                <div key={condition.id} className="tdv-folio">
-                  <div className="tdv-grid">
-                    {(["name", "origin", "effect", "exit"] as const).map((key, i) => (
-                      <TdvField
-                        key={key}
-                        label={`${["Nome", "Origem", "Efeito", "Saída"][i]} da condição ${index + 1}`}
-                        value={condition[key]}
-                        disabled={disabled}
-                        onChange={(v) =>
-                          upd(
-                            "conditions",
-                            c.conditions.map((x) =>
-                              x.id === condition.id ? { ...x, [key]: v } : x,
-                            ),
-                          )
-                        }
-                      />
-                    ))}
-                    <TdvSelect
-                      label={`Intensidade da condição ${index + 1}`}
-                      value={condition.intensity}
-                      options={["Leve", "Grave", "Crítica"]}
-                      disabled={disabled}
-                      onChange={(v) =>
-                        upd(
-                          "conditions",
-                          c.conditions.map((x) =>
-                            x.id === condition.id
-                              ? { ...x, intensity: v as typeof condition.intensity }
-                              : x,
-                          ),
-                        )
-                      }
-                    />
-                  </div>
-                  <Button
-                    variant="ghost"
-                    disabled={disabled}
-                    onClick={() =>
-                      upd(
-                        "conditions",
-                        c.conditions.filter((x) => x.id !== condition.id),
-                      )
-                    }
-                  >
-                    Registrar saída da condição {index + 1}
-                  </Button>
-                </div>
-              ))}
-            </div>
-            <Button
-              variant="outline"
-              disabled={disabled}
-              onClick={() =>
-                upd("conditions", [
-                  ...c.conditions,
-                  { id: uid(), name: "", origin: "", effect: "", exit: "", intensity: "Leve" },
-                ])
-              }
-            >
-              Nova condição
-            </Button>
-          </Section>
-          <Section id="tdv-expressao" title="Expressão e Permanência">
-            <div className="tdv-actions">
-              <TdvSelect
-                label="Tipo de registro"
-                value={recordKind}
-                options={Object.keys(RECORD_FIELDS)}
-                disabled={disabled}
-                onChange={(v) => setRecordKind(v as TdvRecord["kind"])}
-              />
-              <Button
-                variant="outline"
-                disabled={disabled}
-                onClick={() =>
-                  upd("records", [
-                    ...c.records,
-                    {
-                      id: uid(),
-                      kind: recordKind,
-                      name: "",
-                      fields: Object.fromEntries(RECORD_FIELDS[recordKind].map((k) => [k, ""])),
-                    },
-                  ])
-                }
-              >
-                Adicionar registro
-              </Button>
-            </div>
-            {c.records.map((record, index) => (
-              <TdvDisclosure key={record.id} initiallyOpen={!record.name}>
-                <summary>
-                  {record.kind} · {record.name || `Registro ${index + 1}`}
-                </summary>
-                <TdvField
-                  label={`Nome do registro ${index + 1}`}
-                  value={record.name}
-                  short
-                  disabled={disabled}
-                  onChange={(v) =>
-                    upd(
-                      "records",
-                      c.records.map((x) => (x.id === record.id ? { ...x, name: v } : x)),
-                    )
-                  }
-                />
-                <div className="tdv-grid">
-                  {[...new Set([...RECORD_FIELDS[record.kind], ...Object.keys(record.fields)])].map(
-                    (field) => (
-                      <TdvField
-                        key={field}
-                        label={`${field} · registro ${index + 1}`}
-                        value={record.fields[field] || ""}
-                        disabled={disabled}
-                        onChange={(v) =>
-                          upd(
-                            "records",
-                            c.records.map((x) =>
-                              x.id === record.id
-                                ? { ...x, fields: { ...x.fields, [field]: v } }
-                                : x,
-                            ),
-                          )
-                        }
-                      />
-                    ),
-                  )}
-                </div>
-                <Button
-                  variant="ghost"
-                  disabled={disabled}
-                  onClick={() =>
-                    upd(
-                      "records",
-                      c.records.filter((x) => x.id !== record.id),
-                    )
-                  }
-                >
-                  Remover registro {index + 1}
-                </Button>
-              </TdvDisclosure>
-            ))}
-            <p className="tdv-note">
-              Registrar conteúdo não compra Lavor nem autoriza efeito extraordinário: aquisição fica
-              no histórico de PU; custos em PE e condições são os escritos no próprio conteúdo.
-            </p>
           </Section>
           <Section id="tdv-historia" title="História e memória">
             <TdvField

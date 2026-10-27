@@ -157,6 +157,158 @@ assert.deepEqual(snapshot.tdv2_data, c);
 assert.equal(snapshot.rules_version, 2);
 assert.deepEqual(snapshot.attributes, { COR: 3 });
 checks++;
+await db.exec(`reset role;
+alter table game_settings add column key text, add column campaign_id uuid;
+create table tabletop_scenes(id uuid primary key,campaign_id uuid,name text);
+create table tabletop_entities(id uuid primary key,scene_id uuid,linked_sheet_id uuid,properties jsonb default '{}',version integer default 1);
+create table tabletop_sessions(id uuid,current_scene_id uuid,status text);
+create table tabletop_session_participants(session_id uuid,user_id uuid,state text,left_at timestamptz,removed_by uuid,role text);
+create schema realtime;
+create table realtime.test_messages(payload jsonb,event text,topic text,private boolean);
+create function realtime.send(payload jsonb,event text,topic text,private boolean) returns void language sql as $$insert into realtime.test_messages values(payload,event,topic,private)$$;
+grant usage on schema realtime to authenticated;
+grant execute on function realtime.send(jsonb,text,text,boolean) to authenticated;
+grant select,insert on realtime.test_messages to authenticated;
+grant all on game_settings,tabletop_scenes,tabletop_entities,tabletop_sessions,tabletop_session_participants to authenticated;
+alter table game_settings enable row level security;
+create policy master_settings on game_settings to authenticated using(auth.uid()='${master}'::uuid) with check(auth.uid()='${master}'::uuid);
+alter table tabletop_entities enable row level security;
+create policy master_entities_insert on tabletop_entities for insert to authenticated with check(auth.uid()='${master}'::uuid);
+create policy public_entities on tabletop_entities for select to authenticated using(true);
+create policy master_entities on tabletop_entities for update to authenticated using(auth.uid()='${master}'::uuid) with check(auth.uid()='${master}'::uuid);
+`);
+await db.exec(
+  readFileSync("supabase/migrations/20261027191353_tdv_ii_operational_play.sql", "utf8"),
+);
+await auth(master);
+assert.equal(
+  await valid({ ...c, guard: { ...c.guard, protection: 3, protectionSource: "Parede" } }),
+  false,
+);
+checks++;
+assert.equal(
+  await valid({ ...c, guard: { ...c.guard, protection: 1, protectionSource: "" } }),
+  false,
+);
+checks++;
+assert.equal(
+  await valid({
+    ...c,
+    guard: {
+      ...c.guard,
+      protection: 2,
+      protectionSource: "Parede",
+      totalCover: "Abordagem impedida",
+    },
+  }),
+  false,
+);
+checks++;
+assert.equal(
+  await valid({ ...c, guard: { ...c.guard, protection: 2, protectionSource: "Parede" } }),
+  true,
+);
+checks++;
+assert.equal(await valid({ ...c, guard: { ...c.guard, modifier: 3, source: "" } }), false);
+checks++;
+assert.equal(
+  (await db.query("select ensure_tdv2_knowledge_templates($1) n", [workspace])).rows[0].n,
+  5,
+);
+checks++;
+assert.equal(
+  (await db.query("select ensure_tdv2_knowledge_templates($1) n", [workspace])).rows[0].n,
+  0,
+);
+checks++;
+assert.equal(
+  (await db.query("select default_content from knowledge_templates where name='Feição TdV II'"))
+    .rows[0].default_content,
+  "CUSTOM",
+);
+checks++;
+const scene = "00000000-0000-4000-8000-000000000077",
+  settingsId = "00000000-0000-4000-8000-000000000078",
+  campaign = "00000000-0000-4000-8000-000000000079",
+  entityId = "00000000-0000-4000-8000-000000000080",
+  session = "00000000-0000-4000-8000-000000000081";
+await db.query("insert into tabletop_scenes values($1,$2,'Arquivo')", [scene, campaign]);
+await db.query(
+  "insert into tabletop_entities(id,scene_id,linked_sheet_id,properties) values($1,$2,$3,$4)",
+  [entityId, scene, sheet, JSON.stringify({ color: "ivory", notes: "TOKEN PRIVATE" })],
+);
+await db.query("insert into tabletop_sessions values($1,$2,'open')", [session, scene]);
+await db.query(
+  "insert into tabletop_session_participants(session_id,user_id,state,role) values($1,$2,'active','master')",
+  [session, master],
+);
+await db.query("insert into game_settings(id,key,campaign_id) values($1,'global',$2)", [
+  settingsId,
+  campaign,
+]);
+let state = {
+  version: 2,
+  round: 1,
+  tabletopSceneId: scene,
+  participants: [{ sheetId: sheet, impulses: 2, response: true, position: "Disputada" }],
+  notes: "GM SECRET",
+  objective: "GM SECRET",
+};
+const saveMaster = async (revision, state) =>
+  db.query(
+    "update game_settings set tdv2_state=$1 where id=$2 and tdv2_revision=$3 returning tdv2_revision",
+    [JSON.stringify(state), settingsId, revision],
+  );
+assert.equal((await saveMaster(0, state)).rows[0].tdv2_revision, 1);
+checks++;
+const props = (await db.query("select properties from tabletop_entities where id=$1", [entityId]))
+  .rows[0].properties;
+assert.deepEqual(props.tdv2_round, {
+  version: 2,
+  round: 1,
+  impulses: 2,
+  responses: 1,
+  position: "Disputada",
+  revision: 1,
+});
+checks++;
+assert.equal(props.notes, "TOKEN PRIVATE");
+assert.equal(JSON.stringify(props).includes("GM SECRET"), false);
+checks++;
+assert.equal((await saveMaster(0, { ...state, round: 2 })).rows.length, 0);
+checks++;
+const messages = (await db.query("select * from realtime.test_messages")).rows;
+assert.equal(messages.length, 1);
+assert.equal(messages[0].private, true);
+assert.equal(messages[0].payload.type, "round.state");
+assert.equal(JSON.stringify(messages).includes("GM SECRET"), false);
+checks++;
+state = { ...state, notes: "Updated private note" };
+await saveMaster(1, state);
+assert.equal((await db.query("select count(*) n from realtime.test_messages")).rows[0].n, 1);
+checks++;
+await auth(player);
+assert.equal((await saveMaster(2, { ...state, round: 99 })).rows.length, 0);
+checks++;
+assert.equal(
+  (await db.query("update tabletop_entities set properties='{}' returning id")).rows.length,
+  0,
+);
+checks++;
+await auth(master);
+await saveMaster(2, { ...state, tabletopSceneId: "" });
+assert.equal(
+  (await db.query("select properties from tabletop_entities where id=$1", [entityId])).rows[0]
+    .properties.tdv2_round,
+  undefined,
+);
+checks++;
+assert.deepEqual(
+  (await db.query("select attributes from character_sheets where name='Legado'")).rows[0]
+    .attributes,
+  { COR: 3, MEN: 2 },
+);
+checks++;
 await db.exec("reset role; set role anon");
 await assert.rejects(() => db.query("select * from character_sheets"));
 checks++;
@@ -165,7 +317,7 @@ console.log(
     passed: true,
     checks,
     engine: "PostgreSQL (PGlite)",
-    migration: "20261027093709_tdv_ii_versioned_rules",
+    migrations: ["20261027093709_tdv_ii_versioned_rules", "20261027191353_tdv_ii_operational_play"],
     legacyUnchanged: true,
   }),
 );

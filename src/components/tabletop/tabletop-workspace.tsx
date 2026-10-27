@@ -1,3 +1,4 @@
+import { mergeTdvRound, publicTdvRound } from "@/lib/tdv2-round";
 import { SelectionGroup } from "@/components/selection-plate";
 import { TabletopCompositionPanel } from "@/components/tabletop/tabletop-composition-panel";
 import { TabletopViewBar } from "@/components/tabletop/tabletop-view-bar";
@@ -333,6 +334,7 @@ export function TabletopWorkspace({
   };
   const sceneRequests = useMemo(createLatestRequestGate, []);
   const snapshotRequests = useMemo(createLatestRequestGate, []);
+  const roundRequests = useMemo(createLatestRequestGate, []);
   const aliveRef = useRef(true);
   const savePending = useRef(false);
   const visibilitySavePending = useRef(false);
@@ -342,8 +344,9 @@ export function TabletopWorkspace({
       aliveRef.current = false;
       sceneRequests.invalidate();
       snapshotRequests.invalidate();
+      roundRequests.invalidate();
     };
-  }, [sceneRequests, snapshotRequests]);
+  }, [sceneRequests, snapshotRequests, roundRequests]);
   const engineRef = useRef<TabletopEngine | null>(null);
   const engineReadyRef = useRef(false);
   const persistedSceneRef = useRef<PersistedTabletopScene | null>(null);
@@ -366,6 +369,7 @@ export function TabletopWorkspace({
   campaignRef.current = campaignId;
   const [scenes, setScenes] = useState<TabletopSceneSummary[]>([]);
   const [persistedScene, setPersistedScene] = useState<PersistedTabletopScene | null>(null);
+  useEffect(()=>()=>roundRequests.invalidate(),[roundRequests,user?.id,persistedScene?.id]);
   const [snapshots, setSnapshots] = useState<TabletopSceneSnapshotSummary[]>([]);
   const [snapshotId, setSnapshotId] = useState("");
   const [linkTargets, setLinkTargets] = useState<TabletopEntityLinkTargets>(EMPTY_LINK_TARGETS);
@@ -2120,6 +2124,28 @@ export function TabletopWorkspace({
               ? engineRef.current?.directorCamera(activeLevelIdRef.current)
               : null
           }
+          onRemoteRound={() => {
+            const stored=persistedSceneRef.current;
+            if(!stored)return;
+            const ticket=roundRequests.begin();
+            void tabletopPersistenceService.loadRoundProjection(stored.id).then(data=>{
+              if(!roundRequests.isCurrent(ticket)||!aliveRef.current||persistedSceneRef.current?.id!==stored.id)return;
+              const current=persistedSceneRef.current;
+              const freshById=new Map(data.map(row=>[row.id,row.round]));
+              const engine=engineRef.current;
+              const patches=new Map<string,Partial<TabletopEntity>>();
+              for(const entity of engine?.snapshot.scene.entities??[]){
+                if(!freshById.has(entity.id))continue;
+                const round=freshById.get(entity.id)??null;
+                const properties=entity.properties as Record<string,unknown>|undefined;
+                if(JSON.stringify(publicTdvRound(properties?.tdv2_round))===JSON.stringify(round))continue;
+                patches.set(entity.id,{properties:mergeTdvRound(entity.properties,round)});
+              }
+              engine?.applyRemoteEntityPatches(patches);
+              const entities=current.entities.map(entity=>freshById.has(entity.id)?{...entity,properties:mergeTdvRound(entity.properties,freshById.get(entity.id)??null)}:entity);
+              const next={...current,entities};persistedSceneRef.current=next;setPersistedScene(next);
+            }).catch(()=>{if(roundRequests.isCurrent(ticket)&&aliveRef.current)toast.error("A rodada mudou, mas a Mesa não conseguiu atualizar os contadores. Recarregue a cena.");});
+          }}
           onRemoteEntityMove={({ entityId, x, y, version }) => {
             const stored = persistedSceneRef.current;
             if (stored) {

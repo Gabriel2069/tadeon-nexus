@@ -1,13 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  Expand,
-  Loader2,
-  Moon,
-  Projector,
-  RefreshCw,
-  ShieldCheck,
-  Sparkles,
-} from "lucide-react";
+import { Expand, Loader2, Moon, Projector, RefreshCw, ShieldCheck, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BrandMark, ThreadField } from "@/components/brand-mark";
 import { TabletopEngine } from "@/lib/tabletop/tabletop-engine";
@@ -59,10 +51,7 @@ export function TabletopDirectorWorkspace({
     }
     try {
       const next = await tabletopParticipantService.load(sessionId);
-      if (
-        next.participant.role !== "master" &&
-        next.participant.role !== "co_master"
-      ) {
+      if (next.participant.role !== "master" && next.participant.role !== "co_master") {
         setView(null);
         setError("Somente mestre ou co-mestre pode abrir a saída do Diretor.");
         return;
@@ -113,10 +102,7 @@ export function TabletopDirectorWorkspace({
     if (!engine || !engineReady || !view?.scene) return;
     const state = view.session.directorState;
     engine.loadScene(view.scene);
-    engine.setVisibility(
-      view.visibility ?? createEmptyVisibilityState(),
-      false,
-    );
+    engine.setVisibility(view.visibility ?? createEmptyVisibilityState(), false);
     engine.setReadOnly(true);
     engine.setGridVisible(state.showGrid);
     engine.applyDirectorCamera(state.camera);
@@ -136,15 +122,15 @@ export function TabletopDirectorWorkspace({
     setTransitioning(false);
     window.requestAnimationFrame(() => {
       setTransitioning(true);
-      const duration = Math.max(180, Math.min(1400, Math.round((activeCue?.durationMs ?? 900) * 0.28)));
+      const duration = Math.max(
+        180,
+        Math.min(1400, Math.round((activeCue?.durationMs ?? 900) * 0.28)),
+      );
       transitionTimer.current = window.setTimeout(() => setTransitioning(false), duration);
     });
   }, [activeCue]);
 
-  useEffect(
-    () => () => window.clearTimeout(transitionTimer.current),
-    [],
-  );
+  useEffect(() => () => window.clearTimeout(transitionTimer.current), []);
 
   const onRealtimeEvent = useCallback(
     (event: TabletopRealtimeEvent) => {
@@ -157,6 +143,7 @@ export function TabletopDirectorWorkspace({
       }
       if (
         event.type === "director.state" ||
+        event.type === "round.state" ||
         event.type === "scene.transition" ||
         event.type === "structure.state"
       ) {
@@ -254,9 +241,7 @@ export function TabletopDirectorWorkspace({
             <Projector aria-hidden="true" />
           )}
           <strong>
-            {loading
-              ? "Sincronizando a saída…"
-              : error || "Aguardando uma cena transmitida"}
+            {loading ? "Sincronizando a saída…" : error || "Aguardando uma cena transmitida"}
           </strong>
           {error && (
             <Button variant="outline" onClick={() => void load()}>

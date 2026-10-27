@@ -211,6 +211,7 @@ interface SettingsRow {
 }
 
 interface SheetSummary {
+  rules_version?: number;
   id: string;
   name: string;
   owner_id: string;
@@ -324,7 +325,12 @@ function MasterWorkspace() {
   const navigate = useNavigate();
   const leaveReturnFocusRef = useRef<HTMLElement | null>(null);
   const draft = useMasterDraft<SettingsRow>(async (snapshot, signal) => {
-    const { id, ...payload } = snapshot;
+    const { id, ...legacyPayload } = snapshot;
+    const payload = Object.fromEntries(
+      Object.entries(legacyPayload).filter(
+        ([key]) => !["tdv2_state", "tdv2_revision"].includes(key),
+      ),
+    );
     const { data, error } = await supabase
       .from("game_settings")
       .update(payload as never)
@@ -383,7 +389,9 @@ function MasterWorkspace() {
               .maybeSingle(),
             supabase
               .from("character_sheets")
-              .select("id,name,owner_id,exposure,stats,attributes,equilibrium,power_form_enabled")
+              .select(
+                "id,name,owner_id,exposure,stats,attributes,equilibrium,power_form_enabled,rules_version",
+              )
               .abortSignal(controller.signal),
           ]);
         if (!active) return;
@@ -463,7 +471,9 @@ function MasterWorkspace() {
           })),
           rules_version: Math.max(3, rulesVersion),
         };
-        const rawSheets = (ch as unknown as Omit<SheetSummary, "owner_email">[] | null) ?? [];
+        const rawSheets = (
+          (ch as unknown as Omit<SheetSummary, "owner_email">[] | null) ?? []
+        ).filter((sheet) => sheet.rules_version !== 2);
         const ownerIds = [...new Set(rawSheets.map((sheet) => sheet.owner_id).filter(Boolean))];
         let ownerLabels = new Map<string, string>();
         if (ownerIds.length) {
@@ -549,7 +559,11 @@ function MasterWorkspace() {
   if (loading) {
     return (
       <div data-page-layout className="tadeon-page tadeon-route-master" aria-busy="true">
-        <PageHeader section="master" eyebrow="Condução da campanha" title="Painel do Mestre" />
+        <PageHeader
+          section="master"
+          eyebrow="Edição anterior · arquivo da campanha"
+          title="Painel do Mestre"
+        />
         <div className="mt-6 flex items-center gap-3 rounded-xl border p-6">
           <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
           Carregando a campanha e os personagens…
@@ -561,7 +575,11 @@ function MasterWorkspace() {
   if (loadError || !s) {
     return (
       <div data-page-layout className="tadeon-page tadeon-route-master">
-        <PageHeader section="master" eyebrow="Condução da campanha" title="Painel do Mestre" />
+        <PageHeader
+          section="master"
+          eyebrow="Edição anterior · arquivo da campanha"
+          title="Painel do Mestre"
+        />
         <Card className="p-6 text-center">
           <h2 className="font-cinzel text-xl font-bold">Painel indisponível</h2>
           <p className="text-sm text-muted-foreground mt-2">
@@ -633,7 +651,7 @@ function MasterWorkspace() {
 
       <PageHeader
         section="master"
-        eyebrow="Condução da campanha"
+        eyebrow="Edição anterior · arquivo da campanha"
         title="Painel do Mestre"
         description={`${s.campaign_title || "Campanha sem título"} · comando, ritmo e continuidade`}
         mark={<MasterPanelIdentity activeTab={activeTab} />}
