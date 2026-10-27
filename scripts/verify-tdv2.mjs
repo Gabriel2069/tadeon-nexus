@@ -226,6 +226,20 @@ try {
           `${label}/${width}/${role}: ${JSON.stringify(g)}`,
         );
         assert(!errors.length, errors.join("\n"));
+        const checkboxText = await page
+          .locator(".tadeon-tdv2-sheet .tdv-check")
+          .evaluateAll((es) =>
+            es
+              .filter((el) => el.getBoundingClientRect().height > 0)
+              .map((el) => ({
+                label: el.textContent.trim(),
+                size: parseFloat(getComputedStyle(el).fontSize),
+              })),
+          );
+        assert(
+          checkboxText.every((x) => x.size >= 14),
+          "Legacy game styling reduced TdV II checkbox text: " + JSON.stringify(checkboxText),
+        );
         const targets = await page
           .locator('.tadeon-page-header__actions :is(button, [data-slot="button"])')
           .evaluateAll((es) =>

@@ -74,7 +74,13 @@ export function TdvSelect({
       <label className="tadeon-dossier-label" htmlFor={id}>
         {label}
       </label>
-      <select id={id} value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)}>
+      <select
+        className="tadeon-dossier-field"
+        id={id}
+        value={value}
+        disabled={disabled}
+        onChange={(e) => onChange(e.target.value)}
+      >
         {options.map((option) => (
           <option key={option}>{option}</option>
         ))}
@@ -130,7 +136,7 @@ export function TdvCheck({
   disabled?: boolean;
 }) {
   return (
-    <label className="tdv-check">
+    <label className="tdv-check tadeon-dossier-label">
       <input
         type="checkbox"
         checked={value}

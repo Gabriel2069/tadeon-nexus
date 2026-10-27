@@ -170,8 +170,11 @@ export function TdvOutcome({ character: c, onChange, canEdit }: Props) {
     <TdvDisclosure initiallyOpen={false}>
       <summary>Da resolução ao Resto</summary>
       <div className="tdv-field">
-        <label htmlFor="tdv-outcome-test">Teste da cena</label>
+        <label className="tadeon-dossier-label" htmlFor="tdv-outcome-test">
+          Teste da cena
+        </label>
         <select
+          className="tadeon-dossier-field"
           id="tdv-outcome-test"
           value={test.id}
           onChange={(e) => setId(e.target.value)}
