@@ -670,7 +670,7 @@ function SheetPage() {
                     new Blob(
                       [
                         JSON.stringify(
-                          { name: sheet.name, rules_version: 2, tdv2_data: parsed.data },
+                          { ...sheet, rules_version: 2, tdv2_data: parsed.data },
                           null,
                           2,
                         ),

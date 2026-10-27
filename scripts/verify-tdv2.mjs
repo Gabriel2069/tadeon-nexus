@@ -1,6 +1,6 @@
 /** NEX-040: real UI, isolated authenticated fixtures. No production writes. */
 import { installDesignFonts } from "./design-font-fixtures.mjs";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { spawn } from "node:child_process";
 import { pathToFileURL } from "node:url";
 import { build } from "esbuild";
@@ -760,6 +760,18 @@ try {
         await page.getByLabel("Origem", { exact: true }).fill("Rascunho local em conflito");
         await page.getByRole("button", { name: "Salvar", exact: true }).click();
         await page.getByRole("button", { name: "Guardar rascunho", exact: true }).waitFor();
+        const downloadEvent = page.waitForEvent("download");
+        await page.getByRole("button", { name: "Guardar rascunho", exact: true }).click();
+        const download = await downloadEvent;
+        const draftPath = `${output}/conflict-dossier-${width}.json`;
+        await download.saveAs(draftPath);
+        const exported = JSON.parse(readFileSync(draftPath, "utf8"));
+        assert(
+          exported.description.personalidade === "Atenta" &&
+            exported.description.historia === exported.tdv2_data.history &&
+            exported.inventory.some((r) => r.id === "old-rope"),
+          "Conflict export lost restored dossier fields",
+        );
         assert(row.tdv2_data.face.origin === "O cais antigo", "Conflict overwrote another window");
         const attempts = writes.length;
         await page.waitForTimeout(3500);
