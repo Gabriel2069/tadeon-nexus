@@ -20,7 +20,11 @@ vi.mock("@/components/protected-shell", () => ({
 }));
 vi.mock("@tanstack/react-router", async (original) => ({
   ...(await original<typeof import("@tanstack/react-router")>()),
-  createFileRoute: () => (options: object) => ({ options, useParams: () => ({ id: mock.id }) }),
+  createFileRoute: () => (options: object) => ({
+    options,
+    useParams: () => ({ id: mock.id }),
+    useSearch: () => ({}),
+  }),
   useNavigate: () => vi.fn(),
 }));
 vi.mock("@/integrations/supabase/client", () => ({

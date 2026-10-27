@@ -1,3 +1,8 @@
+import {
+  Tdv2CampaignPresences,
+  Tdv2EncounterPlan,
+} from "@/components/master/tdv2-campaign-presences";
+import { constitution, tdv2CharacterSchema, type TdvCharacter } from "@/lib/tdv2";
 import { Tdv2MasterPanel } from "@/components/master/tdv2-master";
 import { WorkspaceActions } from "@/components/workspace-actions";
 import { PageHeader } from "@/components/page-header";
@@ -109,7 +114,9 @@ import { AssetLibraryPanel } from "@/components/assets/asset-library-panel";
 export const Route = createFileRoute("/master-panel")({
   validateSearch: (search: Record<string, unknown>) => ({
     ...(search.popout === "1" ? { popout: "1" as const } : {}),
-    ...(search.edition === "legacy" ? { edition: "legacy" as const } : {}),
+    ...(search.edition === "legacy" || search.edition === "tdv2"
+      ? { edition: search.edition as "legacy" | "tdv2" }
+      : {}),
     tab: MASTER_TAB_VALUES.includes(search.tab as MasterTab)
       ? (search.tab as MasterTab)
       : undefined,
@@ -200,6 +207,7 @@ interface SettingsRow {
   condition_options: ConditionOptionsMap;
   skill_groups: { attr: string; label: string; skills: string[] }[];
   skill_training_costs: [number, number, number];
+  scene_combat: string;
   campaign_title: string;
   campaign_phase: string;
   master_npcs: MasterNpc[];
@@ -212,6 +220,7 @@ interface SettingsRow {
 
 interface SheetSummary {
   rules_version?: number;
+  tdv2_data?: TdvCharacter;
   id: string;
   name: string;
   owner_id: string;
@@ -220,6 +229,7 @@ interface SheetSummary {
   stats: {
     pv_current: number;
     ps_current: number;
+    pi_current?: number;
     pe_current: number;
     pa_current?: number;
   };
@@ -312,10 +322,10 @@ function normalizeScene(value: Partial<Scene>): Scene {
 function MasterPanel() {
   const { user, role } = useAuth();
   const search = Route.useSearch();
-  return search.edition === "legacy" ? (
-    <MasterWorkspace key={`${user?.id ?? "anonymous"}:${role ?? "none"}`} />
-  ) : (
+  return search.edition === "tdv2" ? (
     <Tdv2MasterPanel />
+  ) : (
+    <MasterWorkspace key={`${user?.id ?? "anonymous"}:${role ?? "none"}`} />
   );
 }
 
@@ -390,7 +400,7 @@ function MasterWorkspace() {
             supabase
               .from("character_sheets")
               .select(
-                "id,name,owner_id,exposure,stats,attributes,equilibrium,power_form_enabled,rules_version",
+                "id,name,owner_id,exposure,stats,attributes,equilibrium,power_form_enabled,rules_version,tdv2_data",
               )
               .abortSignal(controller.signal),
           ]);
@@ -471,9 +481,26 @@ function MasterWorkspace() {
           })),
           rules_version: Math.max(3, rulesVersion),
         };
-        const rawSheets = (
-          (ch as unknown as Omit<SheetSummary, "owner_email">[] | null) ?? []
-        ).filter((sheet) => sheet.rules_version !== 2);
+        const rawSheets = ((ch as unknown as Omit<SheetSummary, "owner_email">[] | null) ?? [])
+          .filter((sheet) => search.edition !== "legacy" || sheet.rules_version !== 2)
+          .map((sheet) => {
+            const parsed = tdv2CharacterSchema.safeParse(sheet.tdv2_data);
+            if (sheet.rules_version !== 2 || !parsed.success) return sheet;
+            const stats = constitution(parsed.data);
+            return {
+              ...sheet,
+              tdv2_data: parsed.data,
+              exposure: stats.development,
+              equilibrium: parsed.data.equilibrium,
+              attributes: stats.matrices,
+              stats: {
+                ...sheet.stats,
+                pv_current: parsed.data.resources.pv,
+                pi_current: parsed.data.resources.pi,
+                pe_current: parsed.data.resources.pe,
+              },
+            };
+          });
         const ownerIds = [...new Set(rawSheets.map((sheet) => sheet.owner_id).filter(Boolean))];
         let ownerLabels = new Map<string, string>();
         if (ownerIds.length) {
@@ -511,7 +538,7 @@ function MasterWorkspace() {
       active = false;
       controller.abort();
     };
-  }, [reloadKey, loadDraft]);
+  }, [reloadKey, loadDraft, search.edition]);
 
   const selectMasterTab = (tab: MasterTab) => {
     void navigate({
@@ -561,7 +588,11 @@ function MasterWorkspace() {
       <div data-page-layout className="tadeon-page tadeon-route-master" aria-busy="true">
         <PageHeader
           section="master"
-          eyebrow="Edição anterior · arquivo da campanha"
+          eyebrow={
+            search.edition === "legacy"
+              ? "Edição anterior · arquivo da campanha"
+              : "Campanha · ferramentas do Mestre"
+          }
           title="Painel do Mestre"
         />
         <div className="mt-6 flex items-center gap-3 rounded-xl border p-6">
@@ -738,13 +769,43 @@ function MasterWorkspace() {
           <ScenesPanel s={s} upd={upd} />
         </TabsContent>
         <TabsContent value="initiative" className="mt-0">
-          <InitiativePanel s={s} upd={upd} />
+          {search.edition === "legacy" ? (
+            <InitiativePanel s={s} upd={upd} />
+          ) : (
+            <Tdv2MasterPanel embedded initialTab="scene" />
+          )}
+        </TabsContent>
+        <TabsContent value="rules" className="mt-0">
+          <Tdv2MasterPanel embedded />
         </TabsContent>
         <TabsContent value="npcs-v2" className="mt-0">
-          <NpcHub npcs={s.master_npcs} onChange={(value) => upd("master_npcs", value)} />
+          {search.edition === "legacy" ? (
+            <NpcHub npcs={s.master_npcs} onChange={(value) => upd("master_npcs", value)} />
+          ) : (
+            <Tdv2CampaignPresences
+              items={s.master_npcs}
+              create={() => ({ ...createEmptyNpc(), id: genId(), name: "Novo NPC" })}
+              onChange={(value) => upd("master_npcs", value)}
+              reference={
+                <NpcHub npcs={s.master_npcs} onChange={(value) => upd("master_npcs", value)} />
+              }
+            />
+          )}
         </TabsContent>
         <TabsContent value="threats" className="mt-0">
-          <ThreatHub threats={s.threats} onChange={(value) => upd("threats", value)} />
+          {search.edition === "legacy" ? (
+            <ThreatHub threats={s.threats} onChange={(value) => upd("threats", value)} />
+          ) : (
+            <Tdv2CampaignPresences
+              threat
+              items={s.threats}
+              create={() => ({ ...createEmptyThreat(), id: genId(), name: "Nova Ameaça" })}
+              onChange={(value) => upd("threats", value)}
+              reference={
+                <ThreatHub threats={s.threats} onChange={(value) => upd("threats", value)} />
+              }
+            />
+          )}
         </TabsContent>
         <TabsContent value="investigation" className="mt-0">
           <InvestigationHub
@@ -760,7 +821,18 @@ function MasterWorkspace() {
           <FoldHub folds={s.folds} onChange={(value) => upd("folds", value)} />
         </TabsContent>
         <TabsContent value="balance" className="mt-0">
-          <EncounterHub sheets={sheets} npcs={s.master_npcs} threats={s.threats} />
+          {search.edition === "legacy" ? (
+            <EncounterHub sheets={sheets} npcs={s.master_npcs} threats={s.threats} />
+          ) : (
+            <Tdv2EncounterPlan
+              notes={s.scene_combat ?? ""}
+              onChange={(value) => upd("scene_combat", value)}
+              players={sheets}
+              npcs={s.master_npcs}
+              threats={s.threats}
+              reference={<EncounterHub sheets={sheets} npcs={s.master_npcs} threats={s.threats} />}
+            />
+          )}
         </TabsContent>
         <TabsContent value="catalog" className="mt-0">
           <MasterCatalog
@@ -781,7 +853,11 @@ function MasterWorkspace() {
           <NotesPanel s={s} upd={upd} />
         </TabsContent>
         <TabsContent value="data" className="mt-0">
-          <DataPanel s={s} upd={upd} />
+          {search.edition === "legacy" ? (
+            <DataPanel s={s} upd={upd} />
+          ) : (
+            <Tdv2MasterPanel embedded initialTab="reference" />
+          )}
         </TabsContent>
       </Tabs>
     </div>
@@ -1637,7 +1713,15 @@ function PinnedPanel({
 
                 <div className="grid grid-cols-3 gap-1.5 mt-2 text-center text-xs">
                   <Mini label="PV" v={sh.stats?.pv_current ?? 0} color="text-red-400" />
-                  <Mini label="PS" v={sh.stats?.ps_current ?? 0} color="text-purple-400" />
+                  <Mini
+                    label={sh.rules_version === 2 ? "PI" : "PS"}
+                    v={
+                      sh.rules_version === 2
+                        ? (sh.stats?.pi_current ?? 0)
+                        : (sh.stats?.ps_current ?? 0)
+                    }
+                    color="text-purple-400"
+                  />
                   <Mini label="PE" v={sh.stats?.pe_current ?? 0} color="text-emerald-400" />
                 </div>
                 <div className="mt-2">
@@ -1667,7 +1751,7 @@ function PinnedPanel({
                 </div>
                 <div className="mt-2">
                   <div className="text-[10px] text-muted-foreground flex justify-between">
-                    <span>Exposição</span>
+                    <span>{sh.rules_version === 2 ? "Desenvolvimento" : "Exposição"}</span>
                     <span>{sh.exposure ?? 0}/100</span>
                   </div>
                   <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
@@ -1678,7 +1762,10 @@ function PinnedPanel({
                   </div>
                 </div>
                 <div className="tadeon-master-sheet-card__attributes mt-3 grid grid-cols-5 gap-1 text-center text-[10px]">
-                  {["COR", "MEN", "INS", "PRE", "ERU"].map((a) => (
+                  {(sh.rules_version === 2
+                    ? ["Ímpeto", "Cadência", "Nexo", "Lastro"]
+                    : ["COR", "MEN", "INS", "PRE", "ERU"]
+                  ).map((a) => (
                     <div key={a} className="rounded bg-secondary/40 p-1">
                       <div className="text-muted-foreground">{a}</div>
                       <div className="font-bold text-sm">{sh.attributes?.[a] ?? 0}</div>

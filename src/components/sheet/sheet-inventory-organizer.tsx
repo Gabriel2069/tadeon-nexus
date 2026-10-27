@@ -61,9 +61,11 @@ function normalizeOrganization(value: unknown): InventoryOrganization {
 export function SheetInventoryOrganizer({
   sheetId,
   canEdit,
+  beforeOpen,
 }: {
   sheetId: string;
   canEdit: boolean;
+  beforeOpen?: () => Promise<boolean>;
 }) {
   const active = useRef(true);
   const readVersion = useRef(0);
@@ -183,7 +185,9 @@ export function SheetInventoryOrganizer({
         variant="ghost"
         className="tadeon-inventory-organize-button gap-1.5"
         aria-label="Organizar inventário"
-        onClick={() => setOpen(true)}
+        onClick={async () => {
+          if (!beforeOpen || (await beforeOpen())) setOpen(true);
+        }}
         title="Organizar itens em recipientes sem alterar os itens originais"
       >
         <Boxes className="h-3.5 w-3.5" />

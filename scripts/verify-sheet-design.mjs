@@ -302,7 +302,7 @@ try {
       );
       await installDesignFonts(page);
       await page.goto(
-        `http://127.0.0.1:${port}/sheet/${sheetId}${process.env.NEXUS_POWER_HEADER === "1" ? "/power" : ""}?mode=edit`,
+        `http://127.0.0.1:${port}/sheet/${sheetId}${process.env.NEXUS_POWER_HEADER === "1" ? "/power" : ""}?mode=edit&edition=legacy`,
         {
           waitUntil: "domcontentloaded",
         },
