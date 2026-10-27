@@ -207,6 +207,11 @@ try {
         });
       });
       await installDesignFonts(page);
+      const masterTool = async (value, label) => {
+        const jump = page.getByLabel("Ir para uma ferramenta do mestre");
+        if (await jump.isVisible()) await jump.selectOption(value);
+        else await page.getByRole("tab", { name: label, exact: true }).click();
+      };
       const geometry = async (label) => {
         const target = {
           "sheet-critical": ".tdv-result",
@@ -507,7 +512,7 @@ try {
           );
         }
         await geometry("master-workspace");
-        await page.getByLabel("Ir para uma ferramenta do mestre").selectOption("initiative");
+        await masterTool("initiative", "Iniciativa");
         await page.getByRole("button", { name: "NPC", exact: true }).waitFor();
         assert(
           (await page.getByRole("button", { name: "Jogador", exact: true }).count()) === 1,
@@ -515,9 +520,9 @@ try {
         );
         await page.getByLabel("Título da cena", { exact: true }).waitFor();
         await geometry("master-initiative-retained");
-        await page.getByLabel("Ir para uma ferramenta do mestre").selectOption("rules");
+        await masterTool("rules", "Regras TdV II");
         await page.getByLabel("Título da cena", { exact: true }).fill("Rascunho protegido");
-        await page.getByLabel("Ir para uma ferramenta do mestre").selectOption("session");
+        await masterTool("session", "Sessão Ativa");
         await page.getByRole("alertdialog").waitFor();
         await page.getByRole("button", { name: "Continuar no painel", exact: true }).click();
         assert(
@@ -525,7 +530,7 @@ try {
             "Rascunho protegido",
           "Parent navigation lost embedded draft",
         );
-        await page.getByLabel("Ir para uma ferramenta do mestre").selectOption("session");
+        await masterTool("session", "Sessão Ativa");
         await page.getByRole("button", { name: "Salvar e continuar", exact: true }).click();
         await page.waitForFunction(
           () => new URL(location.href).searchParams.get("tab") === "session",
