@@ -84,4 +84,18 @@ describe("TdV II authorized summaries", () => {
     expect(summary.resources).not.toHaveProperty("pa");
     expect(JSON.stringify(summary)).not.toContain("PRIVAD");
   });
+  it("keeps physical critical state visible together with Colapso", () => {
+    const c = newTdvCharacter();
+    c.resources = { pv: 0, pi: 0, pe: 0 };
+    for (const critical of ["Incapacitada", "À Beira", "Morta"] as const) {
+      const summary = normalizeTabletopSheetSummary({
+        id: "00000000-0000-4000-8000-000000000001",
+        name: "Iria",
+        rules_version: 2,
+        tdv2_data: { ...c, critical },
+      });
+      expect(summary.condition).toBe(`${critical} · Colapso`);
+      expect(summary.resources).toEqual({ pv: 0, pi: 0, pe: 0 });
+    }
+  });
 });

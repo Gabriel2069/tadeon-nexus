@@ -1,5 +1,5 @@
 import { publicTdvRound } from "../../../src/lib/tdv2-round.ts";
-import { tdv2CharacterSchema, constitution } from "../../../src/lib/tdv2.ts";
+import { tdv2CharacterSchema, constitution, characterStateLabel } from "../../../src/lib/tdv2.ts";
 import { tabletopEntityColor } from "../_shared/tabletop-entity-color.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.110.3";
 
@@ -834,7 +834,7 @@ Deno.serve(async (request) => {
           brand: "",
           exposure: derived.development,
           equilibrium: c.equilibrium,
-          condition: c.resources.pi === 0 ? "Colapso" : c.critical,
+          condition: characterStateLabel(c),
           guard: derived.guard,
           resources: c.resources,
           activeConditions: c.conditions

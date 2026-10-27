@@ -1,4 +1,4 @@
-import { constitution, tdv2CharacterSchema } from "@/lib/tdv2";
+import { constitution, tdv2CharacterSchema, characterStateLabel } from "@/lib/tdv2";
 import { z } from "zod";
 
 const finiteResource = z.number().finite().min(-1_000_000).max(1_000_000);
@@ -90,7 +90,7 @@ export function normalizeTabletopSheetSummary(row: Record<string, unknown>): Tab
       brand: "",
       exposure: derived.development,
       equilibrium: parsed.equilibrium,
-      condition: parsed.resources.pi === 0 ? "Colapso" : parsed.critical,
+      condition: characterStateLabel(parsed),
       guard: derived.guard,
       resources: parsed.resources,
       activeConditions: parsed.conditions
