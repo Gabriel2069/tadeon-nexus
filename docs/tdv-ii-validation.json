@@ -1,6 +1,6 @@
 {
   "task": "NEX-040",
-  "state": "implementation",
+  "state": "local-validation-passed",
   "source": {
     "file": "02_Livro_de_Regras(3).docx",
     "sha256": "8846b485dc528e3998de9227a033bea746eb439d6519ea7f3362a7a8f9515c0f",
@@ -9,13 +9,31 @@
   "verification": {
     "engineTests": 20,
     "postgresLocalChecks": 23,
-    "status": "in-progress",
+    "status": "CI-in-progress",
     "unitSuites": 158,
-    "unitTests": 657,
+    "unitTests": 658,
     "build": true,
     "auditHigh": 0,
-    "browser": "in-progress",
-    "browser320": "passed: canonical sheet, mestre conduction and read-only; conversion/CAS in progress"
+    "browser": {
+      "cases": 54,
+      "widths": [
+        320,
+        390,
+        820,
+        1440
+      ],
+      "roles": [
+        "mestre",
+        "espectador"
+      ],
+      "conversionAndConflictWidths": [
+        320,
+        1440
+      ],
+      "overflow": false,
+      "pageErrors": 0,
+      "status": "passed-local"
+    }
   },
   "migration": {
     "path": "supabase/migrations/20261027093709_tdv_ii_versioned_rules.sql",
@@ -32,9 +50,10 @@
   ],
   "edge": {
     "function": "tabletop-view",
-    "version": 13,
+    "version": 14,
     "verify_jwt": true,
-    "bundleSha256": "6d3743f1b59945719101b8e16838a54e09fe6dc2ac9c91354e000f04b9645f49"
+    "bundleSha256": "2d426dd6a443223e2abbe0233ee6992f208b8621388beafd5fd3ee5510309fa1",
+    "anonymousRequestStatus": 401
   },
   "review": {
     "pr": 310,

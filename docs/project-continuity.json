@@ -1343,7 +1343,7 @@
         "scripts/verify-tdv2-postgres.mjs",
         "https://github.com/Gabriel2069/tadeon-nexus/pull/310"
       ],
-      "checkpoint": "PR #310 em validação. Última checagem completa: 158 suítes/657 testes e build, audit zero. Migração 20261027093709 aplicada, preservando as cinco fichas na edição anterior. PostgreSQL isolado: 23 verificações. Mesa protegida em tabletop-view v13. Fluxo de 320 px passou, incluindo conversão explícita e conflito de salvamento; demais larguras e gates exatos ainda em andamento. Interface nova não publicada."
+      "checkpoint": "PR #310 em validação de CI. Checagem local: 158 suítes/658 testes, build, audit zero e 23 verificações em PostgreSQL isolado. As 54 vistas/fluxos em 320/390/820/1440 passaram, incluindo conversão explícita, somente leitura e conflito sem sobrescrita. Migração 20261027093709 aplicada, cinco fichas preservadas na edição anterior; tabletop-view v14, JWT obrigatório e anônimo 401. Interface nova ainda não publicada."
     }
   ],
   "decisions": [
