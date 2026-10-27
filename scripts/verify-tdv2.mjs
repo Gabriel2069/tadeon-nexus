@@ -57,12 +57,13 @@ const server = spawn(
 let serverLog = "";
 server.stdout.on("data", (b) => (serverLog += b));
 server.stderr.on("data", (b) => (serverLog += b));
-const browser = await chromium.launch({
-  executablePath: process.env.NEXUS_CHROMIUM_PATH,
-  args: JSON.parse(process.env.NEXUS_CHROMIUM_ARGS || "[]"),
-});
+let browser;
 const results = [];
 try {
+  browser = await chromium.launch({
+    executablePath: process.env.NEXUS_CHROMIUM_PATH,
+    args: JSON.parse(process.env.NEXUS_CHROMIUM_ARGS || "[]"),
+  });
   const deadline = Date.now() + 120000;
   while (true) {
     try {
@@ -145,10 +146,11 @@ try {
               Object.keys(patch).every((k) => ["name", "rules_version", "tdv2_data"].includes(k)),
               "Legacy column mutation",
             );
-            assert(
-              url.searchParams.get("updated_at") === "eq." + row.updated_at,
-              "Missing or stale CAS",
-            );
+            assert(url.searchParams.has("updated_at"), "Missing CAS");
+            if (url.searchParams.get("updated_at") !== "eq." + row.updated_at) {
+              await route.fulfill({ status: 200, contentType: "application/json", body: "null" });
+              return;
+            }
             row = {
               ...row,
               ...patch,
@@ -228,14 +230,16 @@ try {
         await page
           .getByLabel("Como a consequência permanece na ficção")
           .fill("Sustento o vínculo mesmo à distância");
-        await page.getByRole("button", { name: "Ancorar e abalar Âncora" }).tap();
-        await page.getByRole("button", {name:"Registrar Reassentamento"}).waitFor();
+        await page.getByRole("button", { name: "Ancorar e abalar Âncora" }).click();
+        await page.getByRole("button", { name: "Registrar Reassentamento" }).waitFor();
+        console.log("anchor changed");
         await saved(() => row.tdv2_data.face.anchor.shaken);
         await page
           .getByLabel("Ação significativa de Reassentar")
           .fill("Voltei ao cais e cumpri a promessa");
-        await page.getByRole("button", { name: "Registrar Reassentamento" }).tap();
-        await page.getByRole("button", {name:"Ancorar e abalar Âncora"}).waitFor();
+        await page.getByRole("button", { name: "Registrar Reassentamento" }).click();
+        await page.getByRole("button", { name: "Ancorar e abalar Âncora" }).waitFor();
+        console.log("anchor resettled");
         await saved(() => !row.tdv2_data.face.anchor.shaken);
         for (let i = 0; i < 4; i++)
           await page.getByRole("button", { name: "Tensão +1", exact: true }).click();
@@ -247,6 +251,18 @@ try {
           .getByRole("button", { name: "Conceder Marco · +5% e 2 PU", exact: true })
           .click();
         await saved(() => row.tdv2_data.milestones.length === 1);
+        await page.locator("summary").filter({ hasText: "Investir PU com incorporação" }).click();
+        await page.getByLabel("Tipo de investimento", { exact: true }).selectOption("Alinhavo");
+        await page
+          .getByLabel("Capacidade a desenvolver", { exact: true })
+          .selectOption("Iniciativa");
+        await page
+          .getByLabel("Onde isto passou a existir na história?")
+          .fill("Assumi a dianteira no resgate");
+        await page.getByRole("button", { name: "Registrar investimento", exact: true }).click();
+        await saved(() => row.tdv2_data.investments.length === 1);
+        await page.getByLabel("PE atual", { exact: true }).fill("0");
+        await saved(() => row.tdv2_data.resources.pe === 0);
       } else {
         assert(
           await page.getByLabel("Nome da personagem", { exact: true }).isDisabled(),
@@ -264,7 +280,6 @@ try {
       await page.getByRole("tab", { name: "Ação", exact: true }).click();
       await geometry("sheet-action");
       if (role === "mestre") {
-        await page.getByLabel("PE atual", { exact: true }).fill("0");
         await page.locator("summary").filter({ hasText: "Proveito, Desproveito e Forçar" }).click();
         await page.getByLabel("Forçar um Fio", { exact: true }).selectOption("Prumo");
         await page
@@ -282,6 +297,13 @@ try {
         await geometry("sheet-critical");
       }
       await page.getByRole("tab", { name: "Expressão e memória" }).click();
+      if (role === "mestre") {
+        await page.getByRole("button", { name: "Adicionar registro", exact: true }).click();
+        const name = page.getByLabel(/^Nome do registro /).last();
+        await name.pressSequentially("O fio que permanece");
+        assert(await name.isVisible(), "Record collapsed while typing");
+        await saved(() => row.tdv2_data.records.at(-1)?.name === "O fio que permanece");
+      }
       await geometry("sheet-records");
       assert(
         legacy === JSON.stringify({ attributes: row.attributes, stats: row.stats }),
@@ -306,6 +328,12 @@ try {
         await page.getByRole("button", { name: "Usar 1 Impulso", exact: true }).click();
         await page.getByRole("button", { name: "Usar Resposta", exact: true }).click();
         await page.getByRole("button", { name: "Iniciar próxima rodada" }).click();
+        await page.getByRole("button", { name: "Rolar Iniciativa", exact: true }).click();
+        await page.getByText("Prioridade: 0", { exact: false }).waitFor();
+        assert(
+          row.tdv2_data.scene.shaken.includes("Cadência"),
+          "Initiative did not preserve critical matrix consequence",
+        );
         await page.getByRole("button", { name: "Salvar condução", exact: true }).click();
         await page.waitForFunction(() => document.body.textContent.includes("Salvo"));
         assert(settings.tdv2_state.pressures[0].value === 4, "Pressure not saved");
@@ -317,14 +345,112 @@ try {
         await geometry("master-round");
         for (const tab of ["Pessoas e ameaças", "Investigação e Selagem", "Referência"]) {
           await page.getByRole("tab", { name: tab, exact: true }).click();
+          if (tab === "Pessoas e ameaças") {
+            await page.getByRole("button", { name: "Novo Ameaça", exact: true }).click();
+            await page.getByLabel("Identidade da presença 1").pressSequentially("A voz do cais");
+            const magnitude = page.getByLabel("Magnitude de A voz do cais", { exact: true });
+            await magnitude.selectOption("4");
+            assert(await magnitude.isVisible(), "Opposition collapsed while typing");
+          }
+          if (tab === "Investigação e Selagem") {
+            await page.getByRole("button", { name: "Preparar Selagem", exact: true }).click();
+            await page.getByLabel("Nome do Selo 1", { exact: true }).fill("Fio do portão");
+          }
+          const saveConduction = page.getByRole("button", { name: "Salvar condução", exact: true });
+          if (await saveConduction.isEnabled()) await saveConduction.click();
+          await page.waitForFunction(() => document.body.textContent.includes("Salvo"));
           await geometry("master-" + tab.split(" ")[0].toLowerCase());
         }
+      }
+      if (role === "mestre" && [320, 1440].includes(width)) {
+        row = {
+          ...row,
+          rules_version: 1,
+          tdv2_data: null,
+          exposure: 0,
+          equilibrium: 0,
+          drift: 0,
+          fragments: 0,
+          pm_spent: 0,
+          stat_upgrades: { pv: 0, ps: 0, pe: 0, def: 0 },
+          origin: "O cais antigo",
+          occupation: "Registradora",
+          notes: "Memória preservada",
+          brand: "Marca anterior",
+          identity_data: {
+            conviction: "Preservar testemunhos",
+            limit: "Não entregar inocentes",
+            links: [{ id: "old-link", name: "Elen", relation: "Confiança", state: "Presente" }],
+          },
+        };
+        const historical = JSON.stringify(
+          Object.fromEntries(
+            Object.entries(row).filter(
+              ([k]) => !["rules_version", "tdv2_data", "updated_at"].includes(k),
+            ),
+          ),
+        );
+        await page.goto(`http://127.0.0.1:${port}/sheet/${sheetId}?mode=edit`);
+        const prepare = page.getByRole("button", { name: "Preparar ficha TdV II", exact: true });
+        await prepare.click();
+        await page.getByRole("dialog").waitFor();
+        await geometry("conversion-dialog");
+        await page.keyboard.press("Escape");
+        assert(
+          await prepare.evaluate((el) => document.activeElement === el),
+          "Conversion dismissal lost focus",
+        );
+        await prepare.click();
+        await page
+          .getByRole("button", { name: "Preparar rascunho e preservar dados antigos", exact: true })
+          .click();
+        await page.getByRole("heading", { name: "Preparar a personagem", exact: true }).waitFor();
+        assert(
+          await page
+            .getByRole("button", { name: "Concluir criação TdV II", exact: true })
+            .isDisabled(),
+          "Incomplete creation accepted",
+        );
+        await page
+          .getByLabel("A que parte de mim consigo retornar?", { exact: true })
+          .fill("A promessa a Elen");
+        await page.getByRole("button", { name: "Concluir criação TdV II", exact: true }).click();
+        await saved(() => row.rules_version === 2 && row.tdv2_data.ready);
+        assert(
+          row.tdv2_data.milestones.length === 0 && row.tdv2_data.investments.length === 0,
+          "Legacy experience inferred as PU",
+        );
+        assert(
+          historical ===
+            JSON.stringify(
+              Object.fromEntries(
+                Object.entries(row).filter(
+                  ([k]) => !["rules_version", "tdv2_data", "updated_at"].includes(k),
+                ),
+              ),
+            ),
+          "Conversion changed legacy fields",
+        );
+        await geometry("converted-sheet");
+        row = {
+          ...row,
+          updated_at: new Date(Date.parse(row.updated_at) + 1000).toISOString(),
+          tdv2_data: { ...row.tdv2_data, notes: "Atualização em outra janela" },
+        };
+        await page.getByLabel("Origem", { exact: true }).fill("Rascunho local em conflito");
+        await page.getByRole("button", { name: "Salvar", exact: true }).click();
+        await page.getByRole("button", { name: "Guardar rascunho", exact: true }).waitFor();
+        assert(row.tdv2_data.face.origin === "O cais antigo", "Conflict overwrote another window");
+        const attempts = writes.length;
+        await page.waitForTimeout(3500);
+        assert(writes.length === attempts, "Conflict retried stale writes");
+        await geometry("sheet-conflict");
       }
       await context.close();
     }
 } finally {
   writeFileSync(output + "/server.log", serverLog);
-  await browser.close();
+  await browser?.close();
   try {
     process.kill(-server.pid, "SIGTERM");
   } catch {}

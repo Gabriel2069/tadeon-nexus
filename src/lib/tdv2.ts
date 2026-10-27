@@ -469,6 +469,17 @@ export function resolveTest(c: TdvCharacter, r: TestRequest, random: () => numbe
     character: {
       ...c,
       resources: { ...c.resources, pe: c.resources.pe - dice.cost },
+      records: dice.zero
+        ? [
+            ...c.records,
+            {
+              id: uid(),
+              kind: "Resto" as const,
+              name: "Forçar a 0 PE",
+              fields: { Fio: r.force, Contrapartida: r.counterpart.trim() },
+            },
+          ]
+        : c.records,
       scene: {
         ...c.scene,
         forcedAtZero: c.scene.forcedAtZero || dice.zero,

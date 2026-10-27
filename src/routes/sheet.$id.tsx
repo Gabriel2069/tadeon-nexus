@@ -1,4 +1,6 @@
-import { Tdv2Sheet, draftFromLegacy } from "@/components/sheet/tdv2-sheet";
+import { AutosaveConflictError, SHEET_CONFLICT_MESSAGE } from "@/lib/autosave-conflict";
+import { Tdv2Sheet } from "@/components/sheet/tdv2-sheet";
+import { draftFromLegacy } from "@/lib/tdv2-conversion";
 import { Tdv2Conversion } from "@/components/sheet/tdv2-conversion";
 import { constitution, tdv2CharacterSchema } from "@/lib/tdv2";
 import { PageHeader } from "@/components/page-header";
@@ -393,13 +395,8 @@ function SheetPage() {
           .eq("id", currentSheet.id);
         if (sheetVersion.current) query = query.eq("updated_at", sheetVersion.current);
         const { data, error } = await query.select("id,updated_at").maybeSingle();
-        if (error || !data)
-          throw (
-            error ??
-            new Error(
-              "A ficha mudou em outra janela. Suas edições foram preservadas; confira a versão atual antes de sobrescrever.",
-            )
-          );
+        if (error) throw error;
+        if (!data) throw new AutosaveConflictError();
         sheetVersion.current = data.updated_at;
         return;
       }
@@ -615,8 +612,44 @@ function SheetPage() {
             </div>
           }
         />
+        {saveError === SHEET_CONFLICT_MESSAGE && (
+          <div className="tdv-legacy-notice" role="alert">
+            <p>{saveError}</p>
+            <div className="tdv-actions">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  const url = URL.createObjectURL(
+                    new Blob(
+                      [
+                        JSON.stringify(
+                          { name: sheet.name, rules_version: 2, tdv2_data: parsed.data },
+                          null,
+                          2,
+                        ),
+                      ],
+                      { type: "application/json" },
+                    ),
+                  );
+                  const link = document.createElement("a");
+                  link.href = url;
+                  link.download = `tdv-ii-rascunho-${id}.json`;
+                  link.click();
+                  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+                }}
+              >
+                Guardar rascunho
+              </Button>
+              <Button variant="outline" onClick={() => window.location.reload()}>
+                Recarregar versão atual
+              </Button>
+            </div>
+          </div>
+        )}
         <div className="tdv-field">
-          <Label htmlFor="tdv-character-name">Nome da personagem</Label>
+          <Label className="tadeon-dossier-label" htmlFor="tdv-character-name">
+            Nome da personagem
+          </Label>
           <Input
             id="tdv-character-name"
             value={sheet.name}

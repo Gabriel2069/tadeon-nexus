@@ -1,3 +1,4 @@
+import { AutosaveConflictError } from "./autosave-conflict";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { reportClientError } from "@/lib/client-error-monitor";
 
@@ -63,10 +64,15 @@ export function useSerializedAutosave<T>({
           if (!activeRef.current) return false;
           succeeded = false;
           setDirty(true);
-          setSaveError("Não foi possível salvar. Verifique sua conexão e tente novamente.");
+          setSaveError(
+            error instanceof AutosaveConflictError
+              ? error.message
+              : "Não foi possível salvar. Verifique sua conexão e tente novamente.",
+          );
           void reportClientError(error, "save");
           if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
-          retryTimerRef.current = setTimeout(() => void executeRef.current(), 3000);
+          if (!(error instanceof AutosaveConflictError))
+            retryTimerRef.current = setTimeout(() => void executeRef.current(), 3000);
           break;
         }
 

@@ -1,3 +1,4 @@
+import { AutosaveConflictError, SHEET_CONFLICT_MESSAGE } from "./autosave-conflict";
 // @vitest-environment jsdom
 import { act, cleanup, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
@@ -97,4 +98,17 @@ it("never writes a read-only record, including an explicit save request", async 
   });
   await act(() => vi.advanceTimersByTimeAsync(5000));
   expect(save).not.toHaveBeenCalled();
+});
+
+it("keeps conflicting edits dirty without retrying a stale version in the background", async () => {
+  const save = vi
+    .fn<(value: { name: string }) => Promise<void>>()
+    .mockRejectedValue(new AutosaveConflictError());
+  const { result, rerender } = setup(save);
+  rerender({ name: "Local draft", enabled: true });
+  await act(() => vi.advanceTimersByTimeAsync(50));
+  expect(result.current.dirty).toBe(true);
+  expect(result.current.saveError).toBe(SHEET_CONFLICT_MESSAGE);
+  await act(() => vi.advanceTimersByTimeAsync(10000));
+  expect(save).toHaveBeenCalledTimes(1);
 });

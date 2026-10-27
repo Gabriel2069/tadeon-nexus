@@ -112,7 +112,9 @@
         "src/lib/tdv2.ts",
         "src/lib/tdv2.test.ts",
         "src/components/sheet/tdv2-sheet.tsx",
-        "src/components/sheet/tdv2-conversion.tsx"
+        "src/components/sheet/tdv2-conversion.tsx",
+        "src/lib/tdv2-conversion.ts",
+        "src/lib/autosave-conflict.ts"
       ],
       "styles": [
         "src/styles/sheet-layout.css",
@@ -1336,9 +1338,12 @@
         "docs/tdv-ii-validation.json",
         "src/lib/tdv2.ts",
         "src/lib/tdv2.test.ts",
-        "supabase/migrations/20261027013830_tdv_ii_versioned_rules.sql"
+        "supabase/migrations/20261027093709_tdv_ii_versioned_rules.sql",
+        "scripts/verify-tdv2.mjs",
+        "scripts/verify-tdv2-postgres.mjs",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/310"
       ],
-      "checkpoint": "Implementação em andamento; núcleo com 18 testes aprovados e migração testada em PostgreSQL isolado. Ainda não aplicada ao banco nem publicada."
+      "checkpoint": "PR #310 em validação. Última checagem completa: 158 suítes/657 testes e build, audit zero. Migração 20261027093709 aplicada, preservando as cinco fichas na edição anterior. PostgreSQL isolado: 23 verificações. Mesa protegida em tabletop-view v13. Fluxo de 320 px passou, incluindo conversão explícita e conflito de salvamento; demais larguras e gates exatos ainda em andamento. Interface nova não publicada."
     }
   ],
   "decisions": [

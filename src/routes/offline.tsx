@@ -1,3 +1,4 @@
+import { tdvMasterSchema } from "@/lib/tdv2-master";
 import { tdv2CharacterSchema, constitution } from "@/lib/tdv2";
 import { PageHeader } from "@/components/page-header";
 import { UTILITY_AREAS } from "@/lib/utility-areas";
@@ -340,6 +341,37 @@ function OfflineSheetCard({
 }
 
 function OfflineMaster({ cache }: { cache: NonNullable<OfflineCache["master"]> }) {
+  const tdv = tdvMasterSchema.safeParse(cache.tdv2);
+  if (tdv.success) {
+    const s = tdv.data;
+    return (
+      <div className="grid gap-4">
+        <Card className="tadeon-surface rounded-2xl p-4 md:p-6">
+          <p className="tadeon-eyebrow">Condução TdV II · somente leitura</p>
+          <h2 className="font-cinzel text-2xl">{s.title || "Cena sem título"}</h2>
+          <p>{s.objective}</p>
+          <ReadOnlyList
+            title="Frentes de Pressão"
+            items={s.pressures.map(
+              (p) => `${p.name || "Frente"}: ${p.value}/4. ${p.value === 4 ? p.rupture : p.cause}`,
+            )}
+          />
+          <ReadOnlyList
+            title={`Rodada ${s.round}`}
+            items={s.participants.map(
+              (p) =>
+                `${p.name}: ${p.impulses} Impulsos, ${p.response ? "1 Resposta" : "Resposta utilizada"}. ${p.position}`,
+            )}
+          />
+          <ReadOnlyList title="Pistas" items={s.investigation.clues.map((c) => c.name)} />
+          <p className="tdv-note">
+            Cópia local da última condução aberta nesta conta. A edição e a sincronização exigem
+            conexão.
+          </p>
+        </Card>
+      </div>
+    );
+  }
   const activeScenes = (cache.scenes as Array<Record<string, unknown>>).filter(
     (scene) => scene.status === "Em curso",
   );

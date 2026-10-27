@@ -25,3 +25,5 @@ O pacote único passa a 203 páginas e 314 relações, com 17 páginas do novo l
 O site calcula o que o livro define numericamente. Não inventa tabelas de Refluxo, dano crítico dobrado, bônus de amizade, bônus de Magnitude ou penalidades automáticas por Retorno baixo. Causas, incorporação, permissão transcendente, contrapartidas, condições e restabelecimento de continuidade continuam decisões explícitas da ficção. Campos de registro não constituem concessão automática de capacidade.
 
 A fonte da regra não altera a identidade visual aprovada do site. O livro possui edição própria; Cormorant/Alegreya, símbolos, rodas e materiais do Tadeon são preservados.
+
+A migração aditiva foi aplicada em `nkxpstyfrzufsnowjrdi` sob a versão `20261027093709`; as cinco fichas existentes permanecem na edição 1, sem novo payload. A função protegida `tabletop-view` mantém JWT obrigatório. A interface ainda depende da conclusão dos gates da NEX-040 antes de publicação.

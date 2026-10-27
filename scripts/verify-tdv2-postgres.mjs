@@ -29,7 +29,7 @@ const player = "00000000-0000-4000-8000-000000000001",
 const schema = `create role anon; create role authenticated; create role service_role; create schema private; create schema auth; create type public.app_role as enum ('mestre','jogador','espectador'); create table public.user_roles(user_id uuid,role public.app_role); create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$; create table public.character_sheets(id uuid primary key,owner_id uuid,name text,attributes jsonb default '{}'); create table public.game_settings(id uuid primary key); grant usage on schema public,private,auth to authenticated; grant select on public.user_roles to authenticated; grant all on public.character_sheets to authenticated; insert into user_roles values('${player}','jogador'),('${master}','mestre'),('${stranger}','jogador'); alter table public.character_sheets enable row level security; create policy own on public.character_sheets to authenticated using (owner_id=auth.uid() or exists(select 1 from public.user_roles where user_id=auth.uid() and role='mestre')) with check(owner_id=auth.uid() or exists(select 1 from public.user_roles where user_id=auth.uid() and role='mestre')); insert into character_sheets values('00000000-0000-4000-8000-000000000099','${player}','Legado','{"COR":3,"MEN":2}');`;
 await db.exec(schema);
 await db.exec(
-  readFileSync("supabase/migrations/20261027013830_tdv_ii_versioned_rules.sql", "utf8"),
+  readFileSync("supabase/migrations/20261027093709_tdv_ii_versioned_rules.sql", "utf8"),
 );
 const old = (await db.query("select rules_version,tdv2_data,attributes from character_sheets"))
   .rows[0];
@@ -165,7 +165,7 @@ console.log(
     passed: true,
     checks,
     engine: "PostgreSQL (PGlite)",
-    migration: "20261027013830_tdv_ii_versioned_rules",
+    migration: "20261027093709_tdv_ii_versioned_rules",
     legacyUnchanged: true,
   }),
 );

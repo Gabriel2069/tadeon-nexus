@@ -1,3 +1,4 @@
+import { cacheTdv2MasterState } from "@/lib/offline-cache";
 import { WorkspaceActions } from "@/components/workspace-actions";
 import { AssetLibraryPanel } from "@/components/assets/asset-library-panel";
 import { loadFeatureFlags } from "@/lib/feature-flag-repository";
@@ -20,7 +21,13 @@ import {
 import { AlertTriangle, Loader2 } from "lucide-react";
 import { SaveStatus } from "@/components/save-status";
 import { Section } from "@/components/sheet/sheet-ui";
-import { TdvCheck, TdvField, TdvNumber, TdvSelect } from "@/components/sheet/tdv2-sheet";
+import {
+  TdvDisclosure,
+  TdvCheck,
+  TdvField,
+  TdvNumber,
+  TdvSelect,
+} from "@/components/sheet/tdv2-sheet";
 import { useMasterDraft } from "./use-master-draft";
 import {
   DICE,
@@ -56,6 +63,7 @@ export function Tdv2MasterPanel() {
   return <TdvMasterWorkspace key={`${user?.id}:${role}`} />;
 }
 function TdvMasterWorkspace() {
+  const { user, role } = useAuth();
   const [error, setError] = useState<string | null>(null),
     [loading, setLoading] = useState(true),
     [attempt, setAttempt] = useState(0),
@@ -75,6 +83,14 @@ function TdvMasterWorkspace() {
       .maybeSingle();
     if (error || !data) throw error ?? new Error("Salvamento não confirmado.");
   });
+  useEffect(() => {
+    if (!draft.value || !user || role !== "mestre") return;
+    const timer = window.setTimeout(
+      () => cacheTdv2MasterState(draft.value!.state, { userId: user.id, role }),
+      600,
+    );
+    return () => window.clearTimeout(timer);
+  }, [draft.value, user, role]);
   const latest = useRef<TdvMasterState | null>(null);
   const initiativeAbort = useRef<AbortController | null>(null);
   useEffect(() => () => initiativeAbort.current?.abort(), []);
@@ -563,7 +579,7 @@ function TdvMasterWorkspace() {
               ))}
             </div>
             {s.opposition.map((record, index) => (
-              <details key={record.id} className="tdv-disclosure" open={!record.name}>
+              <TdvDisclosure key={record.id} initiallyOpen={!record.name}>
                 <summary>
                   {record.kind} · {record.name || `Presença ${index + 1}`}
                 </summary>
@@ -629,7 +645,7 @@ function TdvMasterWorkspace() {
                 >
                   Remover presença {index + 1}
                 </Button>
-              </details>
+              </TdvDisclosure>
             ))}
           </Section>
         </TabsContent>

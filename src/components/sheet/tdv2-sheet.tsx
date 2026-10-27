@@ -1,4 +1,4 @@
-import { useId, useState } from "react";
+import { useId, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,7 +21,6 @@ import {
   equilibriumBand,
   finishCreation,
   invest,
-  newTdvCharacter,
   prepareTest,
   recover,
   resolveTest,
@@ -33,6 +32,21 @@ import {
   type TestRequest,
 } from "@/lib/tdv2";
 import { toast } from "sonner";
+
+export function TdvDisclosure({
+  initiallyOpen,
+  children,
+}: {
+  initiallyOpen: boolean;
+  children: ReactNode;
+}) {
+  const [open, setOpen] = useState(initiallyOpen);
+  return (
+    <details className="tdv-disclosure" open={open} onToggle={(e) => setOpen(e.currentTarget.open)}>
+      {children}
+    </details>
+  );
+}
 
 export function TdvField({
   label,
@@ -50,9 +64,12 @@ export function TdvField({
   const id = useId();
   return (
     <div className="tdv-field">
-      <label htmlFor={id}>{label}</label>
+      <label className="tadeon-dossier-label" htmlFor={id}>
+        {label}
+      </label>
       {short ? (
         <Input
+          className="tadeon-dossier-field"
           id={id}
           value={value}
           disabled={disabled}
@@ -60,6 +77,7 @@ export function TdvField({
         />
       ) : (
         <Textarea
+          className="tadeon-dossier-field"
           id={id}
           value={value}
           disabled={disabled}
@@ -85,7 +103,9 @@ export function TdvSelect({
   const id = useId();
   return (
     <div className="tdv-field">
-      <label htmlFor={id}>{label}</label>
+      <label className="tadeon-dossier-label" htmlFor={id}>
+        {label}
+      </label>
       <select id={id} value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)}>
         {options.map((option) => (
           <option key={option}>{option}</option>
@@ -112,8 +132,11 @@ export function TdvNumber({
   const id = useId();
   return (
     <div className="tdv-field">
-      <label htmlFor={id}>{label}</label>
+      <label className="tadeon-dossier-label" htmlFor={id}>
+        {label}
+      </label>
       <Input
+        className="tadeon-dossier-field"
         id={id}
         type="number"
         min={min}
@@ -1111,7 +1134,7 @@ export function Tdv2Sheet({
               </Button>
             </div>
             {c.records.map((record, index) => (
-              <details className="tdv-disclosure" key={record.id} open={!record.name}>
+              <TdvDisclosure key={record.id} initiallyOpen={!record.name}>
                 <summary>
                   {record.kind} · {record.name || `Registro ${index + 1}`}
                 </summary>
@@ -1128,22 +1151,26 @@ export function Tdv2Sheet({
                   }
                 />
                 <div className="tdv-grid">
-                  {RECORD_FIELDS[record.kind].map((field) => (
-                    <TdvField
-                      key={field}
-                      label={`${field} · registro ${index + 1}`}
-                      value={record.fields[field] || ""}
-                      disabled={disabled}
-                      onChange={(v) =>
-                        upd(
-                          "records",
-                          c.records.map((x) =>
-                            x.id === record.id ? { ...x, fields: { ...x.fields, [field]: v } } : x,
-                          ),
-                        )
-                      }
-                    />
-                  ))}
+                  {[...new Set([...RECORD_FIELDS[record.kind], ...Object.keys(record.fields)])].map(
+                    (field) => (
+                      <TdvField
+                        key={field}
+                        label={`${field} · registro ${index + 1}`}
+                        value={record.fields[field] || ""}
+                        disabled={disabled}
+                        onChange={(v) =>
+                          upd(
+                            "records",
+                            c.records.map((x) =>
+                              x.id === record.id
+                                ? { ...x, fields: { ...x.fields, [field]: v } }
+                                : x,
+                            ),
+                          )
+                        }
+                      />
+                    ),
+                  )}
                 </div>
                 <Button
                   variant="ghost"
@@ -1157,7 +1184,7 @@ export function Tdv2Sheet({
                 >
                   Remover registro {index + 1}
                 </Button>
-              </details>
+              </TdvDisclosure>
             ))}
             <p className="tdv-note">
               Registrar conteúdo não compra Lavor nem autoriza efeito extraordinário: aquisição fica
@@ -1182,42 +1209,4 @@ export function Tdv2Sheet({
       </Tabs>
     </div>
   );
-}
-
-export function draftFromLegacy(row: Record<string, unknown>): TdvCharacter {
-  const c = newTdvCharacter(),
-    identity = (row.identity_data ?? {}) as Record<string, unknown>,
-    description = (row.description ?? {}) as Record<string, unknown>;
-  const links = Array.isArray(identity.links) ? (identity.links as Record<string, unknown>[]) : [];
-  return {
-    ...c,
-    face: {
-      ...c.face,
-      origin: String(row.origin ?? ""),
-      occupation: String(row.occupation ?? ""),
-      conviction: String(identity.conviction ?? row.motivation ?? ""),
-      limit: String(identity.limit ?? ""),
-      links: links.length
-        ? links.map((link) => ({
-            id: String(link.id || uid()),
-            node: String(link.name || ""),
-            nature: String(link.relation || ""),
-            state: LINK_STATES.includes(link.state as (typeof LINK_STATES)[number])
-              ? (link.state as (typeof LINK_STATES)[number])
-              : "Presente",
-            offer: "",
-            demand: "",
-            tension: "",
-          }))
-        : c.face.links,
-    },
-    history: String(description.historia ?? ""),
-    notes: [
-      String(row.notes ?? ""),
-      row.brand ? `Marca na edição anterior: ${String(row.brand)}` : "",
-      identity.wound ? `Registro anterior: ${String(identity.wound)}` : "",
-    ]
-      .filter(Boolean)
-      .join("\n\n"),
-  };
 }

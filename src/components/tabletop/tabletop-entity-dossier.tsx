@@ -146,7 +146,10 @@ export function TabletopEntityDossier({
 
               {sheetSummary && (
                 <div className="tadeon-entity-dossier__sheet">
-                  <div className="tadeon-entity-dossier__resources">
+                  <div
+                    className="tadeon-entity-dossier__resources"
+                    data-resource-count={Object.keys(sheetSummary.resources).length}
+                  >
                     {Object.entries(sheetSummary.resources).map(([key, value]) => (
                       <div key={key} data-resource={key}>
                         <small>{key.toUpperCase()}</small>

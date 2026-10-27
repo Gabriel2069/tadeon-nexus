@@ -11,17 +11,34 @@
     "postgresLocalChecks": 23,
     "status": "in-progress",
     "unitSuites": 158,
-    "unitTests": 655,
+    "unitTests": 657,
     "build": true,
     "auditHigh": 0,
-    "browser": "in-progress"
+    "browser": "in-progress",
+    "browser320": "passed: canonical sheet, mestre conduction and read-only; conversion/CAS in progress"
   },
   "migration": {
-    "path": "supabase/migrations/20261027013830_tdv_ii_versioned_rules.sql",
-    "applied": false
+    "path": "supabase/migrations/20261027093709_tdv_ii_versioned_rules.sql",
+    "applied": true,
+    "project": "nkxpstyfrzufsnowjrdi",
+    "version": "20261027093709",
+    "legacyRowsPreserved": 5,
+    "newPayloads": 0,
+    "sha256": "00bfaa6d3bdb401f6168c24ed46abd0d44bde2c0509265b9f03cb2ba4b16b035"
   },
   "production": "not-published",
   "limits": [
     "Fixtures do not certify physical hardware, real-account authorization or real restore. NEX-009/010/011 remain separate."
-  ]
+  ],
+  "edge": {
+    "function": "tabletop-view",
+    "version": 13,
+    "verify_jwt": true,
+    "bundleSha256": "6d3743f1b59945719101b8e16838a54e09fe6dc2ac9c91354e000f04b9645f49"
+  },
+  "review": {
+    "pr": 310,
+    "url": "https://github.com/Gabriel2069/tadeon-nexus/pull/310",
+    "status": "draft"
+  }
 }

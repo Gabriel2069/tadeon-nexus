@@ -1,6 +1,8 @@
+import { newTdvMaster } from "./tdv2-master";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   cacheMasterState,
+  cacheTdv2MasterState,
   clearOfflineCache,
   cacheSheet,
   cacheSheetSummaries,
@@ -113,4 +115,16 @@ it("reports whether a scoped local copy was actually cleared", () => {
     },
   });
   expect(clearOfflineCache()).toBe(false);
+});
+
+it("keeps TdV II conduction private to the verified mestre and rejects stale account writes", () => {
+  const state = { ...newTdvMaster(), title: "Segredo da cena" };
+  expect(cacheTdv2MasterState(state, master)).toBe(false);
+  setOfflineCacheScope(master);
+  expect(cacheTdv2MasterState(state, master)).toBe(true);
+  expect(readOfflineCache().master?.tdv2?.title).toBe("Segredo da cena");
+  setOfflineCacheScope(player);
+  expect(cacheTdv2MasterState(state, master)).toBe(false);
+  expect(cacheTdv2MasterState(state, player)).toBe(false);
+  expect(readOfflineCache().master).toBeUndefined();
 });

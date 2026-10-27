@@ -1,3 +1,4 @@
+import { draftFromLegacy } from "./tdv2-conversion";
 import { describe, it, expect } from "vitest";
 import {
   ALINHAVOS,
@@ -304,4 +305,34 @@ describe("Fictional care and anchor continuity", () => {
     ).toBe("Ativa");
     expect(() => stabilize({ ...healed, critical: "Morta" }, "Cuidado")).toThrow();
   });
+});
+
+it("prepares an explicit narrative draft without inferring mechanics or changing the source", () => {
+  const row = {
+    origin: "Cais",
+    occupation: "Registradora",
+    attributes: { COR: 5 },
+    exposure: 95,
+    pm_spent: 150,
+    stats: { ps_current: 40, pa_current: 8 },
+    brand: "Registro anterior",
+    identity_data: {
+      conviction: "Testemunhos",
+      limit: "Não entregar inocentes",
+      links: [{ id: "link", name: "Elen", relation: "Confiança", state: "Tensionado" }],
+    },
+    description: { historia: "História preservada" },
+    notes: "Notas privadas",
+  };
+  const before = structuredClone(row),
+    c = draftFromLegacy(row);
+  expect(c.ready).toBe(false);
+  expect(c.matrices).toEqual(newTdvCharacter().matrices);
+  expect(c.milestones).toEqual([]);
+  expect(c.investments).toEqual([]);
+  expect(c.resources).toEqual({ pv: 10, pi: 11, pe: 10 });
+  expect(c.face.links[0]).toMatchObject({ node: "Elen", nature: "Confiança", state: "Tensionado" });
+  expect(c.history).toBe("História preservada");
+  expect(c.notes).toContain("Registro anterior");
+  expect(row).toEqual(before);
 });
