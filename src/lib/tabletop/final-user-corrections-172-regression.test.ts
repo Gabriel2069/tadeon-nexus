@@ -28,7 +28,7 @@ describe("final user corrections 172", () => {
     const layout = source("src/components/app-layout.tsx");
     // NEX-024: real centering/visibility/targets are measured by the browser verifier.
     expect(layout).toContain('data-mini={mini ? "true" : "false"}');
-    expect(layout).toContain('mini ? "justify-center px-2" : ""');
+    // Persistent labels now fade during rail resizing; geometry is verified in the browser.
     expect(nav).toContain("--nav-accent-rgb: var(--section-accent-rgb, 217 215 164)");
     expect(nav).toContain("--nav-accent-rgb: 116 36 45");
     expect(nav).toContain("--nav-accent-rgb: 122 129 135");

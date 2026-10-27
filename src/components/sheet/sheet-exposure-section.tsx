@@ -33,6 +33,12 @@ export function SheetExposureSection({
         </div>
         <div className="tadeon-exposure-scale" aria-hidden="true">
           <div className="tadeon-exposure-scale__ticks">
+            <span
+              className="tadeon-exposure-scale__fill"
+              style={{
+                width: `calc(${Math.max(0, Math.min(100, value))}% - ${(Math.max(0, Math.min(100, value)) / 100) * 6}px)`,
+              }}
+            />
             {Array.from({ length: 21 }, (_, i) => i * 5).map((step) => (
               <span
                 key={step}

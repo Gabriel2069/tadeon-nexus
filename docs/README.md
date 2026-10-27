@@ -64,3 +64,4 @@ Comece pelo [estado de continuidade](ai/00_ESTADO_ATUAL.md), [mapa do código](P
 | [sheet-register-validation.json](sheet-register-validation.json) | Evidência de composição adaptável de Identidade, Vínculos, Equilíbrio e Exposição; NEX-036. |
 | [equilibrium-axis-validation.json](equilibrium-axis-validation.json) | NEX-037: tamanho físico do radar, eixo conceitual de Equilíbrio, tensão direcional, gates e publicação. |
 | [dossier-density-validation.json](dossier-density-validation.json) | Evidência de NEX-038: proporções e encaixe dos instrumentos, Exposição, guias da Ficha e organização de Offline/Backup/Usuários; fixtures, integração e publicação separados. |
+| [navigation-presence-validation.json](navigation-presence-validation.json) | NEX-039: cartões individuais, preenchimento da Exposição e movimento lateral, com contratos, procedência e limites de validação. |

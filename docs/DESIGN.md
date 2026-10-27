@@ -395,3 +395,11 @@ Nesta rodada, Atributos forma uma faixa de controles e radar em cartões largos;
 Exposição ganha escala de contato de 0 a 100, marcações a cada cinco e indicação do valor real. Patamar, orçamento, limite, PM e recursos de base vêm da rota; não há uma segunda regra de progressão. Os efeitos de Equilíbrio e a tensão mantêm seu modelo. Condições/perícias preservam estados explícitos; História usa fólios de escrita com linhas internas alinhadas e Maestria mantém sua árvore, com rótulos legíveis.
 
 Offline distingue detalhes disponíveis e resumo, em um fólio com recursos num registro único; n/d significa não armazenado, sem fabricar zero. O diretório de Usuários reúne linhas contínuas e deixa acesso/administração em uma trilha própria, com confirmações existentes. Backup separa criação, histórico e importação por composição. Não movimentar a linha de uma pessoa ao operar o seletor de papel. Atributos data-state e aria-live não definem uma família tipográfica: PT Mono fica somente nos metadados explícitos, sem contaminar todo o conteúdo de uma aba por herança.
+
+## NEX-039 — Pessoas como peças e contato como matéria
+
+Tadeu pediu o retorno dos cartões individuais em Usuários, revisando a apresentação contínua de NEX-038. Cada pessoa tem moldura própria, identidade e trilha de acesso; a grade usa a largura disponível, sem movimento da caixa ao operar controles. Busca, filtros, confirmações e proteção da própria conta permanecem.
+
+Exposição mantém a régua e as bases reais, com preenchimento proporcional em bronze/carmim, relevo e reflexão estática. O marcador e a faixa respondem à edição, sem brilho em loop; movimento reduzido preserva o valor final. Equilíbrio mantém seu eixo bipolar.
+
+O menu lateral interpola a largura e conserva rótulos no DOM, sem desmontar identidade e texto no meio do gesto. Reverter a intenção converge ao último estado. O drawer usa entrada lateral e saída mais curta, com foco/presença Radix. Busca não desloca seu alvo no hover. Materiais de botões e rodas aprovados permanecem.

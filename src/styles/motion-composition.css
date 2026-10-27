@@ -305,7 +305,6 @@
   #tadeon-desktop-sidebar [data-slot="input"] { transition:width 360ms var(--tm-in), opacity 220ms ease, transform 280ms var(--tm-soft); }
   #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-sidebar__scroll { padding-inline:.25rem; }
   #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-primary-nav { overflow:visible; }
-  #tadeon-desktop-sidebar[data-collapsed="true"] button { will-change:transform; }
   @keyframes tm-sidebar-active-in { from { opacity:.7; transform:translateX(-6px); } 65% { opacity:1; transform:translateX(2px); } to { opacity:1; transform:none; } }
 }
 

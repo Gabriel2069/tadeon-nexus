@@ -557,6 +557,9 @@ try {
           });
           assert(instrument.plotWidth >= 140, "Compact composition preserves the enlarged radar");
           assert(instrument.resourceNamesFit, "Resource names remain complete without splitting words");
+          const exposureFill=await page.locator('.tadeon-exposure-scale__fill').evaluate(e=>({width:e.getBoundingClientRect().width,track:e.parentElement.getBoundingClientRect().width-8}));
+          const actualExposure=Number(await page.getByRole('spinbutton',{name:'Exposição atual',exact:true}).inputValue());
+          assert(Math.abs(exposureFill.width/exposureFill.track-actualExposure/100)<.02,'Exposure fill matches actual value with reduced motion: '+JSON.stringify(exposureFill));
           assert(instrument.exposureBases?.includes("PV") && instrument.exposureBases?.includes("DEF"), "Exposure presents actual resource bases");
           if(width>=1180) {
             assert(Math.abs(instrument.equilibrium.y-instrument.exposure.y)<1 && Math.abs(instrument.equilibrium.height-instrument.exposure.height)<1 && Math.abs(instrument.equilibrium.width-instrument.exposure.width)<1, "Open state pair has aligned frames and equal widths");

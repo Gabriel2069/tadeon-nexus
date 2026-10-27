@@ -79,6 +79,14 @@
   :is(.tadeon-sidebar, .tadeon-desktop-toolbar, .tadeon-mobile-header, .tadeon-mobile-dock, .tadeon-mobile-drawer) { background: #151a22; backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
 
+  .tadeon-sidebar-identity__brand { display: flex; align-items: center; gap: .65rem; padding-inline: .25rem; min-height: 2.75rem; }
+  .tadeon-sidebar-identity__name { white-space: nowrap; overflow: hidden; transition: opacity 120ms ease; }
+  .tadeon-sidebar-identity__details { display: grid; grid-template-rows: 1fr; opacity: 1; transition: grid-template-rows 260ms cubic-bezier(.22, .75, .25, 1), opacity 120ms ease; }
+  .tadeon-sidebar-identity__details > div { min-height: 0; overflow: hidden; padding-inline: .75rem; }
+  .tadeon-sidebar-identity__details p { margin-top: .75rem; }
+  .tadeon-sidebar-identity[data-mini="true"] .tadeon-sidebar-identity__name { opacity: 0; }
+  .tadeon-sidebar-identity[data-mini="true"] .tadeon-sidebar-identity__details { grid-template-rows: 0fr; opacity: 0; }
+
 /* Labels remain ivory; section color belongs to the authored symbols. */
 .tadeon-nav-item { color: var(--sidebar-foreground); }
 .tadeon-nav-item[aria-current="page"] { color: var(--foreground); }
@@ -91,20 +99,22 @@
 }
 .tadeon-nav-item__icon { position: relative; color: color-mix(in srgb, var(--nav-accent, var(--primary)) 45%, var(--foreground)); display: grid; place-items: center; flex: 0 0 2rem; width: 2rem; height: 2rem; border: 1px solid rgb(233 227 213 / 7%); border-radius: .7rem; background: linear-gradient(145deg, rgb(233 227 213 / 5%), transparent); box-shadow: inset 0 1px rgb(233 227 213 / 6%); }
 .tadeon-nav-item__icon > svg { display: block; width: 1rem; height: 1rem; flex: none; }
-.tadeon-nav-item__label { min-width: 0; overflow-wrap: anywhere; font-size: .8125rem; line-height: 1.4; }
+.tadeon-nav-item__label { min-width: 0; white-space: nowrap; overflow: hidden; font-size: .8125rem; line-height: 1.4; opacity: 1; transition: opacity 140ms ease, transform 200ms var(--ease-out); }
 .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon { border-color: rgb(233 227 213 / 20%); background-color: rgb(233 227 213 / 5%); }
-.tadeon-nav-item[data-mini="true"] { width: 2.75rem; min-width: 2.75rem; margin-inline: auto; justify-content: center; gap: 0; padding: .35rem; }
+.tadeon-nav-item[data-mini="true"] { gap: 0; padding: .35rem; }
+.tadeon-nav-item[data-mini="true"] .tadeon-nav-item__label, .tadeon-side-action[data-mini="true"] .tadeon-nav-item__label { opacity: 0; transform: translateX(-.35rem); width: 0; }
 .tadeon-sidebar-collapse { position: absolute; z-index: 30; top: 1.5rem; right: -1.375rem; width: 2.75rem; height: 2.75rem; min-width: 2.75rem; border-color: var(--border); border-radius: 50%; color: var(--foreground); background: #1c2026; box-shadow: inset 0 1px rgb(233 227 213 / 12%), 0 6px 18px -10px #000; }
 :is(.tadeon-nav-item, .tadeon-mobile-dock__item, .tadeon-sidebar-collapse, .tadeon-mobile-header__control, .tadeon-desktop-toolbar__account):focus-visible { outline: 2px solid var(--foreground); outline-offset: 3px; }
 @media (hover: hover) and (pointer: fine) {
   :is(.tadeon-sidebar-collapse, .tadeon-mobile-header__control, .tadeon-desktop-toolbar__account):hover { border-color: var(--muted-foreground); background-color: #282c34; }
 }
-.tadeon-mobile-drawer[data-motion-surface] { animation-duration: 220ms; animation-timing-function: var(--ease-out); animation-fill-mode: both; }
+.tadeon-mobile-drawer[data-motion-surface] { animation-duration: 260ms; animation-timing-function: cubic-bezier(.22, .75, .25, 1); animation-fill-mode: both; }
 .tadeon-mobile-drawer[data-motion-surface][data-state="open"] { animation-name: tadeon-navigation-enter; }
-.tadeon-mobile-drawer[data-motion-surface][data-state="closed"] { animation-name: tadeon-navigation-exit; }
+.tadeon-mobile-drawer[data-motion-surface][data-state="closed"] { animation-name: tadeon-navigation-exit; animation-duration: 180ms; pointer-events: none; }
 @keyframes tadeon-navigation-enter { from { transform: translateX(-100%); } to { transform: none; } }
 @keyframes tadeon-navigation-exit { from { transform: none; } to { transform: translateX(-100%); } }
 @media (prefers-reduced-motion: reduce) {
+  .tadeon-nav-item__label { transition: none; }
   .tadeon-mobile-drawer[data-motion-surface][data-state="open"] { animation: none; }
   .tadeon-mobile-drawer[data-motion-surface][data-state="closed"] { display: none; }
   :is(.tadeon-nav-item, .tadeon-mobile-dock__item, .tadeon-sidebar-collapse, .tadeon-mobile-header__control, .tadeon-desktop-toolbar__account) { transition: none; }

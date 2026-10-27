@@ -48,6 +48,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-036 | Ficha: registros de identidade, vínculos e instrumentos de estado | Integrado | 7 | sheet | NEX-035 |
 | NEX-037 | Atributos em escala legível e Equilíbrio como relação entre polos | Integrado | 7 | sheet | NEX-036 |
 | NEX-038 | Dossiê compacto, Exposição graduada e utilidades como registros | Integrado | 7 | sheet | NEX-037 |
+| NEX-039 | Jogadores individuais, presença da Exposição e deslizamento lateral | Em andamento | 7 | shell | NEX-038 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -375,6 +376,15 @@ Evidências: [src/components/sheet/sheet-equilibrium-section.tsx](../src/compone
 - Incorporar o dossiê Véu & Trama como referência do sistema, retirar escritores concorrentes e verificar quatro larguras, foco/portais/redução de movimento, check e audit antes da publicação.
 
 Evidências: [docs/VEU_E_TRAMA.md](../docs/VEU_E_TRAMA.md), [docs/dossier-density-validation.json](../docs/dossier-density-validation.json), [src/components/sheet/sheet-exposure-section.tsx](../src/components/sheet/sheet-exposure-section.tsx), [src/components/sheet/sheet-exposure-section.test.tsx](../src/components/sheet/sheet-exposure-section.test.tsx), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [scripts/verify-navigation-utilities.mjs](../scripts/verify-navigation-utilities.mjs), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/306), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40251173586), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40251173547), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40293915897), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40293915696).
+
+## NEX-039 — Jogadores individuais, presença da Exposição e deslizamento lateral
+
+- Restaurar cartões individuais de jogadores com dimensões adaptáveis, papéis legíveis e confirmações preservadas.
+- Dar cor, relevo e preenchimento proporcional à Exposição, mantendo bases, controles e regras existentes.
+- Reconciliar abertura/recolhimento lateral, rótulos persistentes, interrupção e movimento reduzido; preservar botões aprovados e rodas.
+- Validar quatro larguras, teclado/foco/portais, check e auditoria; distinguir fixtures, integração e publicação.
+
+Evidências: [docs/navigation-presence-validation.json](../docs/navigation-presence-validation.json), [scripts/verify-navigation-utilities.mjs](../scripts/verify-navigation-utilities.mjs), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs).
 
 ## Decisões vigentes
 

@@ -105,6 +105,21 @@ try {
    await page.getByRole("button",{name:"Recolher menu",exact:true}).click();await page.waitForTimeout(250);const compact=page.locator("#tadeon-desktop-sidebar").getByRole("link",{name:"Usuários",exact:true});assert(await compact.isVisible(),"Collapsed destination keeps accessible label");
    const icon=await compact.locator(".tadeon-nav-item__icon").evaluate(e=>({width:e.getBoundingClientRect().width,opacity:getComputedStyle(e).opacity}));assert(icon.width>=16&&Number(icon.opacity)>0,"Collapsed icon remains visible");if(process.env.NEXUS_SKIP_SCREENSHOTS!=="1")await page.screenshot({path:`${root}/sidebar-${width}.png`});await page.getByRole("button",{name:"Expandir menu",exact:true}).click();await page.waitForTimeout(500);
    const nav=page.locator("#tadeon-desktop-sidebar").getByRole("link",{name:"Consulta offline",exact:true});const before=await nav.boundingBox();await nav.hover();await page.waitForTimeout(250);const after=await nav.boundingBox();assert(Math.abs(after.x-before.x)<.5&&Math.abs(after.y-before.y)<.5,`Navigation target stays still on hover: ${JSON.stringify({before,after,style:await nav.evaluate(e=>({transform:getComputedStyle(e).transform,translate:getComputedStyle(e).translate,scale:getComputedStyle(e).scale,animation:getComputedStyle(e).animationName}))})}`);
+   const sidebar=page.locator('#tadeon-desktop-sidebar');
+   const slide=await sidebar.evaluate(async e=>{
+    const button=e.querySelector('.tadeon-sidebar-collapse'),frames=[];
+    const expanded=e.getBoundingClientRect().width;button.click();
+    await new Promise(resolve=>{const start=performance.now();function sample(now){frames.push(e.getBoundingClientRect().width);if(now-start<110)requestAnimationFrame(sample);else resolve();}requestAnimationFrame(sample);});
+    button.click();await new Promise(resolve=>setTimeout(resolve,360));
+    return {expanded,frames,settled:e.getBoundingClientRect().width,labels:e.querySelectorAll('.tadeon-nav-item__label').length};
+   });
+   assert(slide.frames.some(w=>w>82 && w<slide.expanded-2),'Sidebar traverses intermediate widths: '+JSON.stringify(slide));
+   assert(Math.abs(slide.settled-slide.expanded)<1 && slide.labels>3,'Interrupted sidebar converges to expanded state');
+   await page.emulateMedia({reducedMotion:'reduce'});await page.getByRole('button',{name:'Recolher menu',exact:true}).click();
+   assert(await sidebar.evaluate(e=>Math.abs(e.getBoundingClientRect().width-80)<1),'Reduced-motion sidebar settles immediately');
+   await page.getByRole('button',{name:'Expandir menu',exact:true}).click();await page.emulateMedia({reducedMotion:'no-preference'});
+   results.push({width,label:'sidebar-slide',...slide});
+
   }
   await page.emulateMedia({reducedMotion:"reduce"});
   if (process.env.NEXUS_AUDIT_SCOPE === "navigation") { await geometry("navigation"); await page.getByRole("button",{name:"Limpar cópia local",exact:true}).click();await page.getByRole("button",{name:"Cancelar",exact:true}).click();await context.close();continue; }

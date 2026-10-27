@@ -12,21 +12,10 @@
    DESKTOP SIDEBAR - the menu behaves like one coherent instrument.
    ================================================================ */
 
-.tadeon-shell > #tadeon-desktop-sidebar .tadeon-primary-nav{
-  transition:opacity 280ms ease,transform 520ms var(--thn-in),filter 420ms ease;
-}
-
 .tadeon-shell > #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-sidebar__scroll,
 .tadeon-shell > #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-primary-nav{
   overflow:visible;
 }
-
-/* sidebar headings / identity - arrive separately from navigation */
-.tadeon-shell > #tadeon-desktop-sidebar .tadeon-eyebrow,
-.tadeon-shell > #tadeon-desktop-sidebar h1{
-  animation:thn-sidebar-arrive 560ms var(--thn-in) both;
-}
-@keyframes thn-sidebar-arrive{from{opacity:0;transform:translateX(-18px);filter:blur(5px)}65%{opacity:1;transform:translateX(3px);filter:blur(0)}to{transform:none}}
 
 /* ================================================================
    PRIMARY NAV - each destination has a traceable arrival/response.
@@ -36,19 +25,6 @@
   isolation:isolate;
   overflow:hidden;
 }
-
-.tadeon-shell .tadeon-primary-nav [data-slot="global-search-trigger"],
-.tadeon-shell .tadeon-primary-nav .tadeon-global-search-trigger{
-  transition:transform 320ms var(--thn-spring),box-shadow 360ms var(--thn-in),border-color 240ms ease;
-}
-.tadeon-shell .tadeon-primary-nav [data-slot="global-search-trigger"]:hover,
-.tadeon-shell .tadeon-primary-nav .tadeon-global-search-trigger:hover{transform:translateX(6px) scale(1.015)}
-
-/* section labels */
-.tadeon-shell .tadeon-primary-nav [data-tadeon-nav-group-label]{
-  animation:thn-label-in 420ms var(--thn-in) both;
-}
-@keyframes thn-label-in{from{opacity:0;transform:translateX(-10px);letter-spacing:.12em}to{opacity:1;transform:none;letter-spacing:normal}}
 
 /* ================================================================
    HEADERS / HEROES - titles and utility rails no longer just sit there.
