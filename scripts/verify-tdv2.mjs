@@ -205,6 +205,20 @@ try {
           `${label}/${width}/${role}: ${JSON.stringify(g)}`,
         );
         assert(!errors.length, errors.join("\n"));
+        const targets = await page
+          .locator('.tadeon-page-header__actions :is(button, [data-slot="button"])')
+          .evaluateAll((es) =>
+            es
+              .map((el) => {
+                const r = el.getBoundingClientRect();
+                return { w: r.width, h: r.height, label: el.textContent.trim() };
+              })
+              .filter((r) => r.w && r.h),
+          );
+        assert(
+          targets.every((r) => r.w >= 43.9 && r.h >= 43.9),
+          "Header targets below 44px: " + JSON.stringify(targets),
+        );
         if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1")
           await page.screenshot({
             path: `${output}/${label}-${role}-${width}.png`,

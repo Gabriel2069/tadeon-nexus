@@ -43,7 +43,22 @@
       ]
     },
     "mcp": "authenticated edition-aware summaries; no payload secrets or legacy Rank",
-    "backup": "serialized versioned payload and mestre state preserved; no real restore certification"
+    "backup": "serialized versioned payload and mestre state preserved; no real restore certification",
+    "headerTargets": {
+      "states": 8,
+      "widths": [
+        320,
+        390,
+        820,
+        1440
+      ],
+      "routes": [
+        "/offline",
+        "/master-panel"
+      ],
+      "minimumPx": 44,
+      "status": "passed-local"
+    }
   },
   "migration": {
     "path": "supabase/migrations/20261027093709_tdv_ii_versioned_rules.sql",
