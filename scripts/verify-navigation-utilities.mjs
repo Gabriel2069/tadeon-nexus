@@ -107,13 +107,21 @@ try {
    const nav=page.locator("#tadeon-desktop-sidebar").getByRole("link",{name:"Consulta offline",exact:true});const before=await nav.boundingBox();await nav.hover();await page.waitForTimeout(250);const after=await nav.boundingBox();assert(Math.abs(after.x-before.x)<.5&&Math.abs(after.y-before.y)<.5,`Navigation target stays still on hover: ${JSON.stringify({before,after,style:await nav.evaluate(e=>({transform:getComputedStyle(e).transform,translate:getComputedStyle(e).translate,scale:getComputedStyle(e).scale,animation:getComputedStyle(e).animationName}))})}`);
    const sidebar=page.locator('#tadeon-desktop-sidebar');
    const slide=await sidebar.evaluate(async e=>{
-    const button=e.querySelector('.tadeon-sidebar-collapse'),frames=[];
+    const button=e.querySelector('.tadeon-sidebar-collapse');
     const expanded=e.getBoundingClientRect().width;button.click();
-    await new Promise(resolve=>{const start=performance.now();function sample(now){frames.push(e.getBoundingClientRect().width);if(now-start<110)requestAnimationFrame(sample);else resolve();}requestAnimationFrame(sample);});
-    button.click();await new Promise(resolve=>setTimeout(resolve,360));
-    return {expanded,frames,settled:e.getBoundingClientRect().width,labels:e.querySelectorAll('.tadeon-nav-item__label').length};
+    while(e.dataset.collapsed!=='true')await new Promise(requestAnimationFrame);
+    // Sample the browser's interpolation at a fixed phase. Wall-clock rAF samples
+    // can miss every intermediate frame on a busy software GPU; this is geometry,
+    // not a claim about physical frame rate.
+    const transition=e.getAnimations().find(a=>a.transitionProperty==='width');
+    if(!transition)throw new Error('Sidebar must own a width transition');
+    transition.pause();transition.currentTime=130;
+    const intermediate=e.getBoundingClientRect().width;
+    button.click();while(e.dataset.collapsed!=='false')await new Promise(requestAnimationFrame);
+    await new Promise(resolve=>setTimeout(resolve,360));
+    return {expanded,intermediate,settled:e.getBoundingClientRect().width,labels:e.querySelectorAll('.tadeon-nav-item__label').length};
    });
-   assert(slide.frames.some(w=>w>82 && w<slide.expanded-2),'Sidebar traverses intermediate widths: '+JSON.stringify(slide));
+   assert(slide.intermediate>82 && slide.intermediate<slide.expanded-2,'Sidebar interpolates width: '+JSON.stringify(slide));
    assert(Math.abs(slide.settled-slide.expanded)<1 && slide.labels>3,'Interrupted sidebar converges to expanded state');
    await page.emulateMedia({reducedMotion:'reduce'});await page.getByRole('button',{name:'Recolher menu',exact:true}).click();
    assert(await sidebar.evaluate(e=>Math.abs(e.getBoundingClientRect().width-80)<1),'Reduced-motion sidebar settles immediately');
