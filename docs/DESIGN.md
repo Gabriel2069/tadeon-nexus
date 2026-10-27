@@ -403,3 +403,7 @@ Tadeu pediu o retorno dos cartões individuais em Usuários, revisando a apresen
 Exposição mantém a régua e as bases reais, com preenchimento proporcional em bronze/carmim, relevo e reflexão estática. O marcador e a faixa respondem à edição, sem brilho em loop; movimento reduzido preserva o valor final. Equilíbrio mantém seu eixo bipolar.
 
 O menu lateral interpola a largura e conserva rótulos no DOM, sem desmontar identidade e texto no meio do gesto. Reverter a intenção converge ao último estado. O drawer usa entrada lateral e saída mais curta, com foco/presença Radix. Busca não desloca seu alvo no hover. Materiais de botões e rodas aprovados permanecem.
+
+## NEX-040 — O TdV II como linguagem de uso
+
+A reforma normativa altera a organização funcional da ficha e da condução, preservando a identidade do site. Pessoa reúne Feição, Constituição e Desenvolvimento; Ação mantém os dois Fios e a continuidade de cena; Expressão/memória distingue capacidades, Condições e registros duradouros. O novo eixo de Equilíbrio não possui bônus universal. O desenvolvimento conserva cor e relevo local, sem loop decorativo. Controles se recompõem pela largura disponível, com campos rotulados e alvos de 44px. A edição anterior é identificada e a conversão exige revisão concreta.

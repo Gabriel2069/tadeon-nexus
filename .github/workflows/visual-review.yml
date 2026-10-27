@@ -137,6 +137,11 @@ jobs:
           NEXUS_EXPECT_LARGE_RADAR: "1"
           NEXUS_POWER_HEADER: "1"
         run: node scripts/verify-sheet-design.mjs
+      - name: Validar TdV II, continuidade e condução em quatro larguras
+        env:
+          NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/tdv2
+          NEXUS_AUDIT_WIDTHS: "[320,390,820,1440]"
+        run: node scripts/verify-tdv2.mjs
       - name: Publicar métricas de comparação no log
         if: always()
         run: |

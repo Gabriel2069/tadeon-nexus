@@ -1,0 +1,27 @@
+{
+  "task": "NEX-040",
+  "state": "implementation",
+  "source": {
+    "file": "02_Livro_de_Regras(3).docx",
+    "sha256": "8846b485dc528e3998de9227a033bea746eb439d6519ea7f3362a7a8f9515c0f",
+    "reference": "docs/rules/tdv-ii-v2.md"
+  },
+  "verification": {
+    "engineTests": 20,
+    "postgresLocalChecks": 23,
+    "status": "in-progress",
+    "unitSuites": 158,
+    "unitTests": 655,
+    "build": true,
+    "auditHigh": 0,
+    "browser": "in-progress"
+  },
+  "migration": {
+    "path": "supabase/migrations/20261027013830_tdv_ii_versioned_rules.sql",
+    "applied": false
+  },
+  "production": "not-published",
+  "limits": [
+    "Fixtures do not certify physical hardware, real-account authorization or real restore. NEX-009/010/011 remain separate."
+  ]
+}

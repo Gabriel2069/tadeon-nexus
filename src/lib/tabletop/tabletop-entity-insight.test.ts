@@ -1,3 +1,4 @@
+import { newTdvCharacter } from "@/lib/tdv2";
 import { describe, expect, it } from "vitest";
 import {
   activeTabletopConditionNames,
@@ -55,5 +56,32 @@ describe("resumo de ficha da Mesa", () => {
         outras: ["Marcado", "Ferido"],
       }),
     ).toEqual(["Ferido", "Sangrando", "Confuso", "Marcado"]);
+  });
+});
+
+describe("TdV II authorized summaries", () => {
+  it("exposes current resources and development without narrative secrets or legacy points", () => {
+    const c = newTdvCharacter();
+    c.face.occupation = "Registradora";
+    c.face.origin = "Cais";
+    c.notes = "SEGREDO PRIVADO";
+    c.face.links[0].demand = "DÍVIDA PRIVADA";
+    const summary = normalizeTabletopSheetSummary({
+      id: "00000000-0000-4000-8000-000000000001",
+      name: "Iria",
+      rules_version: 2,
+      tdv2_data: c,
+      stats: { ps_current: 99, pa_current: 88 },
+    });
+    expect(summary).toMatchObject({
+      rulesVersion: 2,
+      resources: { pv: 10, pi: 11, pe: 10 },
+      guard: 12,
+      exposure: 0,
+      occupation: "Registradora",
+    });
+    expect(summary.resources).not.toHaveProperty("ps");
+    expect(summary.resources).not.toHaveProperty("pa");
+    expect(JSON.stringify(summary)).not.toContain("PRIVAD");
   });
 });

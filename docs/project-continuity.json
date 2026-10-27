@@ -108,14 +108,18 @@
         "src/components/sheet/use-sheet-chrome.ts",
         "src/components/sheet/attribute-radar.tsx",
         "src/components/sheet/sheet-equilibrium-section.tsx",
-        "src/components/sheet/sheet-exposure-section.tsx"
+        "src/components/sheet/sheet-exposure-section.tsx",
+        "src/lib/tdv2.ts",
+        "src/lib/tdv2.test.ts",
+        "src/components/sheet/tdv2-sheet.tsx",
+        "src/components/sheet/tdv2-conversion.tsx"
       ],
       "styles": [
         "src/styles/sheet-layout.css",
         "src/styles/sheet-premium.css",
         "src/styles/sheet-experience.css"
       ],
-      "boundary": "Rota mantém estado, regras derivadas, leitura cancelável e autosave por personagem/usuário/cargo. Seções recebem valores/callbacks; não criam estado persistido paralelo. Sheet UI mantém rótulos, recolhimento e material; sheet-premium é dono do material. Histórico/inventário montados explicitamente na ficha, sem observer de montagem; o arquivo de experiência ainda conserva bridges de outras áreas. NEX-025: vínculos recolhem no componente; títulos recebem foco para revelar seções. Dossiê em sheet-premium, densidade do modo Jogo em sheet-layout; índice sem captura global. useSheetChrome mede somente os dois cabeçalhos conhecidos do shell e a barra local, com observer e listener desmontados; publica offsets apenas no host da ficha. NEX-034/DEC-020: identidade relativa e compacta, títulos/ações com fluxo próprio, instrumentos por largura real do cartão e vínculos multilinha. Nenhuma mudança em regras ou persistência. NEX-035: radar SVG local, compartilhado pela Ficha e Forma de Poder; dados dependem somente de atributos e não mantêm observação de tamanho própria. NEX-036: narrativa e vínculos têm dobras independentes; registros adaptam-se à largura do cartão. Equilíbrio e Exposição somente apresentam valores e bases derivados pela rota, sem estado persistido paralelo. NEX-037: SheetEquilibriumSection apresenta o eixo e a tensão por props/callbacks; regras continuam na rota e getEquilibriumEffect. Radar compartilha proporção quadrada e largura útil na Ficha/Forma de Poder; motion legado deixa painéis materiais explícitos. NEX-038: instrumentos usam composição horizontal pela largura útil, e Equilíbrio/Exposição têm molduras alinhadas somente quando abertas. SheetExposureSection apresenta bases recebidas, sem cálculo paralelo. Densidade e tipografia das três guias pertencem a sheet-premium."
+      "boundary": "Rota mantém estado, regras derivadas, leitura cancelável e autosave por personagem/usuário/cargo. Seções recebem valores/callbacks; não criam estado persistido paralelo. Sheet UI mantém rótulos, recolhimento e material; sheet-premium é dono do material. Histórico/inventário montados explicitamente na ficha, sem observer de montagem; o arquivo de experiência ainda conserva bridges de outras áreas. NEX-025: vínculos recolhem no componente; títulos recebem foco para revelar seções. Dossiê em sheet-premium, densidade do modo Jogo em sheet-layout; índice sem captura global. useSheetChrome mede somente os dois cabeçalhos conhecidos do shell e a barra local, com observer e listener desmontados; publica offsets apenas no host da ficha. NEX-034/DEC-020: identidade relativa e compacta, títulos/ações com fluxo próprio, instrumentos por largura real do cartão e vínculos multilinha. Nenhuma mudança em regras ou persistência. NEX-035: radar SVG local, compartilhado pela Ficha e Forma de Poder; dados dependem somente de atributos e não mantêm observação de tamanho própria. NEX-036: narrativa e vínculos têm dobras independentes; registros adaptam-se à largura do cartão. Equilíbrio e Exposição somente apresentam valores e bases derivados pela rota, sem estado persistido paralelo. NEX-037: SheetEquilibriumSection apresenta o eixo e a tensão por props/callbacks; regras continuam na rota e getEquilibriumEffect. Radar compartilha proporção quadrada e largura útil na Ficha/Forma de Poder; motion legado deixa painéis materiais explícitos. NEX-038: instrumentos usam composição horizontal pela largura útil, e Equilíbrio/Exposição têm molduras alinhadas somente quando abertas. SheetExposureSection apresenta bases recebidas, sem cálculo paralelo. Densidade e tipografia das três guias pertencem a sheet-premium. TdV II: dados versionados e motor em tdv2.ts; cálculos legados só pertencem à edição anterior. Conversão é revisável e não infere equivalências numéricas."
     },
     {
       "id": "knowledge",
@@ -184,13 +188,15 @@
         "supabase/functions/admin-users/index.ts",
         "src/components/master/master-overview.tsx",
         "src/components/master/master-panel-navigation.tsx",
-        "src/components/master/use-master-draft.ts"
+        "src/components/master/use-master-draft.ts",
+        "src/lib/tdv2-master.ts",
+        "src/components/master/tdv2-master.tsx"
       ],
       "styles": [
         "src/styles/master-panel-navigation.css",
         "src/styles/workspace.css"
       ],
-      "boundary": "A rota é a única dona do rascunho, leitura e autorização via ProtectedShell. Overview recebe dados/callbacks; busca e paginação são locais. Navegação e identidade do cabeçalho recebem a mesma aba React; o router mantém URL. useMasterDraft salva snapshots manuais sem reconhecer edições posteriores. Master-panel-navigation.css é a única autoridade da navegação interna; workspace.css mantém os painéis. Geometria/material da lista de Usuários pertencem exclusivamente a workspace.css; escritores anteriores de animação, filtro, geometria e tipografia da lista foram retirados dos módulos de shell/motion."
+      "boundary": "A rota é a única dona do rascunho, leitura e autorização via ProtectedShell. Overview recebe dados/callbacks; busca e paginação são locais. Navegação e identidade do cabeçalho recebem a mesma aba React; o router mantém URL. useMasterDraft salva snapshots manuais sem reconhecer edições posteriores. Master-panel-navigation.css é a única autoridade da navegação interna; workspace.css mantém os painéis. Geometria/material da lista de Usuários pertencem exclusivamente a workspace.css; escritores anteriores de animação, filtro, geometria e tipografia da lista foram retirados dos módulos de shell/motion. TdV II: dados versionados e motor em tdv2.ts; cálculos legados só pertencem à edição anterior. Conversão é revisável e não infere equivalências numéricas."
     },
     {
       "id": "session",
@@ -369,6 +375,16 @@
       "path": "docs/VEU_E_TRAMA.md",
       "status": "reference",
       "purpose": "Dossiê de direção fornecido por Tadeu em 25/10/2026: gramática formal e aprofundamento sistêmico. Confrontar cada hipótese com o runtime; a fila continua exclusivamente neste registro."
+    },
+    {
+      "path": "docs/rules/tdv-ii-v2.md",
+      "status": "reference",
+      "purpose": "Extração do Livro de Regras TdV II v2.0 fornecido por Tadeu; procedimentos normativos e tabelas com hash da fonte."
+    },
+    {
+      "path": "docs/tdv-ii-migration.md",
+      "status": "active",
+      "purpose": "Contrato de edição, compatibilidade e mapa das regras implementadas; a fila permanece em project-continuity."
     }
   ],
   "tasks": [
@@ -1297,6 +1313,32 @@
         "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40476036880"
       ],
       "checkpoint": "Integrado pela PR #308, fonte 8dafaf8, merge 99db7ac. Jogadores voltam a cartões individuais adaptáveis, com molduras e ações alinhadas na mesma linha. Exposição recebe preenchimento proporcional bronze/carmim, relevo estático e resposta à edição. Sidebar interpola largura com rótulos persistentes e reversão; drawer mantém foco/presença, busca sem deslocamento no hover e seis !important legados retirados. Botões, rodas, regras, autosave e autorização preservados. Quality do fonte/main: 157 suítes/634 testes, audit zero. Visual do fonte exato aprovado; quatro larguras, foco/portais/movimento reduzido, oito vistas da Ficha e 40 estados/contratos de utilidades. Artefato final e capturas inspecionados. HTTP 200/SHA exato em 2026-10-27T08:50:43.5235794Z. Fixtures não certificam hardware, contas ou restauração reais; NEX-009/010/011 mantidos. Fechamento documental confirma a própria publicação na PR correspondente."
+    },
+    {
+      "id": "NEX-040",
+      "title": "TdV II v2.0: motor, fichas e condução integrados",
+      "domain": "sheet",
+      "status": "active",
+      "priority": 7,
+      "dependsOn": [
+        "NEX-039"
+      ],
+      "acceptance": [
+        "Aplicar o Livro de Regras fornecido: Feição, Matrizes/Alinhavos, dois Fios, PV/PI/PE, Defesas/Guarda, Marcos/PU, Equilíbrio/Tensão e procedimentos de continuidade.",
+        "Preservar dados da edição anterior e oferecer conversão revisável, sem equivalência numérica inventada nem alterações em massa de personagens.",
+        "Atualizar a condução do Mestre para objetivos, Posição, Pressão 0–4, 2 Impulsos/1 Resposta, prioridade contestada, Ameaças 0–4, Investigação e Selagem.",
+        "Propagar a edição correta à Mesa autorizada, histórico, acervo/offline e Nexus; preservar segredos, permissões e conteúdo personalizado.",
+        "Validar regras, banco/guardas e fluxos editáveis/somente leitura em quatro larguras; registrar migração, Edge Function, CI, integração e produção separadamente."
+      ],
+      "evidence": [
+        "docs/rules/tdv-ii-v2.md",
+        "docs/tdv-ii-migration.md",
+        "docs/tdv-ii-validation.json",
+        "src/lib/tdv2.ts",
+        "src/lib/tdv2.test.ts",
+        "supabase/migrations/20261027013830_tdv_ii_versioned_rules.sql"
+      ],
+      "checkpoint": "Implementação em andamento; núcleo com 18 testes aprovados e migração testada em PostgreSQL isolado. Ainda não aplicada ao banco nem publicada."
     }
   ],
   "decisions": [
@@ -1712,6 +1754,10 @@
     {
       "path": "docs/navigation-presence-validation.json",
       "purpose": "NEX-039: cartões individuais, preenchimento da Exposição e movimento lateral, com contratos, procedência e limites de validação."
+    },
+    {
+      "path": "docs/tdv-ii-validation.json",
+      "purpose": "Procedência normativa, testes e evidências de migração, Mesa, Nexus, CI e publicação de NEX-040."
     }
   ],
   "integrationHistory": [

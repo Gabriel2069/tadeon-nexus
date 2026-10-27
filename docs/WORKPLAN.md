@@ -49,6 +49,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-037 | Atributos em escala legível e Equilíbrio como relação entre polos | Integrado | 7 | sheet | NEX-036 |
 | NEX-038 | Dossiê compacto, Exposição graduada e utilidades como registros | Integrado | 7 | sheet | NEX-037 |
 | NEX-039 | Jogadores individuais, presença da Exposição e deslizamento lateral | Integrado | 7 | shell | NEX-038 |
+| NEX-040 | TdV II v2.0: motor, fichas e condução integrados | Em andamento | 7 | sheet | NEX-039 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -385,6 +386,16 @@ Evidências: [docs/VEU_E_TRAMA.md](../docs/VEU_E_TRAMA.md), [docs/dossier-densit
 - Validar quatro larguras, teclado/foco/portais, check e auditoria; distinguir fixtures, integração e publicação.
 
 Evidências: [docs/navigation-presence-validation.json](../docs/navigation-presence-validation.json), [scripts/verify-navigation-utilities.mjs](../scripts/verify-navigation-utilities.mjs), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/308), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40432582240), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40432582165), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40476036876), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40476036880).
+
+## NEX-040 — TdV II v2.0: motor, fichas e condução integrados
+
+- Aplicar o Livro de Regras fornecido: Feição, Matrizes/Alinhavos, dois Fios, PV/PI/PE, Defesas/Guarda, Marcos/PU, Equilíbrio/Tensão e procedimentos de continuidade.
+- Preservar dados da edição anterior e oferecer conversão revisável, sem equivalência numérica inventada nem alterações em massa de personagens.
+- Atualizar a condução do Mestre para objetivos, Posição, Pressão 0–4, 2 Impulsos/1 Resposta, prioridade contestada, Ameaças 0–4, Investigação e Selagem.
+- Propagar a edição correta à Mesa autorizada, histórico, acervo/offline e Nexus; preservar segredos, permissões e conteúdo personalizado.
+- Validar regras, banco/guardas e fluxos editáveis/somente leitura em quatro larguras; registrar migração, Edge Function, CI, integração e produção separadamente.
+
+Evidências: [docs/rules/tdv-ii-v2.md](../docs/rules/tdv-ii-v2.md), [docs/tdv-ii-migration.md](../docs/tdv-ii-migration.md), [docs/tdv-ii-validation.json](../docs/tdv-ii-validation.json), [src/lib/tdv2.ts](../src/lib/tdv2.ts), [src/lib/tdv2.test.ts](../src/lib/tdv2.test.ts), [supabase/migrations/20261027013830_tdv_ii_versioned_rules.sql](../supabase/migrations/20261027013830_tdv_ii_versioned_rules.sql).
 
 ## Decisões vigentes
 

@@ -1,3 +1,4 @@
+import { Tdv2MasterPanel } from "@/components/master/tdv2-master";
 import { WorkspaceActions } from "@/components/workspace-actions";
 import { PageHeader } from "@/components/page-header";
 import { useAuth } from "@/lib/auth";
@@ -108,6 +109,7 @@ import { AssetLibraryPanel } from "@/components/assets/asset-library-panel";
 export const Route = createFileRoute("/master-panel")({
   validateSearch: (search: Record<string, unknown>) => ({
     ...(search.popout === "1" ? { popout: "1" as const } : {}),
+    ...(search.edition === "legacy" ? { edition: "legacy" as const } : {}),
     tab: MASTER_TAB_VALUES.includes(search.tab as MasterTab)
       ? (search.tab as MasterTab)
       : undefined,
@@ -308,7 +310,12 @@ function normalizeScene(value: Partial<Scene>): Scene {
 
 function MasterPanel() {
   const { user, role } = useAuth();
-  return <MasterWorkspace key={`${user?.id ?? "anonymous"}:${role ?? "none"}`} />;
+  const search = Route.useSearch();
+  return search.edition === "legacy" ? (
+    <MasterWorkspace key={`${user?.id ?? "anonymous"}:${role ?? "none"}`} />
+  ) : (
+    <Tdv2MasterPanel />
+  );
 }
 
 function MasterWorkspace() {

@@ -14,7 +14,7 @@ export class TabletopEntityInsightService {
     const { data, error } = await tabletopInsightDatabase
       .from("character_sheets")
       .select(
-        "id,name,occupation,brand,origin,exposure,equilibrium,condition,conditions,stats",
+        "id,name,occupation,brand,origin,exposure,equilibrium,condition,conditions,stats,rules_version,tdv2_data",
       )
       .eq("id", sheetId)
       .maybeSingle();

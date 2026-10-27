@@ -32,6 +32,8 @@ export interface OfflineSheetSummary {
   name: string;
   occupation?: string | null;
   exposure?: number;
+  rules_version?: number;
+  development?: number;
   owner_label?: string | null;
 }
 
@@ -105,12 +107,14 @@ export function cacheSheetSummaries(
   return writeOfflineCache(
     {
       ...cache,
-      sheetSummaries: summaries.map(({ id, name, occupation, exposure, owner_label }) => ({
+      sheetSummaries: summaries.map(({ id, name, occupation, exposure, owner_label, rules_version, development }) => ({
         id,
         name,
         occupation,
         exposure,
         owner_label,
+        rules_version,
+        development,
       })),
     },
     scope,

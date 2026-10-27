@@ -1,3 +1,6 @@
+import { Tdv2Sheet, draftFromLegacy } from "@/components/sheet/tdv2-sheet";
+import { Tdv2Conversion } from "@/components/sheet/tdv2-conversion";
+import { constitution, tdv2CharacterSchema } from "@/lib/tdv2";
 import { PageHeader } from "@/components/page-header";
 import { PageState } from "@/components/page-state";
 import { ProtectedShell } from "@/components/protected-shell";
@@ -30,7 +33,7 @@ import { useAuth } from "@/lib/auth";
 import { conditionChipPresentation } from "@/lib/sheet-condition-presentation";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AlertTriangle } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 // (Dialog imports removed ~ Power Form now lives in /sheet/$id/power route)
 
 import { BrandMark } from "@/components/brand-mark";
@@ -189,6 +192,7 @@ function SheetPage() {
   const [sheetHost, setSheetHost] = useState<HTMLDivElement | null>(null);
   useSheetChrome(sheetHost);
   const [sheet, setSheet] = useState<SheetData | null>(null);
+  const sheetVersion = useRef<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [loadAttempt, setLoadAttempt] = useState(0);
@@ -252,6 +256,7 @@ function SheetPage() {
           return;
         }
         const raw = data as unknown as Record<string, unknown>;
+        sheetVersion.current = typeof raw.updated_at === "string" ? raw.updated_at : null;
         const desc = (raw.description as Description | null) ?? {
           historia: "",
           personalidade: "",
@@ -379,6 +384,25 @@ function SheetPage() {
     enabled: canEdit,
     delay: 1500,
     save: async (currentSheet) => {
+      if (currentSheet.rules_version === 2) {
+        const value = tdv2CharacterSchema.parse(currentSheet.tdv2_data);
+        constitution(value);
+        let query = supabase
+          .from("character_sheets")
+          .update({ name: currentSheet.name, rules_version: 2, tdv2_data: value as never })
+          .eq("id", currentSheet.id);
+        if (sheetVersion.current) query = query.eq("updated_at", sheetVersion.current);
+        const { data, error } = await query.select("id,updated_at").maybeSingle();
+        if (error || !data)
+          throw (
+            error ??
+            new Error(
+              "A ficha mudou em outra janela. Suas edições foram preservadas; confira a versão atual antes de sobrescrever.",
+            )
+          );
+        sheetVersion.current = data.updated_at;
+        return;
+      }
       const { id: sheetId, ...payload } = currentSheet;
       const { error } = await supabase
         .from("character_sheets")
@@ -403,7 +427,7 @@ function SheetPage() {
 
   // Keep numeric `fragments` field in sync with the fragments list length
   useEffect(() => {
-    if (!sheet) return;
+    if (!sheet || sheet.rules_version === 2) return;
     const len = sheet.fragments_items.length;
     if (sheet.fragments !== len) {
       setSheet((p) => (p ? { ...p, fragments: len } : p));
@@ -426,7 +450,7 @@ function SheetPage() {
   }, [activeBranches, sheet, trainingCosts, upgradeCosts]);
 
   useEffect(() => {
-    if (!sheet || sheet.pm_spent === calculatedPmSpent) return;
+    if (!sheet || sheet.rules_version === 2 || sheet.pm_spent === calculatedPmSpent) return;
     setSheet((previous) => (previous ? { ...previous, pm_spent: calculatedPmSpent } : previous));
   }, [calculatedPmSpent, sheet]);
 
@@ -541,6 +565,88 @@ function SheetPage() {
     );
   }
 
+  if (sheet.rules_version === 2) {
+    const parsed = tdv2CharacterSchema.safeParse(sheet.tdv2_data);
+    if (!parsed.success)
+      return (
+        <PageState
+          icon={AlertTriangle}
+          title="A ficha TdV II precisa de revisão"
+          description="O registro não corresponde ao formato esperado. Nenhum dado foi substituído por valores padrão."
+        />
+      );
+    try {
+      constitution(parsed.data);
+    } catch (error) {
+      return (
+        <PageState
+          icon={AlertTriangle}
+          title="Investimentos inconsistentes"
+          description={(error as Error).message}
+        />
+      );
+    }
+    return (
+      <div
+        ref={setSheetHost}
+        data-page-layout
+        data-sheet-presentation="fabric"
+        className="tadeon-page tadeon-sheet-page pb-28"
+      >
+        <PageHeader
+          section="sheet"
+          eyebrow="TdV II · Feição e Constituição"
+          title={sheet.name || "Ficha"}
+          className="tadeon-sheet-commandbar"
+          actions={
+            <div className="tdv-actions">
+              <Button variant="outline" onClick={() => navigate({ to: "/" })}>
+                Arquivo
+              </Button>
+              <SheetExperienceBridge sheetId={id} dropTarget={sheetHost} canEdit={canEdit} />
+              <SaveStatus
+                state={saveError ? "error" : saving ? "saving" : dirty ? "pending" : "saved"}
+                savedAt={lastSavedAt}
+                onRetry={() => void doSave()}
+              />
+              <Button disabled={!canEdit || saving} onClick={() => void doSave()}>
+                Salvar
+              </Button>
+            </div>
+          }
+        />
+        <div className="tdv-field">
+          <Label htmlFor="tdv-character-name">Nome da personagem</Label>
+          <Input
+            id="tdv-character-name"
+            value={sheet.name}
+            disabled={!canEdit}
+            onChange={(e) => update("name", e.target.value)}
+          />
+        </div>
+        {tutorialStep !== null && (
+          <div className="tdv-creation-note" role="region" aria-label="Guia da ficha TdV II">
+            <h2>Comece pela Feição</h2>
+            <p>
+              Revise Origem, Ofício, Convicção, Limite, Vínculos e Âncora. Distribua as Matrizes e
+              os Alinhavos antes de concluir a criação. Na aba Ação estão os dois Fios, os recursos
+              e a recuperação; Expressão e memória guarda Lavores, Tramas e registros.
+            </p>
+            <Button variant="outline" onClick={() => setTutorialStep(null)}>
+              Concluir guia
+            </Button>
+          </div>
+        )}
+        <Tdv2Sheet
+          character={parsed.data}
+          canEdit={canEdit}
+          isMaster={role === "mestre"}
+          onChange={(value) => update("tdv2_data", value)}
+        />
+      </div>
+    );
+  }
+
   const attrs = sheet.attributes;
   const base = getRankBase(sheet.exposure, rankTable);
   const upg = sheet.stat_upgrades;
@@ -622,6 +728,20 @@ function SheetPage() {
       data-sheet-presentation="fabric"
       className="tadeon-page tadeon-sheet-page pb-28"
     >
+      <Tdv2Conversion
+        canEdit={canEdit}
+        onPrepare={() =>
+          setSheet((previous) =>
+            previous
+              ? {
+                  ...previous,
+                  rules_version: 2,
+                  tdv2_data: draftFromLegacy(previous as unknown as Record<string, unknown>),
+                }
+              : previous,
+          )
+        }
+      />
       <PageHeader
         section="sheet"
         eyebrow="Ficha de continuidade"

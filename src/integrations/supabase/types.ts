@@ -173,6 +173,8 @@ export type Database = {
       };
       character_sheets: {
         Row: {
+          rules_version: number;
+          tdv2_data: Json | null;
           abilities: Json;
           age: string | null;
           attributes: Json;
@@ -214,6 +216,8 @@ export type Database = {
           weapons: Json;
         };
         Insert: {
+          rules_version?: number;
+          tdv2_data?: Json | null;
           abilities?: Json;
           age?: string | null;
           attributes?: Json;
@@ -255,6 +259,8 @@ export type Database = {
           weapons?: Json;
         };
         Update: {
+          rules_version?: number;
+          tdv2_data?: Json | null;
           abilities?: Json;
           age?: string | null;
           attributes?: Json;
@@ -377,6 +383,7 @@ export type Database = {
       };
       game_settings: {
         Row: {
+          tdv2_state: Json;
           campaign_id: string | null;
           campaign_phase: string;
           campaign_title: string;
@@ -409,6 +416,7 @@ export type Database = {
           upgrade_costs: Json;
         };
         Insert: {
+          tdv2_state?: Json;
           campaign_id?: string | null;
           campaign_phase?: string;
           campaign_title?: string;
@@ -441,6 +449,7 @@ export type Database = {
           upgrade_costs?: Json;
         };
         Update: {
+          tdv2_state?: Json;
           campaign_id?: string | null;
           campaign_phase?: string;
           campaign_title?: string;

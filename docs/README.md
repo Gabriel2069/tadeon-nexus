@@ -30,6 +30,8 @@ Comece pelo [estado de continuidade](ai/00_ESTADO_ATUAL.md), [mapa do código](P
 | [DESIGN.md](DESIGN.md) | active | Direção Véu & Trama aprovada; contrato visual e referência única de execução, sem novo backlog. |
 | [tabletop-workspace-map.md](tabletop-workspace-map.md) | active | NEX-007/021: controles, estado e destino dos bridges da Mesa; integração de contexto da página do Nexus. |
 | [VEU_E_TRAMA.md](VEU_E_TRAMA.md) | reference | Dossiê de direção fornecido por Tadeu em 25/10/2026: gramática formal e aprofundamento sistêmico. Confrontar cada hipótese com o runtime; a fila continua exclusivamente neste registro. |
+| [rules/tdv-ii-v2.md](rules/tdv-ii-v2.md) | reference | Extração do Livro de Regras TdV II v2.0 fornecido por Tadeu; procedimentos normativos e tabelas com hash da fonte. |
+| [tdv-ii-migration.md](tdv-ii-migration.md) | active | Contrato de edição, compatibilidade e mapa das regras implementadas; a fila permanece em project-continuity. |
 
 ## Contratos e evidências
 
@@ -65,3 +67,4 @@ Comece pelo [estado de continuidade](ai/00_ESTADO_ATUAL.md), [mapa do código](P
 | [equilibrium-axis-validation.json](equilibrium-axis-validation.json) | NEX-037: tamanho físico do radar, eixo conceitual de Equilíbrio, tensão direcional, gates e publicação. |
 | [dossier-density-validation.json](dossier-density-validation.json) | Evidência de NEX-038: proporções e encaixe dos instrumentos, Exposição, guias da Ficha e organização de Offline/Backup/Usuários; fixtures, integração e publicação separados. |
 | [navigation-presence-validation.json](navigation-presence-validation.json) | NEX-039: cartões individuais, preenchimento da Exposição e movimento lateral, com contratos, procedência e limites de validação. |
+| [tdv-ii-validation.json](tdv-ii-validation.json) | Procedência normativa, testes e evidências de migração, Mesa, Nexus, CI e publicação de NEX-040. |

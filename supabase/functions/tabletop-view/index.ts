@@ -1,3 +1,4 @@
+import { tdv2CharacterSchema, constitution } from "../../../src/lib/tdv2.ts";
 import { tabletopEntityColor } from "../_shared/tabletop-entity-color.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.110.3";
 
@@ -801,7 +802,7 @@ Deno.serve(async (request) => {
     const { data: sheets, error: sheetError } = await authorized
       .from("character_sheets")
       .select(
-        "id,name,occupation,brand,origin,exposure,equilibrium,condition,conditions,stats",
+        "id,name,occupation,brand,origin,exposure,equilibrium,condition,conditions,stats,rules_version,tdv2_data",
       )
       .in("id", sheetIds);
     if (sheetError) {
@@ -809,6 +810,13 @@ Deno.serve(async (request) => {
       return respond({ error: "Não foi possível validar as fichas." }, 500);
     }
     for (const sheet of sheets ?? []) {
+      if (sheet.rules_version === 2) {
+        const parsed = tdv2CharacterSchema.safeParse(sheet.tdv2_data);
+        if (!parsed.success) return respond({error:"Uma ficha TdV II precisa de revisão de formato."},500);
+        const c=parsed.data,derived=constitution(c);
+        sheetSummaries.set(sheet.id,{rulesVersion:2,sheetId:sheet.id,name:boundedText(sheet.name,160)||"Ficha sem nome",occupation:boundedText(c.face.occupation,160),origin:boundedText(c.face.origin,160),brand:"",exposure:derived.development,equilibrium:c.equilibrium,condition:c.resources.pi===0?"Colapso":c.critical,guard:derived.guard,resources:c.resources,activeConditions:c.conditions.map(x=>boundedText(x.name,80)).filter(Boolean).slice(0,12)});
+        continue;
+      }
       const stats = objectValue(sheet.stats);
       sheetSummaries.set(sheet.id, {
         sheetId: sheet.id,

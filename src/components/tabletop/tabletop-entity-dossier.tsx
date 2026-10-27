@@ -90,12 +90,9 @@ export function TabletopEntityDossier({
   const visualConditions = stringList(properties.visual_conditions, 20);
   const barCurrent = Number(properties.bar_current) || 0;
   const barMax = Math.max(0, Number(properties.bar_max) || 0);
-  const barPercent =
-    barMax > 0 ? Math.max(0, Math.min(100, (barCurrent / barMax) * 100)) : 0;
+  const barPercent = barMax > 0 ? Math.max(0, Math.min(100, (barCurrent / barMax) * 100)) : 0;
   const identity = sheetSummary
-    ? [sheetSummary.occupation, sheetSummary.brand, sheetSummary.origin]
-        .filter(Boolean)
-        .join(" · ")
+    ? [sheetSummary.occupation, sheetSummary.brand, sheetSummary.origin].filter(Boolean).join(" · ")
     : "";
   const accent = `#${entity.color.toString(16).padStart(6, "0")}`;
   const sheetId = sheetSummary?.sheetId ?? entity.linkedSheetId ?? null;
@@ -158,12 +155,21 @@ export function TabletopEntityDossier({
                     ))}
                   </div>
                   <div className="tadeon-entity-dossier__indices">
+                    {sheetSummary.rulesVersion === 2 && (
+                      <span>
+                        <Shield aria-hidden="true" /> Guarda
+                        <strong>
+                          {sheetSummary.guard === null ? "Ausente" : sheetSummary.guard}
+                        </strong>
+                      </span>
+                    )}
                     <span>
                       <Shield aria-hidden="true" /> Equilíbrio
                       <strong>{resourceLabel(sheetSummary.equilibrium)}</strong>
                     </span>
                     <span>
-                      <Activity aria-hidden="true" /> Exposição
+                      <Activity aria-hidden="true" />{" "}
+                      {sheetSummary.rulesVersion === 2 ? "Desenvolvimento" : "Exposição"}
                       <strong>{resourceLabel(sheetSummary.exposure)}</strong>
                     </span>
                   </div>
@@ -181,23 +187,31 @@ export function TabletopEntityDossier({
                 <div className="tadeon-entity-dossier__bar">
                   <div>
                     <span>Recurso visual</span>
-                    <strong>{barCurrent} / {barMax}</strong>
+                    <strong>
+                      {barCurrent} / {barMax}
+                    </strong>
                   </div>
-                  <span><i style={{ width: `${barPercent}%` }} /></span>
+                  <span>
+                    <i style={{ width: `${barPercent}%` }} />
+                  </span>
                 </div>
               )}
 
               {(visualConditions.length > 0 || sheetSummary?.activeConditions.length) && (
                 <div className="tadeon-entity-dossier__conditions">
-                  {[...new Set([...visualConditions, ...(sheetSummary?.activeConditions ?? [])])].map(
-                    (condition) => <span key={condition}>{condition}</span>,
-                  )}
+                  {[
+                    ...new Set([...visualConditions, ...(sheetSummary?.activeConditions ?? [])]),
+                  ].map((condition) => (
+                    <span key={condition}>{condition}</span>
+                  ))}
                 </div>
               )}
 
               {icons.length > 0 && (
                 <div className="tadeon-entity-dossier__icons">
-                  {icons.map((icon) => <span key={icon}>{icon}</span>)}
+                  {icons.map((icon) => (
+                    <span key={icon}>{icon}</span>
+                  ))}
                 </div>
               )}
 

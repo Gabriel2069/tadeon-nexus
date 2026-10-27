@@ -147,7 +147,9 @@ export class KnowledgeLibraryService {
       { p_workspace_id: workspaceId },
     );
     if (error) throw toKnowledgeServiceError(error);
-    return Number(data ?? 0);
+    const revised=await libraryDatabase.rpc("ensure_tdv2_knowledge_templates",{p_workspace_id:workspaceId});
+    if(revised.error)throw toKnowledgeServiceError(revised.error);
+    return Number(data??0)+Number(revised.data??0);
   }
 
   async listTemplates(workspaceId: string) {

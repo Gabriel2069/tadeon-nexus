@@ -1,3 +1,4 @@
+import { tdv2CharacterSchema, constitution } from "@/lib/tdv2";
 import { PageHeader } from "@/components/page-header";
 import { UTILITY_AREAS } from "@/lib/utility-areas";
 import { UtilitySummary } from "@/components/utility-summary";
@@ -252,29 +253,54 @@ function OfflineSheetCard({
   data?: Record<string, unknown>;
   online: boolean;
 }) {
-  const attributes = (data?.attributes ?? {}) as Record<string, number>;
-  const stats = (data?.stats ?? {}) as Record<string, number>;
+  const parsed = data?.rules_version === 2 ? tdv2CharacterSchema.safeParse(data.tdv2_data) : null;
+  let tdv = parsed?.success ? parsed.data : null;
+  try {
+    if (tdv) constitution(tdv);
+  } catch {
+    tdv = null;
+  }
+  const invalidTdv = data?.rules_version === 2 && !tdv;
+  const attributes = (
+    tdv ? constitution(tdv).matrices : invalidTdv ? {} : (data?.attributes ?? {})
+  ) as Record<string, number>;
+  const stats = (invalidTdv ? {} : (data?.stats ?? {})) as Record<string, number>;
   const identity = (data?.identity_data ?? {}) as Record<string, unknown>;
 
   return (
     <Card className="tadeon-offline-folio" data-availability={data ? "details" : "summary"}>
       <div className="tadeon-offline-folio__meta">
-        <span>Exposição {summary.exposure ?? 0}%</span>
+        <span>
+          {summary.rules_version === 2 || tdv ? "Desenvolvimento" : "Exposição"}{" "}
+          {tdv ? constitution(tdv).development : (summary.development ?? summary.exposure ?? 0)}%
+        </span>
         <span>{data ? "Detalhes disponíveis" : "Somente resumo"}</span>
       </div>
       <h2 className="tadeon-offline-folio__title">{summary.name}</h2>
       <p className="text-xs text-muted-foreground">
         {summary.occupation || "Ocupação não definida"}
       </p>
-      {data ? (
+      {invalidTdv ? (
+        <p role="alert" className="tdv-note">
+          O registro TdV II armazenado precisa de revisão. Abra a versão principal para conferir; os
+          dados não foram substituídos.
+        </p>
+      ) : data ? (
         <>
           <dl className="tadeon-offline-resources" aria-label="Recursos locais">
-            {[
-              ["PV", stats.pv_current],
-              ["PS", stats.ps_current],
-              ["PE", stats.pe_current],
-              ["PA", stats.pa_current],
-            ].map(([label, value]) => (
+            {(tdv
+              ? [
+                  ["PV", tdv.resources.pv],
+                  ["PI", tdv.resources.pi],
+                  ["PE", tdv.resources.pe],
+                ]
+              : [
+                  ["PV", stats.pv_current],
+                  ["PS", stats.ps_current],
+                  ["PE", stats.pe_current],
+                  ["PA", stats.pa_current],
+                ]
+            ).map(([label, value]) => (
               <div key={String(label)}>
                 <dt>{label}</dt>
                 <dd>

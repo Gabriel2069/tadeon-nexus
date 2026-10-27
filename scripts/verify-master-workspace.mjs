@@ -225,7 +225,7 @@ try {
         );
       }
     };
-    await page.goto(`http://127.0.0.1:${port}/master-panel`, { waitUntil: "domcontentloaded" });
+    await page.goto(`http://127.0.0.1:${port}/master-panel?edition=legacy`, { waitUntil: "domcontentloaded" });
     await page
       .getByRole("heading", { name: "Painel do Mestre", exact: true, level: 1 })
       .waitFor({ timeout: 180000 });
@@ -327,7 +327,7 @@ try {
       await geometry("master-roster");
       await title.fill("Rascunho preservado");
       await page.getByRole("button", { name: /^Pistas ocultas:/ }).click();
-      await page.waitForURL("**/master-panel?tab=investigation");
+      await page.waitForURL("**/master-panel?*tab=investigation*");
       await area("dashboard");
       assert(
         (await title.inputValue()) === "Rascunho preservado",
@@ -442,7 +442,7 @@ try {
     await review.waitFor();
     await page.getByRole("button", { name: "Salvar e sair", exact: true }).click();
     await page.waitForURL(`http://127.0.0.1:${port}/`);
-    await page.goto(`http://127.0.0.1:${port}/master-panel?popout=1&tab=notes`);
+    await page.goto(`http://127.0.0.1:${port}/master-panel?edition=legacy&popout=1&tab=notes`);
     await page.getByRole("heading", { name: "Painel do Mestre", exact: true, level: 1 }).waitFor();
     await area("dashboard");
     assert(
@@ -465,7 +465,7 @@ try {
     await geometry("backup-active");
     await page.emulateMedia({ reducedMotion: "reduce" });
     failLoad = true;
-    await page.goto(`http://127.0.0.1:${port}/master-panel`);
+    await page.goto(`http://127.0.0.1:${port}/master-panel?edition=legacy`);
     await page.getByRole("heading", { name: "Painel indisponível", exact: true }).waitFor();
     await geometry("master-load-error");
     failLoad = false;

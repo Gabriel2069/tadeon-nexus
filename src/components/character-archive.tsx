@@ -20,6 +20,8 @@ export interface ArchiveSheet {
   owner_id: string;
   owner_label?: string | null;
   exposure: number;
+  rules_version?: number;
+  development?: number;
 }
 
 const searchable = (value: string) =>
@@ -60,7 +62,7 @@ export function CharacterArchive({
   if (order === "exposure")
     records.sort(
       (a, b) =>
-        b.sheet.exposure - a.sheet.exposure || a.sheet.name.localeCompare(b.sheet.name, "pt-BR"),
+        (b.sheet.development??b.sheet.exposure) - (a.sheet.development??a.sheet.exposure) || a.sheet.name.localeCompare(b.sheet.name, "pt-BR"),
     );
 
   return (
@@ -110,7 +112,7 @@ export function CharacterArchive({
           <SelectContent>
             <SelectItem value="recent">Mais recentes</SelectItem>
             <SelectItem value="name">Nome: A–Z</SelectItem>
-            <SelectItem value="exposure">Maior exposição</SelectItem>
+            <SelectItem value="exposure">Maior progresso</SelectItem>
           </SelectContent>
         </Select>
         <p className="tadeon-archive-count" role="status">
@@ -152,7 +154,7 @@ export function CharacterArchive({
                     (sheet.owner_id === userId ? "Sua personagem" : "Ficha compartilhada")}
                 </p>
                 <span>
-                  Exposição <strong>{sheet.exposure || 0}</strong>
+                  {sheet.rules_version===2?"Desenvolvimento":"Exposição"} <strong>{sheet.rules_version===2?sheet.development??0:sheet.exposure||0}</strong>
                 </span>
               </div>
               <Link
