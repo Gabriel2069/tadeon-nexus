@@ -2632,8 +2632,8 @@ details.tadeon-utility-note { padding-block: .35rem; }
 .tadeon-library-preview__content { line-height: 1.75; }
 
 /* Directory: a continuous register, with roles and actions on a stable second track. */
-.tadeon-users-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr)); align-items: start; gap: .875rem; }
-.tadeon-user-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: .875rem; min-width: 0; padding: 1rem; border: 1px solid rgb(183 129 77 / 24%); border-radius: 1rem .4rem 1rem .4rem; overflow-wrap: anywhere; background: radial-gradient(ellipse at 0 0, rgb(183 129 77 / 11%), transparent 65%), #12171e; box-shadow: inset 0 1px rgb(233 227 213 / 9%), inset 2px 0 rgb(183 129 77 / 18%), 0 10px 22px -20px #000; transition: border-color 160ms var(--ease-out), background-color 160ms var(--ease-out); }
+.tadeon-users-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr)); align-items: stretch; gap: .875rem; }
+.tadeon-user-row { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr auto; gap: .875rem; min-width: 0; padding: 1rem; border: 1px solid rgb(183 129 77 / 24%); border-radius: 1rem .4rem 1rem .4rem; overflow-wrap: anywhere; background: radial-gradient(ellipse at 0 0, rgb(183 129 77 / 11%), transparent 65%), #12171e; box-shadow: inset 0 1px rgb(233 227 213 / 9%), inset 2px 0 rgb(183 129 77 / 18%), 0 10px 22px -20px #000; transition: border-color 160ms var(--ease-out), background-color 160ms var(--ease-out); }
 .tadeon-user-row__identity { display: flex; align-items: center; gap: .75rem; min-width: 0; }
 .tadeon-user-row__sigil { display: grid; flex: 0 0 auto; width: 2.75rem; aspect-ratio: 1; place-items: center; border: 1px solid rgb(183 129 77 / 30%); border-radius: .7rem .25rem .7rem .25rem; color: #e9e3d5; background: linear-gradient(145deg, rgb(183 129 77 / 14%), transparent), #171c22; box-shadow: inset 0 1px rgb(233 227 213 / 8%); font: 600 1.3rem/1 var(--font-cinzel); }
 .tadeon-user-row[data-user-role="mestre"] .tadeon-user-row__sigil { border-color: rgb(217 215 164 / 38%); }
