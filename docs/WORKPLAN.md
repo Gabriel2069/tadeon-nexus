@@ -50,6 +50,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-038 | Dossiê compacto, Exposição graduada e utilidades como registros | Integrado | 7 | sheet | NEX-037 |
 | NEX-039 | Jogadores individuais, presença da Exposição e deslizamento lateral | Integrado | 7 | shell | NEX-038 |
 | NEX-040 | TdV II v2.0: motor, fichas e condução integrados | Integrado | 7 | sheet | NEX-039 |
+| NEX-041 | Restituir ferramentas da campanha e adaptar fichas existentes sem perda funcional | Em andamento | 1 | sheet | NEX-040 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -398,6 +399,14 @@ Evidências: [docs/navigation-presence-validation.json](../docs/navigation-prese
 
 Evidências: [docs/rules/tdv-ii-v2.md](../docs/rules/tdv-ii-v2.md), [docs/tdv-ii-migration.md](../docs/tdv-ii-migration.md), [docs/tdv-ii-validation.json](../docs/tdv-ii-validation.json), [src/lib/tdv2.ts](../src/lib/tdv2.ts), [src/lib/tdv2.test.ts](../src/lib/tdv2.test.ts), [supabase/migrations/20261027093709_tdv_ii_versioned_rules.sql](../supabase/migrations/20261027093709_tdv_ii_versioned_rules.sql), [scripts/verify-tdv2.mjs](../scripts/verify-tdv2.mjs), [scripts/verify-tdv2-postgres.mjs](../scripts/verify-tdv2-postgres.mjs), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/310), [src/lib/mcp/tools/list-my-sheets.test.ts](../src/lib/mcp/tools/list-my-sheets.test.ts), [src/lib/nexus-backup.test.ts](../src/lib/nexus-backup.test.ts), [docs/tdv-ii-coverage.md](../docs/tdv-ii-coverage.md), [src/lib/tdv2-play.ts](../src/lib/tdv2-play.ts), [src/lib/tdv2-play.test.ts](../src/lib/tdv2-play.test.ts), [src/lib/tdv2-operations.ts](../src/lib/tdv2-operations.ts), [src/lib/tdv2-round.ts](../src/lib/tdv2-round.ts), [supabase/migrations/20261027191353_tdv_ii_operational_play.sql](../supabase/migrations/20261027191353_tdv_ii_operational_play.sql), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40574957707), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40574957603), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40577120744), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40577120805).
 
+## NEX-041 — Restituir ferramentas da campanha e adaptar fichas existentes sem perda funcional
+
+- Restaurar a navegação completa do Mestre e da Mesa como entrada principal, com novas regras dentro das ferramentas existentes.
+- Abrir fichas anteriores na estrutura TdV II com revisão dos valores sem equivalências inventadas; preservar registros, detalhes, narrativa, inventário e organização.
+- Validar edição, leitura, CAS, navegação, foco e quatro larguras antes de publicar.
+
+Evidências: [src/components/master/master-panel-navigation.tsx](../src/components/master/master-panel-navigation.tsx), [src/lib/tdv2-conversion.ts](../src/lib/tdv2-conversion.ts), [scripts/verify-tdv2.mjs](../scripts/verify-tdv2.mjs).
+
 ## Decisões vigentes
 
 | ID | Decisão | Motivo |
@@ -423,3 +432,4 @@ Evidências: [docs/rules/tdv-ii-v2.md](../docs/rules/tdv-ii-v2.md), [docs/tdv-ii
 | DEC-019 | A Mesa usa PageHeader em faixa operacional compacta e uma barra de visão junto ao tabuleiro. | Pedido explícito de aprimoramento da Mesa: reduzir a abertura, dar espaço ao mapa e tornar câmera, encaixe e composição acessíveis. A anatomia e as fontes continuam compartilhadas; a geometria do cabeçalho permanece em page-hero-parity.css. |
 | DEC-020 | O cabeçalho grande da Ficha rola com o dossiê em todas as larguras; instrumentos usam hierarquia adaptável pela largura do cartão. | Pedido explícito de Tadeu para retirar o topo fixo exagerado, melhorar celulares e reorganizar Identidade/vínculos, Atributos, Equilíbrio e Exposição. PageHeader preserva anatomia compartilhada; controles e regras permanecem estáveis. |
 | DEC-021 | A estrutura TdV II segue os procedimentos do livro: Pessoa, Constituição, Ação, Expressão e Percurso, com ferramentas operacionais próprias na condução. | Pedido explícito de Tadeu em 27/10/2026 autoriza mudar a estrutura antiga para comportar o novo sistema. Identidade Véu & Trama, rodas, fontes e cabeçalho não fixo são preservados; cálculos comuns têm uma autoridade e decisões ficcionais exigem declaração. |
+| DEC-022 | A adaptação de regras preserva as ferramentas da campanha e apresenta fichas existentes na estrutura atual por padrão. | Correção explícita de Tadeu: mudar mecânicas não autoriza retirar funções. Dados anteriores permanecem preservados; revisão de competências não inventa equivalências de atributos, dano ou PM/PU. |

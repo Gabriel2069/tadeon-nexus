@@ -336,3 +336,50 @@ it("prepares an explicit narrative draft without inferring mechanics or changing
   expect(c.notes).toContain("Registro anterior");
   expect(row).toEqual(before);
 });
+
+describe("existing dossiers in the current rules", () => {
+  it("retains item identities, narrative and every source field without inventing numerical equivalents", () => {
+    const source = {
+      origin: "Cais",
+      brand: "Fio na pele",
+      description: { historia: "Uma história inteira" },
+      identity_data: { links: [{ id: "link-1", name: "Elen", relation: "Irmã" }] },
+      attributes: { COR: 5, AGI: 1 },
+      pm_spent: 95,
+      weapons: [
+        { id: "sword", nome: "Espada", dano: "3d10", alcance: "Curto", custom: { engraved: true } },
+      ],
+      inventory: [{ id: "rope", nome: "Corda", descricao: "De linho", quantidade: 3 }],
+      abilities: [{ id: "old-lavor", nome: "Véu", descricao: "Oculta o gesto", modificador: 9 }],
+      plots: [{ id: "trama", nome: "Fio vivo", alvo: "Porta" }],
+      fragments_items: [{ id: "fragment", nome: "Memória" }],
+      defense_items: [{ id: "coat", nome: "Casaco", def: 10 }],
+    };
+    const original = structuredClone(source),
+      c = draftFromLegacy(source);
+    expect(source).toEqual(original);
+    expect(c.records.map((r) => r.id)).toEqual([
+      "sword",
+      "rope",
+      "old-lavor",
+      "trama",
+      "fragment",
+      "coat",
+    ]);
+    expect(c.records[0].fields).toMatchObject({
+      dano: "3d10",
+      custom: '{"engraved":true}',
+      "Dano-base": "",
+      "Dano registrado anteriormente": "3d10",
+    });
+    expect(c.records[1].fields).toMatchObject({ quantidade: "3", Descrição: "De linho" });
+    expect(c.records[2].fields["Preço/limite"]).toBe("");
+    expect(c.face.links[0]).toMatchObject({ id: "link-1", node: "Elen", nature: "Irmã" });
+    expect(c.history).toBe(source.description.historia);
+    expect(c.face.mark.manifestation).toBe("Fio na pele");
+    expect(c.milestones).toEqual([]);
+    expect(c.investments).toEqual([]);
+    expect(c.ready).toBe(false);
+    expect(tdv2CharacterSchema.safeParse(c).success).toBe(true);
+  });
+});

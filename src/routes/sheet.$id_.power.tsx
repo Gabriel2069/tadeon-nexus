@@ -51,6 +51,8 @@ import "@/styles/sheet-premium.css";
 import AttributeRadar from "@/components/sheet/attribute-radar";
 
 export const Route = createFileRoute("/sheet/$id_/power")({
+  validateSearch: (search: Record<string, unknown>) =>
+    search.edition === "legacy" ? { edition: "legacy" as const } : {},
   head: () => ({
     meta: [
       { title: "Forma de Poder (VP) · Tadeon Nexus" },
@@ -254,6 +256,7 @@ function syncFromBase(base: BaseRow, prev: VPData): VPData {
 
 function PowerFormPage() {
   const { id } = Route.useParams();
+  const { edition } = Route.useSearch();
   const { user, role } = useAuth();
   const navigate = useNavigate();
   const [base, setBase] = useState<BaseRow | null>(null);
@@ -293,7 +296,7 @@ function PowerFormPage() {
         return;
       }
       const raw = data as unknown as Record<string, unknown>;
-      if (raw.rules_version === 2) {
+      if (raw.rules_version === 2 && edition !== "legacy") {
         void navigate({ to: "/sheet/$id", params: { id } });
         return;
       }
@@ -363,7 +366,7 @@ function PowerFormPage() {
         if (syncError) toast.error("Não foi possível sincronizar a Forma de Poder.");
       }
     })();
-  }, [id, navigate, role, user?.id]);
+  }, [id, navigate, role, user?.id, edition]);
 
   const powerDraft = useMemo(
     () => (base ? { baseId: base.id, baseStats: base.stats, currents, vp } : null),
@@ -480,6 +483,13 @@ function PowerFormPage() {
     <div className="tadeon-vp-page relative min-h-screen pb-24">
       <div className="pointer-events-none fixed inset-0 z-0 vp-pulse" />
       <div data-page-layout className="tadeon-page tadeon-vp-container relative z-10">
+        {edition === "legacy" && (
+          <p className="tdv-legacy-notice" role="note">
+            Registro da Forma de Poder da edição anterior. Seus textos, itens e edição continuam
+            disponíveis; os cálculos deste registro não concedem bônus ou investimentos à ficha TdV
+            II.
+          </p>
+        )}
         <PageHeader
           section="sheet"
           eyebrow="Ficha · Forma de Poder"

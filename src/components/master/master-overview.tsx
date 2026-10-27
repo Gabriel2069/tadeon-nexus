@@ -1,3 +1,4 @@
+import { campaignSheetReading } from "@/lib/master-sheet-reading";
 import { useState } from "react";
 import {
   ArrowRight,
@@ -106,10 +107,10 @@ export function DashboardHub({
       tab: "pinned",
     },
     {
-      label: "Rank médio",
-      value: sheets.length
-        ? Math.round(sheets.reduce((sum, sheet) => sum + sheet.exposure, 0) / sheets.length)
-        : "–",
+      label: "Desenvolvimento médio",
+      value: sheets.some((sheet) => sheet.rules_version === 2)
+        ? `${Math.round(sheets.filter((sheet) => sheet.rules_version === 2).reduce((sum, sheet) => sum + sheet.exposure, 0) / sheets.filter((sheet) => sheet.rules_version === 2).length)}%`
+        : "Em revisão",
       detail: "Avaliar o encontro",
       icon: Gauge,
       tab: "balance",
@@ -233,19 +234,14 @@ export function DashboardHub({
                   <ArrowRight aria-hidden="true" />
                 </span>
                 <span className="tadeon-master-overview__character-meta">
-                  Rank {sheet.exposure}
+                  {campaignSheetReading(sheet).progress}
                   <span>
                     Equilíbrio {sheet.equilibrium > 0 ? "+" : ""}
                     {sheet.equilibrium}
                   </span>
                 </span>
                 <span className="tadeon-master-overview__resources">
-                  {[
-                    ["PV", sheet.stats?.pv_current],
-                    ["PS", sheet.stats?.ps_current],
-                    ["PE", sheet.stats?.pe_current],
-                    ["PA", sheet.stats?.pa_current],
-                  ].map(([label, value]) => (
+                  {campaignSheetReading(sheet).resources.map(([label, value]) => (
                     <span key={label}>
                       <small>{label}</small>
                       <strong>{value ?? 0}</strong>

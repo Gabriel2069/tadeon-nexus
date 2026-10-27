@@ -6,6 +6,11 @@ export type NpcClassification = "Incidental" | "Secundário" | "Operacional" | "
 export type NpcState = "Pleno" | "Abalado" | "Comprometido" | "Incapacitado" | "Morto";
 
 export interface MasterNpc {
+  tdv2?: {
+    kind: "Figurante" | "Adversário" | "Ameaça";
+    magnitude?: number;
+    fields: Record<string, string>;
+  };
   id: string;
   name: string;
   classification: NpcClassification;
@@ -157,6 +162,11 @@ export interface ThreatAbility {
 }
 
 export interface MasterThreat {
+  tdv2?: {
+    kind: "Figurante" | "Adversário" | "Ameaça";
+    magnitude?: number;
+    fields: Record<string, string>;
+  };
   id: string;
   name: string;
   taxonomy: string;

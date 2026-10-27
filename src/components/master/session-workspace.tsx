@@ -1,3 +1,4 @@
+import { campaignSheetReading } from "@/lib/master-sheet-reading";
 import { useEffect, useMemo, useState } from "react";
 import {
   Activity,
@@ -48,12 +49,14 @@ interface SessionScene extends MasterScene {
 }
 
 interface SessionSheet {
+  rules_version?: number;
   id: string;
   name: string;
   exposure: number;
   stats: {
     pv_current: number;
     ps_current: number;
+    pi_current?: number;
     pe_current: number;
     pa_current?: number;
   };
@@ -562,17 +565,12 @@ export function SessionWorkspace({
                         {sheet.name}
                       </p>
                       <span className="flex shrink-0 items-center gap-1.5">
-                        <Badge variant="outline">Rank {sheet.exposure}</Badge>
+                        <Badge variant="outline">{campaignSheetReading(sheet).progress}</Badge>
                         <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
                       </span>
                     </div>
                     <div className="mt-2 grid grid-cols-2 gap-1 text-center sm:grid-cols-4">
-                      {[
-                        ["PV", sheet.stats.pv_current],
-                        ["PS", sheet.stats.ps_current],
-                        ["PE", sheet.stats.pe_current],
-                        ["PA", sheet.stats.pa_current ?? 0],
-                      ].map(([label, value]) => (
+                      {campaignSheetReading(sheet).resources.map(([label, value]) => (
                         <div
                           key={String(label)}
                           className="rounded-md bg-secondary/55 px-1 py-1.5"

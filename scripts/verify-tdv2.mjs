@@ -1,6 +1,6 @@
 /** NEX-040: real UI, isolated authenticated fixtures. No production writes. */
 import { installDesignFonts } from "./design-font-fixtures.mjs";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { spawn } from "node:child_process";
 import { pathToFileURL } from "node:url";
 import { build } from "esbuild";
@@ -151,7 +151,17 @@ try {
           writes.push({ path, patch });
           if (path.includes("/character_sheets")) {
             assert(
-              Object.keys(patch).every((k) => ["name", "rules_version", "tdv2_data"].includes(k)),
+              Object.keys(patch).every((k) =>
+                [
+                  "name",
+                  "rules_version",
+                  "tdv2_data",
+                  "age",
+                  "identity_data",
+                  "description",
+                  "inventory",
+                ].includes(k),
+              ),
               "Legacy column mutation",
             );
             assert(url.searchParams.has("updated_at"), "Missing CAS");
@@ -197,6 +207,11 @@ try {
         });
       });
       await installDesignFonts(page);
+      const masterTool = async (value, label) => {
+        const jump = page.getByLabel("Ir para uma ferramenta do mestre");
+        if (await jump.isVisible()) await jump.selectOption(value);
+        else await page.getByRole("tab", { name: label, exact: true }).click();
+      };
       const geometry = async (label) => {
         const target = {
           "sheet-critical": ".tdv-result",
@@ -479,6 +494,52 @@ try {
       if (role === "espectador") assert(writes.length === 0, "Readonly writes");
       if (role === "mestre") {
         await page.goto(`http://127.0.0.1:${port}/master-panel`);
+        await page.getByRole("tab", { name: "Sessão Ativa", exact: true }).waitFor();
+        for (const label of [
+          "Cenas",
+          "NPCs",
+          "Ameaças",
+          "Investigação",
+          "Interlúdios",
+          "Dobras",
+          "Acervo",
+          "Notas",
+          "Regras TdV II",
+        ]) {
+          assert(
+            (await page.getByRole("tab", { name: label, exact: true }).count()) === 1,
+            "Campaign tool hidden: " + label,
+          );
+        }
+        await geometry("master-workspace");
+        await masterTool("initiative", "Iniciativa");
+        await page.getByRole("button", { name: "NPC", exact: true }).waitFor();
+        assert(
+          (await page.getByRole("button", { name: "Jogador", exact: true }).count()) === 1,
+          "Manual initiative controls removed",
+        );
+        await page.getByLabel("Título da cena", { exact: true }).waitFor();
+        await geometry("master-initiative-retained");
+        await masterTool("rules", "Regras TdV II");
+        await page.getByLabel("Título da cena", { exact: true }).fill("Rascunho protegido");
+        await masterTool("session", "Sessão Ativa");
+        await page.getByRole("alertdialog").waitFor();
+        await page.getByRole("button", { name: "Continuar no painel", exact: true }).click();
+        assert(
+          (await page.getByLabel("Título da cena", { exact: true }).inputValue()) ===
+            "Rascunho protegido",
+          "Parent navigation lost embedded draft",
+        );
+        await masterTool("session", "Sessão Ativa");
+        await page.getByRole("button", { name: "Salvar e continuar", exact: true }).click();
+        await page.waitForFunction(
+          () => new URL(location.href).searchParams.get("tab") === "session",
+        );
+        assert(
+          settings.tdv2_state.title === "Rascunho protegido",
+          "Embedded draft not saved before navigation",
+        );
+        await page.goto(`http://127.0.0.1:${port}/master-panel?edition=tdv2`);
         await page.getByLabel("Título da cena", { exact: true }).waitFor();
         await geometry("master-scene");
         await page.getByLabel("Título da cena", { exact: true }).fill("O arquivo em ruptura");
@@ -578,6 +639,16 @@ try {
           occupation: "Registradora",
           notes: "Memória preservada",
           brand: "Marca anterior",
+          description: {
+            historia: "História preservada",
+            personalidade: "Atenta",
+            objetivos: "Voltar ao cais",
+            observacoes: "Fala baixo",
+          },
+          weapons: [{ id: "old-sword", nome: "Espada do cais", dano: "2d10" }],
+          inventory: [
+            { id: "old-rope", nome: "Corda de linho", descricao: "Dez metros", espaco: 1 },
+          ],
           identity_data: {
             conviction: "Preservar testemunhos",
             limit: "Não entregar inocentes",
@@ -587,28 +658,28 @@ try {
         const historical = JSON.stringify(
           Object.fromEntries(
             Object.entries(row).filter(
-              ([k]) => !["rules_version", "tdv2_data", "updated_at"].includes(k),
+              ([k]) =>
+                ![
+                  "rules_version",
+                  "tdv2_data",
+                  "updated_at",
+                  "description",
+                  "inventory",
+                  "identity_data",
+                  "age",
+                ].includes(k),
             ),
           ),
         );
         await page.goto(`http://127.0.0.1:${port}/sheet/${sheetId}?mode=edit`);
-        const prepare = page.getByRole("button", { name: "Preparar ficha TdV II", exact: true });
-        await prepare.click();
-        await page.getByRole("dialog").waitFor();
-        await geometry("conversion-dialog");
-        await page.keyboard.press("Escape");
-        await page.getByRole("dialog").waitFor({ state: "hidden" });
-        await page.waitForFunction(
-          () => document.activeElement?.textContent?.trim() === "Preparar ficha TdV II",
-        );
+        await page.getByRole("heading", { name: "Feição", exact: true }).waitFor();
+        assert(row.rules_version === 1, "Opening an existing sheet wrote data before review");
         assert(
-          await prepare.evaluate((el) => document.activeElement === el),
-          "Conversion dismissal lost focus",
+          (await page
+            .getByRole("button", { name: "Preparar ficha TdV II", exact: true })
+            .count()) === 0,
+          "Existing sheet still blocked behind conversion",
         );
-        await prepare.click();
-        await page
-          .getByRole("button", { name: "Preparar rascunho e preservar dados antigos", exact: true })
-          .click();
         await page.getByRole("heading", { name: "Preparar a personagem", exact: true }).waitFor();
         assert(
           await page
@@ -619,6 +690,9 @@ try {
         await page
           .getByLabel("A que parte de mim consigo retornar?", { exact: true })
           .fill("A promessa a Elen");
+        await page.locator("summary").filter({ hasText: "Marca ·" }).click();
+        await page.getByLabel("Gatilho", { exact: true }).fill("Quando a promessa é ameaçada");
+        await page.getByLabel("Resíduo", { exact: true }).fill("O fio permanece quente");
         await page.getByRole("button", { name: "Concluir criação TdV II", exact: true }).click();
         await saved(() => row.rules_version === 2 && row.tdv2_data.ready);
         assert(
@@ -630,12 +704,53 @@ try {
             JSON.stringify(
               Object.fromEntries(
                 Object.entries(row).filter(
-                  ([k]) => !["rules_version", "tdv2_data", "updated_at"].includes(k),
+                  ([k]) =>
+                    ![
+                      "rules_version",
+                      "tdv2_data",
+                      "updated_at",
+                      "description",
+                      "inventory",
+                      "identity_data",
+                      "age",
+                    ].includes(k),
                 ),
               ),
             ),
           "Conversion changed legacy fields",
         );
+        assert(
+          row.tdv2_data.records.some((r) => r.id === "old-sword" && r.name === "Espada do cais"),
+          "Weapon lost in adaptation",
+        );
+        assert(
+          row.inventory.some((r) => r.id === "old-rope" && r.nome === "Corda de linho"),
+          "Organizer item identity lost",
+        );
+        await page.getByRole("tab", { name: "Expressão", exact: true }).click();
+        await page.getByRole("heading", { name: "Inventário", exact: true }).waitFor();
+        assert(
+          (await page.getByRole("button", { name: "Organizar", exact: true }).count()) +
+            (await page
+              .getByRole("button", { name: "Organizar inventário", exact: true })
+              .count()) >
+            0,
+          "Inventory organizer missing",
+        );
+        await page.getByRole("tab", { name: "Percurso", exact: true }).click();
+        await page
+          .getByLabel("História", { exact: true })
+          .fill("História revisada sem apagar a personalidade");
+        await page.getByRole("button", { name: "Salvar", exact: true }).click();
+        await saved(
+          () => row.description.historia === "História revisada sem apagar a personalidade",
+        );
+        assert(
+          row.tdv2_data.history === row.description.historia &&
+            row.description.personalidade === "Atenta",
+          "Narrative editor lost other sections",
+        );
+        await page.getByRole("tab", { name: "Pessoa", exact: true }).click();
         await geometry("converted-sheet");
         row = {
           ...row,
@@ -645,6 +760,18 @@ try {
         await page.getByLabel("Origem", { exact: true }).fill("Rascunho local em conflito");
         await page.getByRole("button", { name: "Salvar", exact: true }).click();
         await page.getByRole("button", { name: "Guardar rascunho", exact: true }).waitFor();
+        const downloadEvent = page.waitForEvent("download");
+        await page.getByRole("button", { name: "Guardar rascunho", exact: true }).click();
+        const download = await downloadEvent;
+        const draftPath = `${output}/conflict-dossier-${width}.json`;
+        await download.saveAs(draftPath);
+        const exported = JSON.parse(readFileSync(draftPath, "utf8"));
+        assert(
+          exported.description.personalidade === "Atenta" &&
+            exported.description.historia === exported.tdv2_data.history &&
+            exported.inventory.some((r) => r.id === "old-rope"),
+          "Conflict export lost restored dossier fields",
+        );
         assert(row.tdv2_data.face.origin === "O cais antigo", "Conflict overwrote another window");
         const attempts = writes.length;
         await page.waitForTimeout(3500);

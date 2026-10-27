@@ -1363,6 +1363,27 @@
         "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40577120805"
       ],
       "checkpoint": "Integrado pela PR #310, fonte afa8b27, merge 720fd96. Ficha TdV II em Pessoa, Constituição, Ação, Expressão e Percurso; Auxílio, Resto/Redobra, proteção e consequências, Lavor/Costura, Tramas e sustentação/Refluxo possuem fluxos próprios. Mestre conduz operações, Pressão, Iniciativa, pistas e ameaças, com revisão comparada antes de gravar. Mesa recebe resumo autorizado e rodada pública opcional; alterações locais e segredos são preservados. Cinco fichas antigas conservadas, com conversão revisável. Nexus: 203 páginas/314 relações, 17 páginas do novo livro e 14 templates, preservando conteúdo pessoal e prévia de conflitos. Quality fonte/main: 161 suítes/686 testes, auditoria zero; 49 testes de Motor, procedimentos e projeções, além de 41 verificações PostgreSQL isoladas. Migrações 20261027093709/20261027191353 e tabletop-view v16 aplicados, JWT obrigatório/anônimo401. Os cinco grupos visuais passaram no fonte exato: 83 estados/fluxos TdV II e 42 do painel anterior; quatro larguras, foco, portais e redução de movimento. Metadados/digests dos cinco artefatos e logs conferidos; capturas nativas do mesmo código de produto inspecionadas. HTTP200/SHA exato em 2026-10-27T20:22:55.7505268Z. Decisões ficcionais permanecem explícitas; fixtures não certificam hardware, contas ou restauração reais (NEX-009/010/011). A PR de fechamento registra a própria publicação e a verificação do pacote canônico."
+    },
+    {
+      "id": "NEX-041",
+      "title": "Restituir ferramentas da campanha e adaptar fichas existentes sem perda funcional",
+      "domain": "sheet",
+      "status": "active",
+      "priority": 1,
+      "dependsOn": [
+        "NEX-040"
+      ],
+      "acceptance": [
+        "Restaurar a navegação completa do Mestre e da Mesa como entrada principal, com novas regras dentro das ferramentas existentes.",
+        "Abrir fichas anteriores na estrutura TdV II com revisão dos valores sem equivalências inventadas; preservar registros, detalhes, narrativa, inventário e organização.",
+        "Validar edição, leitura, CAS, navegação, foco e quatro larguras antes de publicar."
+      ],
+      "evidence": [
+        "src/components/master/master-panel-navigation.tsx",
+        "src/lib/tdv2-conversion.ts",
+        "scripts/verify-tdv2.mjs"
+      ],
+      "checkpoint": "Correção solicitada por Tadeu após NEX-040: a entrada simplificada ocultava ferramentas e as fichas existentes permaneciam na interface anterior. Implementação e validação em andamento; ainda não publicada."
     }
   ],
   "decisions": [
@@ -1504,6 +1525,11 @@
       "id": "DEC-021",
       "decision": "A estrutura TdV II segue os procedimentos do livro: Pessoa, Constituição, Ação, Expressão e Percurso, com ferramentas operacionais próprias na condução.",
       "reason": "Pedido explícito de Tadeu em 27/10/2026 autoriza mudar a estrutura antiga para comportar o novo sistema. Identidade Véu & Trama, rodas, fontes e cabeçalho não fixo são preservados; cálculos comuns têm uma autoridade e decisões ficcionais exigem declaração."
+    },
+    {
+      "id": "DEC-022",
+      "decision": "A adaptação de regras preserva as ferramentas da campanha e apresenta fichas existentes na estrutura atual por padrão.",
+      "reason": "Correção explícita de Tadeu: mudar mecânicas não autoriza retirar funções. Dados anteriores permanecem preservados; revisão de competências não inventa equivalências de atributos, dano ou PM/PU."
     }
   ],
   "bridges": [

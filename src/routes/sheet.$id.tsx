@@ -1,3 +1,5 @@
+import { SheetDescriptionPanel } from "@/components/sheet/sheet-description-panel";
+import { Tdv2DossierDetails, Tdv2Belongings } from "@/components/sheet/tdv2-retained-tools";
 import { AutosaveConflictError, SHEET_CONFLICT_MESSAGE } from "@/lib/autosave-conflict";
 import { Tdv2Sheet } from "@/components/sheet/tdv2-sheet";
 import { draftFromLegacy } from "@/lib/tdv2-conversion";
@@ -149,6 +151,8 @@ const SHEET_TUTORIAL_STEPS = [
 ] as const;
 
 export const Route = createFileRoute("/sheet/$id")({
+  validateSearch: (search: Record<string, unknown>) =>
+    search.edition === "legacy" ? { edition: "legacy" as const } : {},
   head: () => ({
     meta: [
       { title: "Ficha de Personagem · Tadeon Nexus" },
@@ -189,6 +193,7 @@ function SheetRoute() {
 
 function SheetPage() {
   const { id } = Route.useParams();
+  const { edition } = Route.useSearch();
   const { user, role } = useAuth();
   const navigate = useNavigate();
   const [sheetHost, setSheetHost] = useState<HTMLDivElement | null>(null);
@@ -312,7 +317,7 @@ function SheetPage() {
           ? (storedProficiency as WeaponProficiency)
           : "operador";
         const storedFamily = raw.weapon_proficiency_family as WeaponProficiencyFamily | null;
-        setSheet({
+        const loaded: SheetData = {
           ...(data as unknown as SheetData),
           drift: Number(raw.drift ?? 0),
           stats: {
@@ -332,7 +337,16 @@ function SheetPage() {
           weapon_proficiency: weaponProficiency,
           weapon_proficiency_family:
             storedFamily === "Contato" || storedFamily === "Projeção" ? storedFamily : "",
-        });
+        };
+        setSheet(
+          loaded.rules_version !== 2 && edition !== "legacy"
+            ? {
+                ...loaded,
+                rules_version: 2,
+                tdv2_data: draftFromLegacy(loaded as unknown as Record<string, unknown>),
+              }
+            : loaded,
+        );
 
         const settings = (settingsJson as unknown as Record<string, unknown> | null) ?? {};
         const configuredRanks = (settings.rank_table as RankRow[] | undefined) ?? [];
@@ -373,7 +387,7 @@ function SheetPage() {
       }
     })();
     return () => controller.abort();
-  }, [id, loadAttempt]);
+  }, [id, loadAttempt, edition]);
 
   const {
     dirty,
@@ -391,7 +405,26 @@ function SheetPage() {
         constitution(value);
         let query = supabase
           .from("character_sheets")
-          .update({ name: currentSheet.name, rules_version: 2, tdv2_data: value as never })
+          .update({
+            name: currentSheet.name,
+            rules_version: 2,
+            tdv2_data: value as never,
+            age: currentSheet.age,
+            identity_data: currentSheet.identity_data as never,
+            description: { ...currentSheet.description, historia: value.history } as never,
+            inventory: value.records
+              .filter(
+                (r) =>
+                  r.kind === "Equipamento" && r.fields["Registro de origem"] !== "defense_items",
+              )
+              .map((r) => ({
+                ...currentSheet.inventory.find((i) => i.id === r.id),
+                id: r.id,
+                nome: r.name,
+                descricao: r.fields["Descrição"] ?? r.fields.Função ?? "",
+                espaco: Number(r.fields.espaco) || 0,
+              })) as never,
+          })
           .eq("id", currentSheet.id);
         if (sheetVersion.current) query = query.eq("updated_at", sheetVersion.current);
         const { data, error } = await query.select("id,updated_at").maybeSingle();
@@ -600,6 +633,20 @@ function SheetPage() {
               <Button variant="outline" onClick={() => navigate({ to: "/" })}>
                 Arquivo
               </Button>
+              {sheet.power_form_enabled && (
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    navigate({
+                      to: "/sheet/$id/power",
+                      params: { id },
+                      search: { edition: "legacy" },
+                    })
+                  }
+                >
+                  Forma de Poder · registro
+                </Button>
+              )}
               <SheetExperienceBridge sheetId={id} dropTarget={sheetHost} canEdit={canEdit} />
               <SaveStatus
                 state={saveError ? "error" : saving ? "saving" : dirty ? "pending" : "saved"}
@@ -623,7 +670,7 @@ function SheetPage() {
                     new Blob(
                       [
                         JSON.stringify(
-                          { name: sheet.name, rules_version: 2, tdv2_data: parsed.data },
+                          { ...sheet, rules_version: 2, tdv2_data: parsed.data },
                           null,
                           2,
                         ),
@@ -674,6 +721,36 @@ function SheetPage() {
           character={parsed.data}
           canEdit={canEdit}
           isMaster={role === "mestre"}
+          personaExtra={<Tdv2DossierDetails sheet={sheet} canEdit={canEdit} onUpdate={update} />}
+          belongings={
+            <Tdv2Belongings
+              character={parsed.data}
+              onChange={(v) => update("tdv2_data", v)}
+              canEdit={canEdit}
+              sheetId={id}
+              beforeOrganize={doSave}
+            />
+          }
+          narrative={
+            <SheetDescriptionPanel
+              description={{ ...sheet.description, historia: parsed.data.history }}
+              canEdit={canEdit}
+              onChange={(description) =>
+                setSheet((previous) =>
+                  previous
+                    ? {
+                        ...previous,
+                        description,
+                        tdv2_data: {
+                          ...tdv2CharacterSchema.parse(previous.tdv2_data),
+                          history: description.historia,
+                        },
+                      }
+                    : previous,
+                )
+              }
+            />
+          }
           onChange={(value) => update("tdv2_data", value)}
         />
       </div>

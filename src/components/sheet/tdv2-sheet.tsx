@@ -1,4 +1,5 @@
-import { useState } from "react";
+import AttributeRadar from "./attribute-radar";
+import { useState, type ReactNode } from "react";
 import { TdvDisclosure, TdvField, TdvSelect, TdvNumber, TdvCheck } from "./tdv2-fields";
 import {
   TdvGuard,
@@ -44,11 +45,17 @@ export function Tdv2Sheet({
   onChange,
   canEdit,
   isMaster,
+  personaExtra,
+  belongings,
+  narrative,
 }: {
   character: TdvCharacter;
   onChange: (value: TdvCharacter) => void;
   canEdit: boolean;
   isMaster: boolean;
+  personaExtra?: ReactNode;
+  belongings?: ReactNode;
+  narrative?: ReactNode;
 }) {
   const [tab, setTab] = useState("pessoa"),
     [event, setEvent] = useState(""),
@@ -127,6 +134,7 @@ export function Tdv2Sheet({
           <TabsTrigger value="percurso">Percurso</TabsTrigger>
         </TabsList>
         <TabsContent value="pessoa" data-sheet-content>
+          {personaExtra}
           <Section id="tdv-feicao" title="Feição">
             <div className="tdv-grid tdv-grid--identity">
               {(
@@ -334,6 +342,13 @@ export function Tdv2Sheet({
         </TabsContent>
         <TabsContent value="constituicao" data-sheet-content>
           <Section id="tdv-constituicao" title="Matrizes e Alinhavos">
+            <div className="tadeon-attribute-radar">
+              <AttributeRadar
+                color="#a397bf"
+                tickColor="#e9e3d5"
+                data={MATRICES.map((attr) => ({ attr, value: stats.matrices[attr] }))}
+              />
+            </div>
             <div className="tdv-matrices">
               {MATRICES.map((matrix) => (
                 <div className="tdv-matrix" key={matrix}>
@@ -662,6 +677,7 @@ export function Tdv2Sheet({
           </Section>
         </TabsContent>
         <TabsContent value="expressao" data-sheet-content>
+          {belongings}
           <Section id="tdv-uso" title="Expressar e sustentar">
             <TdvExpressionUse character={c} onChange={onChange} canEdit={canEdit} />
           </Section>
@@ -882,13 +898,16 @@ export function Tdv2Sheet({
               ))}
             </details>
           </Section>
+          {narrative}
           <Section id="tdv-historia" title="História e memória">
-            <TdvField
-              label="História da personagem"
-              value={c.history}
-              onChange={(v) => upd("history", v)}
-              disabled={disabled}
-            />
+            {!narrative && (
+              <TdvField
+                label="História da personagem"
+                value={c.history}
+                onChange={(v) => upd("history", v)}
+                disabled={disabled}
+              />
+            )}
             <TdvField
               label="Anotações e Restos"
               value={c.notes}

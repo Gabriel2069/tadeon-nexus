@@ -26,6 +26,7 @@ export const MASTER_TAB_VALUES = [
   "session",
   "scenes",
   "initiative",
+  "rules",
   "npcs-v2",
   "threats",
   "investigation",
@@ -53,6 +54,7 @@ export const MASTER_TAB_META: MasterTabMeta[] = [
   { value: "session", label: "Sessão Ativa", icon: Radio },
   { value: "scenes", label: "Cenas", icon: Map },
   { value: "initiative", label: "Iniciativa", icon: ListChecks },
+  { value: "rules", label: "Regras TdV II", icon: BookOpenCheck },
   { value: "npcs-v2", label: "NPCs", icon: Users },
   { value: "threats", label: "Ameaças", icon: ShieldAlert },
   { value: "investigation", label: "Investigação", icon: BrainCircuit },
@@ -67,7 +69,7 @@ export const MASTER_TAB_META: MasterTabMeta[] = [
 ];
 
 const groups: Array<{ label: string; values: MasterTab[] }> = [
-  { label: "Condução", values: ["dashboard", "session", "scenes", "initiative"] },
+  { label: "Condução", values: ["dashboard", "session", "scenes", "initiative", "rules"] },
   { label: "Elenco", values: ["npcs-v2", "threats", "investigation"] },
   { label: "Ritmo", values: ["interludes", "folds", "balance"] },
   { label: "Arquivo", values: ["catalog", "assets", "pinned", "notes", "data"] },

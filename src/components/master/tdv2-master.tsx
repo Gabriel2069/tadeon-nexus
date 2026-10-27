@@ -60,11 +60,19 @@ import "@/styles/workspace.css";
 import "@/styles/sheet-premium.css";
 
 type RosterRow = { id: string; name: string; tdv2_data: TdvCharacter; updated_at: string };
-export function Tdv2MasterPanel() {
+export function Tdv2MasterPanel({
+  embedded = false,
+  initialTab = "scene",
+}: {
+  embedded?: boolean;
+  initialTab?: string;
+}) {
   const { user, role } = useAuth();
-  return <TdvMasterWorkspace key={`${user?.id}:${role}`} />;
+  return (
+    <TdvMasterWorkspace key={`${user?.id}:${role}`} embedded={embedded} initialTab={initialTab} />
+  );
 }
-function TdvMasterWorkspace() {
+function TdvMasterWorkspace({ embedded, initialTab }: { embedded: boolean; initialTab: string }) {
   const { user, role } = useAuth();
   const [error, setError] = useState<string | null>(null),
     [loading, setLoading] = useState(true),
@@ -73,7 +81,7 @@ function TdvMasterWorkspace() {
     [legacy, setLegacy] = useState<{ id: string; name: string }[]>([]),
     [pressureCause, setPressureCause] = useState(""),
     [busy, setBusy] = useState<string | null>(null),
-    [tab, setTab] = useState("scene");
+    [tab, setTab] = useState(initialTab);
   const revision = useRef(0);
   const [conflict, setConflict] = useState(false);
   const [scenes, setScenes] = useState<{ id: string; name: string }[]>([]);
@@ -178,7 +186,11 @@ function TdvMasterWorkspace() {
   }, [attempt, load]);
   const blocker = useBlocker({
     shouldBlockFn: ({ current, next }) =>
-      (draft.dirty || draft.saving) && current.pathname !== next.pathname,
+      (draft.dirty || draft.saving) &&
+      (embedded
+        ? current.pathname !== next.pathname ||
+          JSON.stringify(current.search) !== JSON.stringify(next.search)
+        : current.pathname !== next.pathname),
     enableBeforeUnload: draft.dirty || draft.saving,
     withResolver: true,
   });
@@ -337,39 +349,77 @@ function TdvMasterWorkspace() {
     }
   };
   return (
-    <div data-page-layout className="tadeon-page tadeon-master-panel tadeon-tdv2-master">
-      <PageHeader
-        section="master"
-        eyebrow="TdV II · Condução da Tessitura"
-        title="Painel do Mestre"
-        description="Objetivo, Posição, Pressão e aquilo que permanece."
-        actions={
-          <div className="tdv-actions">
-            <WorkspaceActions workspace="/master-panel" />
-            <SaveStatus
-              state={
-                draft.error ? "error" : draft.saving ? "saving" : draft.dirty ? "pending" : "saved"
-              }
-              savedAt={draft.savedAt}
-              onRetry={() => void draft.save()}
-            />
-            <Button
-              disabled={!draft.dirty || draft.saving || conflict}
-              onClick={() => void draft.save()}
-            >
-              Salvar condução
-            </Button>
-            <Button variant="outline" asChild>
-              <Link to="/tabletop">Abrir Mesa</Link>
-            </Button>
-            <Button variant="ghost" asChild>
-              <Link to="/master-panel" search={{ edition: "legacy", tab: undefined }}>
-                Arquivo da edição anterior
-              </Link>
-            </Button>
-          </div>
-        }
-      />
+    <div
+      data-page-layout={embedded ? undefined : true}
+      className={
+        embedded ? "tadeon-tdv2-master" : "tadeon-page tadeon-master-panel tadeon-tdv2-master"
+      }
+    >
+      {embedded ? (
+        <div className="tdv-actions">
+          {!embedded && <WorkspaceActions workspace="/master-panel" />}
+          <SaveStatus
+            state={
+              draft.error ? "error" : draft.saving ? "saving" : draft.dirty ? "pending" : "saved"
+            }
+            savedAt={draft.savedAt}
+            onRetry={() => void draft.save()}
+          />
+          <Button
+            disabled={!draft.dirty || draft.saving || conflict}
+            onClick={() => void draft.save()}
+          >
+            Salvar condução
+          </Button>
+          <Button variant="outline" asChild>
+            <Link to="/tabletop">Abrir Mesa</Link>
+          </Button>
+          <Button variant="ghost" asChild>
+            <Link to="/master-panel" search={{ edition: undefined, tab: undefined }}>
+              Ferramentas da campanha
+            </Link>
+          </Button>
+        </div>
+      ) : (
+        <PageHeader
+          section="master"
+          eyebrow="TdV II · Condução da Tessitura"
+          title="Painel do Mestre"
+          description="Objetivo, Posição, Pressão e aquilo que permanece."
+          actions={
+            <div className="tdv-actions">
+              {!embedded && <WorkspaceActions workspace="/master-panel" />}
+              <SaveStatus
+                state={
+                  draft.error
+                    ? "error"
+                    : draft.saving
+                      ? "saving"
+                      : draft.dirty
+                        ? "pending"
+                        : "saved"
+                }
+                savedAt={draft.savedAt}
+                onRetry={() => void draft.save()}
+              />
+              <Button
+                disabled={!draft.dirty || draft.saving || conflict}
+                onClick={() => void draft.save()}
+              >
+                Salvar condução
+              </Button>
+              <Button variant="outline" asChild>
+                <Link to="/tabletop">Abrir Mesa</Link>
+              </Button>
+              <Button variant="ghost" asChild>
+                <Link to="/master-panel" search={{ edition: undefined, tab: undefined }}>
+                  Ferramentas da campanha
+                </Link>
+              </Button>
+            </div>
+          }
+        />
+      )}
       {conflict && (
         <div className="tdv-legacy-notice" role="alert">
           <h2>A condução mudou em outra janela</h2>

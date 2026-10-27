@@ -72,6 +72,7 @@ const THREAT_MOVEMENT_MODES = [
 ] as const;
 
 export interface MasterSheetOverview {
+  rules_version?: number;
   id: string;
   name: string;
   exposure: number;
@@ -79,6 +80,7 @@ export interface MasterSheetOverview {
   stats: {
     pv_current: number;
     ps_current: number;
+    pi_current?: number;
     pe_current: number;
     pa_current?: number;
   };
