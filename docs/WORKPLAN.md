@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-26; referência de runtime: `535106f7eb1aaacaa599334d7c8e93287af03a11`. PR #306 em `feat/nex-038-dossier-density`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-27; referência de runtime: `99db7ac0f7ab13b44eba72d9aaa421971ad58587`. PR #308 em `feat/nex-039-navigation-presence`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -48,7 +48,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-036 | Ficha: registros de identidade, vínculos e instrumentos de estado | Integrado | 7 | sheet | NEX-035 |
 | NEX-037 | Atributos em escala legível e Equilíbrio como relação entre polos | Integrado | 7 | sheet | NEX-036 |
 | NEX-038 | Dossiê compacto, Exposição graduada e utilidades como registros | Integrado | 7 | sheet | NEX-037 |
-| NEX-039 | Jogadores individuais, presença da Exposição e deslizamento lateral | Em andamento | 7 | shell | NEX-038 |
+| NEX-039 | Jogadores individuais, presença da Exposição e deslizamento lateral | Integrado | 7 | shell | NEX-038 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -384,7 +384,7 @@ Evidências: [docs/VEU_E_TRAMA.md](../docs/VEU_E_TRAMA.md), [docs/dossier-densit
 - Reconciliar abertura/recolhimento lateral, rótulos persistentes, interrupção e movimento reduzido; preservar botões aprovados e rodas.
 - Validar quatro larguras, teclado/foco/portais, check e auditoria; distinguir fixtures, integração e publicação.
 
-Evidências: [docs/navigation-presence-validation.json](../docs/navigation-presence-validation.json), [scripts/verify-navigation-utilities.mjs](../scripts/verify-navigation-utilities.mjs), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs).
+Evidências: [docs/navigation-presence-validation.json](../docs/navigation-presence-validation.json), [scripts/verify-navigation-utilities.mjs](../scripts/verify-navigation-utilities.mjs), [scripts/verify-sheet-design.mjs](../scripts/verify-sheet-design.mjs), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/308), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40432582240), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40432582165), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40476036876), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40476036880).
 
 ## Decisões vigentes
 

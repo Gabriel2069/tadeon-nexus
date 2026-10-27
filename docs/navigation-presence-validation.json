@@ -1,6 +1,6 @@
 {
   "task": "NEX-039",
-  "state": "local-validation",
+  "state": "integrated-and-published",
   "base": "109b94fe9fa67b4ea747348b76b89056d5e8a498",
   "changes": [
     "Cartões individuais com grade pela largura disponível, costura bronze e trilha de acesso própria.",
@@ -8,10 +8,87 @@
     "Sidebar com largura reversível em 260ms e rótulos persistentes; drawer em 260ms/180ms; busca sem deslocamento no hover; promoção permanente legada retirada."
   ],
   "verification": {
-    "status": "pending",
-    "auditVulnerabilities": 0
+    "sourceQuality": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40432582240",
+    "sourceVisual": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40432582165",
+    "mainQuality": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40476036876",
+    "suites": 157,
+    "tests": 634,
+    "auditVulnerabilities": 0,
+    "cssModules": 57,
+    "globalLinks": 12,
+    "importantRemoved": 6,
+    "artifact": {
+      "id": 12704211569,
+      "name": "visual-review",
+      "size_in_bytes": 95217059,
+      "url": "https://api.github.com/repos/Gabriel2069/tadeon-nexus/actions/artifacts/12704211569",
+      "archive_download_url": "https://api.github.com/repos/Gabriel2069/tadeon-nexus/actions/artifacts/12704211569/zip",
+      "expired": false,
+      "created_at": "2026-10-27T01:57:18Z",
+      "expires_at": "2026-11-03T01:57:14Z",
+      "updated_at": "2026-10-27T01:57:18Z",
+      "digest": "sha256:8a404244f0118561c4d8492d660258928c42233a7e38dfdcabc0ce5a6d56abd5",
+      "workflow_run": {
+        "id": 40432582165,
+        "repository_id": 1284491281,
+        "head_repository_id": 1284491281,
+        "head_branch": "feat/nex-039-navigation-presence",
+        "head_sha": "8dafaf804e2a5b22b84189f8b14f7ccd7edb26c3"
+      }
+    },
+    "local": {
+      "adaptiveViews": 8,
+      "utilityStates": 40,
+      "alignedCardContracts": [
+        320,
+        1440
+      ],
+      "sidebarInterpolation": {
+        "widths": [
+          820,
+          1440
+        ],
+        "expanded": 256,
+        "intermediateAt130ms": 92.671875,
+        "reversedDestination": 256,
+        "reducedMotionImmediate": true
+      },
+      "screenshots": [
+        "nex039-users/users-320.png",
+        "nex039-users/users-1440.png",
+        "nex039-navigation/sidebar-1440.png"
+      ]
+    },
+    "finalArtifactInspection": {
+      "pngs": 229,
+      "checked": [
+        "sheet-adaptive/exposure-editable-320.png",
+        "utility-registers/users-1440.png"
+      ],
+      "navigationCases": 16,
+      "sidebarInterpolationWidths": [
+        820,
+        1440
+      ],
+      "utilityCases": 40,
+      "adaptiveCases": 8,
+      "allSourceGatesPassed": true
+    }
   },
   "limits": [
     "Fixtures não certificam FPS/INP em aparelhos físicos, contas reais ou restauração. NEX-009/010/011 preservados."
-  ]
+  ],
+  "source": "8dafaf804e2a5b22b84189f8b14f7ccd7edb26c3",
+  "sourceTree": "5b787393debeae7a22c4013bbc7898a68cb1d5c2",
+  "merge": "99db7ac0f7ab13b44eba72d9aaa421971ad58587",
+  "production": {
+    "run": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40476036880",
+    "sha": "99db7ac0f7ab13b44eba72d9aaa421971ad58587",
+    "httpStatus": 200,
+    "verifiedAt": "2026-10-27T08:50:43.5235794Z",
+    "logProof": [
+      "2026-10-27T08:50:43.5234026Z Attempt 1/12: HTTP 200, build 99db7ac0f7ab13b44eba72d9aaa421971ad58587.",
+      "2026-10-27T08:50:43.5235794Z Production confirmed at SHA 99db7ac0f7ab13b44eba72d9aaa421971ad58587."
+    ]
+  }
 }
