@@ -103,6 +103,7 @@
 .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon { border-color: rgb(233 227 213 / 20%); background-color: rgb(233 227 213 / 5%); }
 .tadeon-nav-item[data-mini="true"] { gap: 0; padding: .35rem; }
 .tadeon-nav-item[data-mini="true"] .tadeon-nav-item__label, .tadeon-side-action[data-mini="true"] .tadeon-nav-item__label { opacity: 0; transform: translateX(-.35rem); width: 0; }
+.tadeon-side-action[data-mini="true"] { gap: 0; justify-content: center; padding-inline: .5rem; }
 .tadeon-sidebar-collapse { position: absolute; z-index: 30; top: 1.5rem; right: -1.375rem; width: 2.75rem; height: 2.75rem; min-width: 2.75rem; border-color: var(--border); border-radius: 50%; color: var(--foreground); background: #1c2026; box-shadow: inset 0 1px rgb(233 227 213 / 12%), 0 6px 18px -10px #000; }
 :is(.tadeon-nav-item, .tadeon-mobile-dock__item, .tadeon-sidebar-collapse, .tadeon-mobile-header__control, .tadeon-desktop-toolbar__account):focus-visible { outline: 2px solid var(--foreground); outline-offset: 3px; }
 @media (hover: hover) and (pointer: fine) {
