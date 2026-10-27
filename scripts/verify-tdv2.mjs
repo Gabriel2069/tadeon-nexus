@@ -675,6 +675,7 @@ try {
         await page
           .getByLabel("A que parte de mim consigo retornar?", { exact: true })
           .fill("A promessa a Elen");
+        await page.locator("summary").filter({ hasText: "Marca ·" }).click();
         await page.getByLabel("Gatilho", { exact: true }).fill("Quando a promessa é ameaçada");
         await page.getByLabel("Resíduo", { exact: true }).fill("O fio permanece quente");
         await page.getByRole("button", { name: "Concluir criação TdV II", exact: true }).click();
