@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-27; referência de runtime: `99db7ac0f7ab13b44eba72d9aaa421971ad58587`. PR #308 em `feat/nex-039-navigation-presence`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-27; referência de runtime: `720fd9618a2915d3c2fa73335984d6a2d9d064d3`. PR #310 em `feat/nex-040-tdv-ii`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -49,7 +49,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-037 | Atributos em escala legível e Equilíbrio como relação entre polos | Integrado | 7 | sheet | NEX-036 |
 | NEX-038 | Dossiê compacto, Exposição graduada e utilidades como registros | Integrado | 7 | sheet | NEX-037 |
 | NEX-039 | Jogadores individuais, presença da Exposição e deslizamento lateral | Integrado | 7 | shell | NEX-038 |
-| NEX-040 | TdV II v2.0: motor, fichas e condução integrados | Em andamento | 7 | sheet | NEX-039 |
+| NEX-040 | TdV II v2.0: motor, fichas e condução integrados | Integrado | 7 | sheet | NEX-039 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -396,7 +396,7 @@ Evidências: [docs/navigation-presence-validation.json](../docs/navigation-prese
 - Propagar a edição correta à Mesa autorizada, histórico, acervo/offline e Nexus; preservar segredos, permissões e conteúdo personalizado.
 - Validar regras, banco/guardas e fluxos editáveis/somente leitura em quatro larguras; registrar migração, Edge Function, CI, integração e produção separadamente.
 
-Evidências: [docs/rules/tdv-ii-v2.md](../docs/rules/tdv-ii-v2.md), [docs/tdv-ii-migration.md](../docs/tdv-ii-migration.md), [docs/tdv-ii-validation.json](../docs/tdv-ii-validation.json), [src/lib/tdv2.ts](../src/lib/tdv2.ts), [src/lib/tdv2.test.ts](../src/lib/tdv2.test.ts), [supabase/migrations/20261027093709_tdv_ii_versioned_rules.sql](../supabase/migrations/20261027093709_tdv_ii_versioned_rules.sql), [scripts/verify-tdv2.mjs](../scripts/verify-tdv2.mjs), [scripts/verify-tdv2-postgres.mjs](../scripts/verify-tdv2-postgres.mjs), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/310), [src/lib/mcp/tools/list-my-sheets.test.ts](../src/lib/mcp/tools/list-my-sheets.test.ts), [src/lib/nexus-backup.test.ts](../src/lib/nexus-backup.test.ts), [docs/tdv-ii-coverage.md](../docs/tdv-ii-coverage.md), [src/lib/tdv2-play.ts](../src/lib/tdv2-play.ts), [src/lib/tdv2-play.test.ts](../src/lib/tdv2-play.test.ts), [src/lib/tdv2-operations.ts](../src/lib/tdv2-operations.ts), [src/lib/tdv2-round.ts](../src/lib/tdv2-round.ts), [supabase/migrations/20261027191353_tdv_ii_operational_play.sql](../supabase/migrations/20261027191353_tdv_ii_operational_play.sql).
+Evidências: [docs/rules/tdv-ii-v2.md](../docs/rules/tdv-ii-v2.md), [docs/tdv-ii-migration.md](../docs/tdv-ii-migration.md), [docs/tdv-ii-validation.json](../docs/tdv-ii-validation.json), [src/lib/tdv2.ts](../src/lib/tdv2.ts), [src/lib/tdv2.test.ts](../src/lib/tdv2.test.ts), [supabase/migrations/20261027093709_tdv_ii_versioned_rules.sql](../supabase/migrations/20261027093709_tdv_ii_versioned_rules.sql), [scripts/verify-tdv2.mjs](../scripts/verify-tdv2.mjs), [scripts/verify-tdv2-postgres.mjs](../scripts/verify-tdv2-postgres.mjs), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/310), [src/lib/mcp/tools/list-my-sheets.test.ts](../src/lib/mcp/tools/list-my-sheets.test.ts), [src/lib/nexus-backup.test.ts](../src/lib/nexus-backup.test.ts), [docs/tdv-ii-coverage.md](../docs/tdv-ii-coverage.md), [src/lib/tdv2-play.ts](../src/lib/tdv2-play.ts), [src/lib/tdv2-play.test.ts](../src/lib/tdv2-play.test.ts), [src/lib/tdv2-operations.ts](../src/lib/tdv2-operations.ts), [src/lib/tdv2-round.ts](../src/lib/tdv2-round.ts), [supabase/migrations/20261027191353_tdv_ii_operational_play.sql](../supabase/migrations/20261027191353_tdv_ii_operational_play.sql), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40574957707), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40574957603), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40577120744), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40577120805).
 
 ## Decisões vigentes
 

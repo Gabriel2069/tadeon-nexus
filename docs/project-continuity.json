@@ -1,23 +1,23 @@
 {
   "version": 1,
   "checkedAt": "2026-10-27",
-  "runtimeReference": "99db7ac0f7ab13b44eba72d9aaa421971ad58587",
+  "runtimeReference": "720fd9618a2915d3c2fa73335984d6a2d9d064d3",
   "integration": {
-    "pr": 308,
-    "branch": "feat/nex-039-navigation-presence",
+    "pr": 310,
+    "branch": "feat/nex-040-tdv-ii",
     "base": "main",
-    "baseCommit": "109b94fe9fa67b4ea747348b76b89056d5e8a498",
-    "sourceCommit": "8dafaf804e2a5b22b84189f8b14f7ccd7edb26c3",
-    "headCommit": "8dafaf804e2a5b22b84189f8b14f7ccd7edb26c3",
+    "baseCommit": "eac772625e1d7c01e32b11ad2bf2ba8f353b2ded",
+    "sourceCommit": "afa8b279fcb6f9f0dfa6c3baad3a1efcceae6644",
+    "headCommit": "afa8b279fcb6f9f0dfa6c3baad3a1efcceae6644",
     "state": "integrated",
-    "mergeCommit": "99db7ac0f7ab13b44eba72d9aaa421971ad58587",
-    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40432582240",
-    "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40432582165",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40476036876",
+    "mergeCommit": "720fd9618a2915d3c2fa73335984d6a2d9d064d3",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40574957707",
+    "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40574957603",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40577120744",
     "production": "confirmed",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40476036880",
-    "productionCommit": "99db7ac0f7ab13b44eba72d9aaa421971ad58587",
-    "productionVerifiedAt": "2026-10-27T08:50:43.5235794Z",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40577120805",
+    "productionCommit": "720fd9618a2915d3c2fa73335984d6a2d9d064d3",
+    "productionVerifiedAt": "2026-10-27T20:22:55.7505268Z",
     "productionHttpStatus": 200
   },
   "domains": [
@@ -1326,7 +1326,7 @@
       "id": "NEX-040",
       "title": "TdV II v2.0: motor, fichas e condução integrados",
       "domain": "sheet",
-      "status": "active",
+      "status": "integrated",
       "priority": 7,
       "dependsOn": [
         "NEX-039"
@@ -1356,9 +1356,13 @@
         "src/lib/tdv2-play.test.ts",
         "src/lib/tdv2-operations.ts",
         "src/lib/tdv2-round.ts",
-        "supabase/migrations/20261027191353_tdv_ii_operational_play.sql"
+        "supabase/migrations/20261027191353_tdv_ii_operational_play.sql",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40574957707",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40574957603",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40577120744",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40577120805"
       ],
-      "checkpoint": "Escopo ampliado pelo pedido de cobertura integral do livro e liberdade estrutural. Ficha em cinco áreas; procedimentos operacionais de Auxílio/Resto, proteção/consequências, expressões/custos e operações no Mestre. Primeira checagem local: 161 suítes/682 testes e build; 44 testes de regras após os últimos casos. PostgreSQL isolado: 41 verificações. Migração operacional 20261027191353 aplicada, sem conversão de personagens. Revisão visual ampliada em andamento; PR #310 continua rascunho, sem interface nova publicada."
+      "checkpoint": "Integrado pela PR #310, fonte afa8b27, merge 720fd96. Ficha TdV II em Pessoa, Constituição, Ação, Expressão e Percurso; Auxílio, Resto/Redobra, proteção e consequências, Lavor/Costura, Tramas e sustentação/Refluxo possuem fluxos próprios. Mestre conduz operações, Pressão, Iniciativa, pistas e ameaças, com revisão comparada antes de gravar. Mesa recebe resumo autorizado e rodada pública opcional; alterações locais e segredos são preservados. Cinco fichas antigas conservadas, com conversão revisável. Nexus: 203 páginas/314 relações, 17 páginas do novo livro e 14 templates, preservando conteúdo pessoal e prévia de conflitos. Quality fonte/main: 161 suítes/686 testes, auditoria zero; 49 testes de Motor, procedimentos e projeções, além de 41 verificações PostgreSQL isoladas. Migrações 20261027093709/20261027191353 e tabletop-view v16 aplicados, JWT obrigatório/anônimo401. Os cinco grupos visuais passaram no fonte exato: 83 estados/fluxos TdV II e 42 do painel anterior; quatro larguras, foco, portais e redução de movimento. Metadados/digests dos cinco artefatos e logs conferidos; capturas nativas do mesmo código de produto inspecionadas. HTTP200/SHA exato em 2026-10-27T20:22:55.7505268Z. Decisões ficcionais permanecem explícitas; fixtures não certificam hardware, contas ou restauração reais (NEX-009/010/011). A PR de fechamento registra a própria publicação e a verificação do pacote canônico."
     }
   ],
   "decisions": [
@@ -2228,6 +2232,24 @@
       "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40293915696",
       "productionCommit": "535106f7eb1aaacaa599334d7c8e93287af03a11",
       "productionVerifiedAt": "2026-10-26T08:43:07.9831728Z",
+      "productionHttpStatus": 200
+    },
+    {
+      "pr": 308,
+      "branch": "feat/nex-039-navigation-presence",
+      "base": "main",
+      "baseCommit": "109b94fe9fa67b4ea747348b76b89056d5e8a498",
+      "sourceCommit": "8dafaf804e2a5b22b84189f8b14f7ccd7edb26c3",
+      "headCommit": "8dafaf804e2a5b22b84189f8b14f7ccd7edb26c3",
+      "state": "integrated",
+      "mergeCommit": "99db7ac0f7ab13b44eba72d9aaa421971ad58587",
+      "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40432582240",
+      "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40432582165",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40476036876",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40476036880",
+      "productionCommit": "99db7ac0f7ab13b44eba72d9aaa421971ad58587",
+      "productionVerifiedAt": "2026-10-27T08:50:43.5235794Z",
       "productionHttpStatus": 200
     }
   ]

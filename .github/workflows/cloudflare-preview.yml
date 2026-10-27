@@ -77,3 +77,28 @@ jobs:
 
       - name: Confirmar produção no SHA publicado
         run: node scripts/verify-production-build.mjs
+
+      - name: Conferir pacote canônico publicado
+        run: |
+          node --input-type=module <<'JS'
+          import { readFileSync } from "node:fs";
+          import { createHash } from "node:crypto";
+          const source = readFileSync("public/nexus-packs/tadeon-nexus-canonico-atual.zip");
+          const digest = value => createHash("sha256").update(value).digest("hex");
+          const expected = digest(source);
+          const endpoint = new URL("/nexus-packs/tadeon-nexus-canonico-atual.zip", process.env.TADEON_PUBLIC_APP_URL);
+          endpoint.searchParams.set("deploy_sha", process.env.TADEON_DEPLOY_SHA);
+          let proof, last = "";
+          for (let attempt = 1; attempt <= 6; attempt++) {
+            try {
+              const response = await fetch(endpoint, { headers: { "Cache-Control": "no-cache" }, signal: AbortSignal.timeout(15000) });
+              const bytes = Buffer.from(await response.arrayBuffer());
+              const report = { httpStatus: response.status, bytes: bytes.length, sha256: digest(bytes), sourceCommit: process.env.TADEON_DEPLOY_SHA, verifiedAt: new Date().toISOString() };
+              if (response.ok && bytes.length === source.length && report.sha256 === expected) { proof = report; break; }
+              last = JSON.stringify(report);
+            } catch (error) { last = error.message; }
+            if (attempt < 6) await new Promise(resolve => setTimeout(resolve, 5000));
+          }
+          if (!proof) throw new Error("Canonical pack verification failed: " + last);
+          console.log("Canonical pack confirmed: " + JSON.stringify(proof));
+          JS

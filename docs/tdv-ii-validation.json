@@ -1,21 +1,21 @@
 {
   "task": "NEX-040",
-  "state": "expanded-scope-validation",
+  "state": "integrated-and-published",
   "source": {
     "file": "02_Livro_de_Regras(3).docx",
     "sha256": "8846b485dc528e3998de9227a033bea746eb439d6519ea7f3362a7a8f9515c0f",
     "reference": "docs/rules/tdv-ii-v2.md"
   },
   "verification": {
-    "engineTests": 44,
+    "engineTests": 21,
     "postgresLocalChecks": 41,
-    "status": "expanded-local-validation-in-progress",
+    "status": "passed",
     "unitSuites": 161,
-    "unitTests": 682,
+    "unitTests": 686,
     "build": true,
     "auditHigh": 0,
     "browser": {
-      "cases": 55,
+      "cases": 83,
       "widths": [
         320,
         390,
@@ -32,15 +32,21 @@
       ],
       "overflow": false,
       "pageErrors": 0,
-      "status": "new-five-area-and-procedure-checks-in-progress",
+      "status": "passed-local-and-exact-head-CI",
       "coverage": [
-        "canonical sheet",
-        "mestre scene and round",
-        "read-only",
-        "explicit legacy conversion",
+        "five-area sheet",
+        "Auxílio and original two-dice results",
+        "Resto linked to original test",
+        "ordinary protection cap and explicit source",
+        "expression payment, sustaining window and Relaxamento without refund",
+        "mestre operations, scene, pressure and round",
+        "read-only navigation across repertoire categories",
+        "explicit legacy conversion and keyboard focus return",
         "CAS conflict without overwrite/retry",
-        "archive ignores legacy exposure for TdV II"
-      ]
+        "archive ignores legacy exposure for TdV II",
+        "checkbox text stays legible in game mode"
+      ],
+      "legacyCases": 42
     },
     "mcp": "authenticated edition-aware summaries; no payload secrets or legacy Rank",
     "backup": "serialized versioned payload and mestre state preserved; no real restore certification",
@@ -58,7 +64,197 @@
       ],
       "minimumPx": 44,
       "status": "passed-local"
-    }
+    },
+    "operationalTests": 20,
+    "publicProjectionTests": 4,
+    "summaryTests": 4,
+    "sourceQuality": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40574957707",
+    "sourceVisual": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40574957603",
+    "mainQuality": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40577120744",
+    "artifact": [
+      {
+        "id": 12767950404,
+        "name": "visual-review-navigation",
+        "bytes": 31622900,
+        "digest": "sha256:00657b5f18bdd68dddc5f6f4541c696f68e3a33ff93d2afcf9f54646c0c05c68",
+        "url": "https://api.github.com/repos/Gabriel2069/tadeon-nexus/actions/artifacts/12767950404",
+        "head": "afa8b279fcb6f9f0dfa6c3baad3a1efcceae6644"
+      },
+      {
+        "id": 12767488245,
+        "name": "visual-review-tabletop",
+        "bytes": 15211780,
+        "digest": "sha256:e85d8ffeea0f98adf162a62f83b9a21eacced253c6ebe4bc037ff12110312c8e",
+        "url": "https://api.github.com/repos/Gabriel2069/tadeon-nexus/actions/artifacts/12767488245",
+        "head": "afa8b279fcb6f9f0dfa6c3baad3a1efcceae6644"
+      },
+      {
+        "id": 12766974794,
+        "name": "visual-review-sheet",
+        "bytes": 31968559,
+        "digest": "sha256:de4ad0726a1579ce38712621888d1f85b7e8c20fa04ebb42d19fa7469d0190a8",
+        "url": "https://api.github.com/repos/Gabriel2069/tadeon-nexus/actions/artifacts/12766974794",
+        "head": "afa8b279fcb6f9f0dfa6c3baad3a1efcceae6644"
+      },
+      {
+        "id": 12766613733,
+        "name": "visual-review-utilities",
+        "bytes": 15755562,
+        "digest": "sha256:03e9a00d1dd3a5fdef2e28cceec8dcc27b448428efcf0f6b03e8c1e39399eb80",
+        "url": "https://api.github.com/repos/Gabriel2069/tadeon-nexus/actions/artifacts/12766613733",
+        "head": "afa8b279fcb6f9f0dfa6c3baad3a1efcceae6644"
+      },
+      {
+        "id": 12766048253,
+        "name": "visual-review-tdv2",
+        "bytes": 46177467,
+        "digest": "sha256:a49bc5ae77716e52e60ea74b0b949276569d208fac9017655fe64ee4f7b81d81",
+        "url": "https://api.github.com/repos/Gabriel2069/tadeon-nexus/actions/artifacts/12766048253",
+        "head": "afa8b279fcb6f9f0dfa6c3baad3a1efcceae6644"
+      }
+    ],
+    "finalArtifactInspection": {
+      "visualGroups": 5,
+      "allGroupsPassed": true,
+      "tdv2Cases": 83,
+      "legacyCases": 42,
+      "artifactMetadataChecked": true,
+      "artifactDigests": "recorded from GitHub artifact metadata",
+      "productTreeIdentity": {
+        "source": "afa8b279fcb6f9f0dfa6c3baad3a1efcceae6644",
+        "nativeReviewedSource": "3d6eb0f7d13550e8aecd1d5ea76bbdef32a29f86",
+        "identicalRootEntries": [
+          {
+            "path": ".env.example",
+            "mode": "100644",
+            "type": "blob",
+            "sha": "09ef1a39591ee745cb4a22d45aa5a7157c3cbffe"
+          },
+          {
+            "path": ".gitignore",
+            "mode": "100644",
+            "type": "blob",
+            "sha": "b79ee11195a4c8ecd2e93a448fec3245c6c4baae"
+          },
+          {
+            "path": ".lovable",
+            "mode": "040000",
+            "type": "tree",
+            "sha": "5c8655f6593e96342212642e4007266f72489518"
+          },
+          {
+            "path": ".prettierignore",
+            "mode": "100644",
+            "type": "blob",
+            "sha": "215d281d5829cf8104800c12bdac721f88383ba6"
+          },
+          {
+            "path": ".prettierrc",
+            "mode": "100644",
+            "type": "blob",
+            "sha": "90abee2393e79dff7ec36856c94f662a263f0107"
+          },
+          {
+            "path": "AGENTS.md",
+            "mode": "100644",
+            "type": "blob",
+            "sha": "4bcbeea8cc573a498dd37f04881adcf2a8445fcc"
+          },
+          {
+            "path": "README.md",
+            "mode": "100644",
+            "type": "blob",
+            "sha": "d81e34617427b6bc55ec8e94c667b7793de58c39"
+          },
+          {
+            "path": "cloudflare",
+            "mode": "040000",
+            "type": "tree",
+            "sha": "1f6ebf8bf30e320ab7837c320f3ca5ea946585c8"
+          },
+          {
+            "path": "components.json",
+            "mode": "100644",
+            "type": "blob",
+            "sha": "f0817a84e832a693e7a79a911efe0b081bd97e06"
+          },
+          {
+            "path": "docs",
+            "mode": "040000",
+            "type": "tree",
+            "sha": "8d784c9f05e885405cac4a8a8c016c108e46458c"
+          },
+          {
+            "path": "eslint.config.js",
+            "mode": "100644",
+            "type": "blob",
+            "sha": "fe24bbdda2d7c4839e546bca6ab384398612c0db"
+          },
+          {
+            "path": "package-lock.json",
+            "mode": "100644",
+            "type": "blob",
+            "sha": "4fe5232d9ecfca9b0dfdee2cf8b05f6058031cc5"
+          },
+          {
+            "path": "package.json",
+            "mode": "100644",
+            "type": "blob",
+            "sha": "d9fa875fd5908c2ec0e82d0e291077bb3009411f"
+          },
+          {
+            "path": "public",
+            "mode": "040000",
+            "type": "tree",
+            "sha": "1e5d5e50c8bb754d63a658b1e34ee34afb353ee3"
+          },
+          {
+            "path": "src",
+            "mode": "040000",
+            "type": "tree",
+            "sha": "f2e314fc77ce8e55534dd4e5036ccd607299b2ed"
+          },
+          {
+            "path": "supabase",
+            "mode": "040000",
+            "type": "tree",
+            "sha": "0520de0716e1c032d62bcbbec1e3c9f8ed908fcb"
+          },
+          {
+            "path": "tsconfig.json",
+            "mode": "100644",
+            "type": "blob",
+            "sha": "4b97d690e7fc22d81e0f3930ca0ffad542193ad3"
+          },
+          {
+            "path": "vite.config.ts",
+            "mode": "100644",
+            "type": "blob",
+            "sha": "23ed1f29160ef5e2d9c58a49437df9b04b8c2285"
+          },
+          {
+            "path": "wrangler.jsonc",
+            "mode": "100644",
+            "type": "blob",
+            "sha": "5518d577f0ee454748987e0881f277016fabd3c5"
+          }
+        ]
+      },
+      "nativeCaptures": "inspected at 320 and 1440; native flows passed at 320/390/820/1440 on identical product code",
+      "ciImagesReopened": false,
+      "limit": "The local execution environment ended before CI artifacts could be unpacked; CI logs/assertions and identical native captures were reviewed."
+    },
+    "cssModules": 57,
+    "globalLinks": 12,
+    "visualGroups": [
+      "navigation",
+      "utilities",
+      "tabletop",
+      "sheet",
+      "tdv2"
+    ],
+    "visualVerificationCommands": 16,
+    "legacyVerifierReadiness": "HTTP response with stdout/stderr diagnostics"
   },
   "migration": {
     "path": "supabase/migrations/20261027093709_tdv_ii_versioned_rules.sql",
@@ -69,27 +265,50 @@
     "newPayloads": 0,
     "sha256": "00bfaa6d3bdb401f6168c24ed46abd0d44bde2c0509265b9f03cb2ba4b16b035"
   },
-  "production": "not-published",
+  "production": {
+    "run": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40577120805",
+    "sha": "720fd9618a2915d3c2fa73335984d6a2d9d064d3",
+    "httpStatus": 200,
+    "verifiedAt": "2026-10-27T20:22:55.7505268Z",
+    "logProof": [
+      "2026-10-27T20:22:55.7505268Z Attempt 1/12: HTTP 200, build 720fd9618a2915d3c2fa73335984d6a2d9d064d3.",
+      "2026-10-27T20:22:55.7506917Z Production confirmed at SHA 720fd9618a2915d3c2fa73335984d6a2d9d064d3."
+    ]
+  },
   "limits": [
     "Fixtures do not certify physical hardware, real-account authorization or real restore. NEX-009/010/011 remain separate."
   ],
   "edge": {
     "function": "tabletop-view",
-    "version": 14,
+    "version": 16,
     "verify_jwt": true,
-    "bundleSha256": "2d426dd6a443223e2abbe0233ee6992f208b8621388beafd5fd3ee5510309fa1",
-    "anonymousRequestStatus": 401
+    "bundleSha256": "5458cc7aa6b8737a9e81d14288cda84d4a365ecd9c91e141168f41604df823a9",
+    "anonymousRequestStatus": 401,
+    "bundleDigestScope": "UTF-8 JSON array of source file name/content pairs in recorded deployment order",
+    "providerBundleSha256": "5a23283b8908cd30b543abb59e348d8468939efc7ab5fe7e28cf569ea6aead1e",
+    "sourceCommit": "fb49fe30ef4abac81ce40fecd64b260e004f453b"
   },
   "review": {
     "pr": 310,
     "url": "https://github.com/Gabriel2069/tadeon-nexus/pull/310",
-    "status": "draft"
+    "status": "merged",
+    "merge": "720fd9618a2915d3c2fa73335984d6a2d9d064d3"
   },
   "operationalMigration": {
     "path": "supabase/migrations/20261027191353_tdv_ii_operational_play.sql",
     "applied": true,
     "project": "nkxpstyfrzufsnowjrdi",
-    "version": "20261027191353"
+    "version": "20261027191353",
+    "gitBlob": "c8db5b7dbc393dcaeda01c2c80c699c06130c828"
   },
-  "coverage": "docs/tdv-ii-coverage.md"
+  "coverage": "docs/tdv-ii-coverage.md",
+  "sourceCommit": "afa8b279fcb6f9f0dfa6c3baad3a1efcceae6644",
+  "sourceTree": "3427bb8010b649c0df39993de8e2686038b7a633",
+  "merge": "720fd9618a2915d3c2fa73335984d6a2d9d064d3",
+  "canonicalPackGate": {
+    "sourceBytes": 510485,
+    "sourceSha256": "e3063430958304e15a5b39c75fc0767234357c5e48a8a47794755c5ba4e7d17d",
+    "workflow": ".github/workflows/cloudflare-preview.yml",
+    "comparison": "Published HTTP bytes and SHA-256 must match the exact checked-out source; the closing PR records its deployment result."
+  }
 }
