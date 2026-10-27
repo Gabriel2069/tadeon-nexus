@@ -39,6 +39,8 @@ interface SheetNexusLink {
 }
 
 const HISTORY_LABELS: Record<string, string> = {
+  rules_version: "Edição de regras",
+  tdv2_data: "Feição e Constituição · TdV II",
   session_baseline: "Início do acompanhamento",
   name: "Nome",
   occupation: "Ocupação",

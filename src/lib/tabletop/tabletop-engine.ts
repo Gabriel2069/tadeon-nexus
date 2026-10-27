@@ -716,12 +716,15 @@ export class TabletopEngine {
   }
 
   applyRemoteEntityPatch(id: string, patch: Partial<TabletopEntity>) {
-    if (!this.scenes.scene.entities.some((entity) => entity.id === id)) return;
-    this.scenes.setEntities(
-      this.scenes.scene.entities.map((entity) =>
-        entity.id === id ? this.clampEntity({ ...entity, ...patch, id: entity.id }) : entity,
-      ),
-    );
+    this.applyRemoteEntityPatches(new Map([[id,patch]]));
+  }
+
+  applyRemoteEntityPatches(patches: ReadonlyMap<string,Partial<TabletopEntity>>) {
+    if(!this.scenes.scene.entities.some(entity=>patches.has(entity.id)))return;
+    this.scenes.setEntities(this.scenes.scene.entities.map(entity=>{
+      const patch=patches.get(entity.id);
+      return patch?this.clampEntity({...entity,...patch,id:entity.id}):entity;
+    }));
     this.render();
   }
 

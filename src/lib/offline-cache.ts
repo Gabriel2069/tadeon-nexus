@@ -1,3 +1,4 @@
+import type { TdvMasterState } from "./tdv2-master";
 import type { AppRole } from "@/lib/nexus-contracts";
 
 const LEGACY_CACHE_KEY = "tadeon.nexus.offline.v1";
@@ -32,10 +33,13 @@ export interface OfflineSheetSummary {
   name: string;
   occupation?: string | null;
   exposure?: number;
+  rules_version?: number;
+  development?: number;
   owner_label?: string | null;
 }
 
 export interface OfflineMasterCache {
+  tdv2?: TdvMasterState;
   campaignTitle: string;
   campaignPhase: string;
   scenes: unknown[];
@@ -105,13 +109,17 @@ export function cacheSheetSummaries(
   return writeOfflineCache(
     {
       ...cache,
-      sheetSummaries: summaries.map(({ id, name, occupation, exposure, owner_label }) => ({
-        id,
-        name,
-        occupation,
-        exposure,
-        owner_label,
-      })),
+      sheetSummaries: summaries.map(
+        ({ id, name, occupation, exposure, owner_label, rules_version, development }) => ({
+          id,
+          name,
+          occupation,
+          exposure,
+          owner_label,
+          rules_version,
+          development,
+        }),
+      ),
     },
     scope,
   );
@@ -174,4 +182,31 @@ export function clearOfflineCache(): boolean {
   } catch {
     return false;
   }
+}
+
+export function cacheTdv2MasterState(
+  state: TdvMasterState,
+  scope: OfflineCacheScope | null,
+): boolean {
+  if (scope?.role !== "mestre" || !matchesScope(scope)) return false;
+  const cache = readOfflineCache();
+  return writeOfflineCache(
+    {
+      ...cache,
+      master: {
+        campaignTitle: "Condução TdV II",
+        campaignPhase: state.title,
+        scenes: [],
+        npcs: [],
+        clues: [],
+        threats: [],
+        interludes: [],
+        folds: [],
+        sheets: [],
+        ...cache.master,
+        tdv2: state,
+      },
+    },
+    scope,
+  );
 }

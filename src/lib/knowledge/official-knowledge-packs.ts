@@ -17,13 +17,13 @@ export const TADEON_NEXUS_CANONICO_ATUAL: OfficialKnowledgePack = {
   title: "Nexus canônico atual",
   eyebrow: "Biblioteca unificada",
   description:
-    "As 186 páginas únicas dos livros, sínteses e conexões atuais reunidas em um único arquivo rastreável.",
+    "Livro de Regras TdV II v2.0 integrado ao acervo: regras atuais identificadas, fontes anteriores preservadas como histórico para revisão.",
   assetPath: "/nexus-packs/tadeon-nexus-canonico-atual.zip",
   fileName: "tadeon-nexus-canonico-atual.zip",
-  pages: 186,
-  relations: 298,
-  expectedBytes: 396_484,
-  sha256: "81372d176fb36357c0fea52720b1b0f891a4175ec98d2d346e30e80e837f4598",
+  pages: 203,
+  relations: 314,
+  expectedBytes: 510485,
+  sha256: "e3063430958304e15a5b39c75fc0767234357c5e48a8a47794755c5ba4e7d17d",
   recommended: true,
 };
 
@@ -35,9 +35,7 @@ export const TADEON_NEXUS_OFFICIAL_PACKS: readonly OfficialKnowledgePack[] = [
 ] as const;
 
 function toHex(bytes: Uint8Array) {
-  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join(
-    "",
-  );
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
 export async function loadOfficialKnowledgePack(

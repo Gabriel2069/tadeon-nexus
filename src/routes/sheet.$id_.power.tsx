@@ -293,6 +293,10 @@ function PowerFormPage() {
         return;
       }
       const raw = data as unknown as Record<string, unknown>;
+      if (raw.rules_version === 2) {
+        void navigate({ to: "/sheet/$id", params: { id } });
+        return;
+      }
       if (!raw.power_form_enabled) {
         toast.error("VP não liberada pelo mestre.");
         void navigate({ to: "/sheet/$id", params: { id } });
@@ -418,6 +422,17 @@ function PowerFormPage() {
     );
   }
 
+  if ((base as unknown as { rules_version?: number }).rules_version === 2)
+    return (
+      <div className="p-6">
+        <h1 className="font-cinzel text-2xl">Expressão no TdV II</h1>
+        <p>
+          Lavores, Tramas e Fragmentos integram a própria ficha. As regras antigas de Forma de Poder
+          não são aplicadas ao TdV II.
+        </p>
+        <Button onClick={() => window.location.assign(`/sheet/${id}`)}>Abrir ficha TdV II</Button>
+      </div>
+    );
   const attrs = vp.attributes ?? base.attributes;
   const upg = vp.stat_upgrades ?? base.stat_upgrades;
   const mods = vp.stat_mods ?? {};

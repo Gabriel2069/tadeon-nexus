@@ -81,7 +81,9 @@ export function Section({
   const presentationKey = id ?? title.toLocaleLowerCase("pt-BR").replace(/[^a-z0-9]+/g, "-");
   const presentation = SECTION_PRESENTATION[presentationKey] ?? {
     index: "•",
-    kicker: "Arquivo da personagem",
+    kicker: presentationKey.startsWith("tdv-master-")
+      ? "Condução da Tessitura"
+      : "Arquivo da personagem",
   };
   const storageKey = `tadeon.sheet.section:${presentationKey}`;
   const fieldId = useId();

@@ -33,6 +33,8 @@ export interface DefenseItem {
 }
 
 export interface SheetData {
+  rules_version?: number;
+  tdv2_data?: unknown;
   id: string;
   owner_id: string;
   owner_email?: string;

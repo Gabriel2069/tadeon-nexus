@@ -521,7 +521,7 @@ export class EntityRenderer {
         sheetSummary.equilibrium > 0
           ? `+${sheetSummary.equilibrium}`
           : String(sheetSummary.equilibrium);
-      sheetMeta.text = `PV ${sheetSummary.resources.pv} · EQ ${equilibrium} · EX ${sheetSummary.exposure}%`;
+      sheetMeta.text = `PV ${sheetSummary.resources.pv} · EQ ${equilibrium} · ${sheetSummary.rulesVersion===2?"DEV":"EX"} ${sheetSummary.exposure}%`;
     } else sheetMeta.text = "";
     sheetMeta.visible =
       !isPathDrawing && sheetMeta.text.length > 0 && entity.width >= 72;

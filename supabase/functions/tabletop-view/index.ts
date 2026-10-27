@@ -1,10 +1,11 @@
+import { publicTdvRound } from "../../../src/lib/tdv2-round.ts";
+import { tdv2CharacterSchema, constitution, characterStateLabel } from "../../../src/lib/tdv2.ts";
 import { tabletopEntityColor } from "../_shared/tabletop-entity-color.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.110.3";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, apikey, content-type, x-client-info",
+  "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   Vary: "Origin",
 };
@@ -15,10 +16,8 @@ const jsonHeaders = {
   "Cache-Control": "private, no-store",
 };
 
-const UUID_PATTERN =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const PUBLIC_LAYER_TYPES = new Set(["map", "objects", "tokens", "drawings"]);
-
 
 function respond(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: jsonHeaders });
@@ -51,9 +50,7 @@ function activeConditionNames(value: unknown) {
       else {
         const condition = objectValue(entry);
         if (condition.active !== false)
-          names.push(
-            boundedText(condition.name ?? condition.label ?? condition.id, 80),
-          );
+          names.push(boundedText(condition.name ?? condition.label ?? condition.id, 80));
       }
     }
   } else {
@@ -66,10 +63,7 @@ function activeConditionNames(value: unknown) {
       }
     }
   }
-  return [...new Set(names.map((name) => name.trim()).filter(Boolean))].slice(
-    0,
-    12,
-  );
+  return [...new Set(names.map((name) => name.trim()).filter(Boolean))].slice(0, 12);
 }
 
 interface VisibilityPoint {
@@ -103,7 +97,10 @@ function publicLightProperties(value: unknown) {
       ? source.shape
       : "radial";
   const particles =
-    source.particles === "dust" || source.particles === "embers" || source.particles === "mist" || source.particles === "sparks"
+    source.particles === "dust" ||
+    source.particles === "embers" ||
+    source.particles === "mist" ||
+    source.particles === "sparks"
       ? source.particles
       : "none";
   return {
@@ -122,7 +119,10 @@ function lightDirection(light: { properties: ReturnType<typeof publicLightProper
   return (light.properties.direction * Math.PI) / 180;
 }
 
-function lightRayLimit(light: { radius: number; properties: ReturnType<typeof publicLightProperties> }, angle: number) {
+function lightRayLimit(
+  light: { radius: number; properties: ReturnType<typeof publicLightProperties> },
+  angle: number,
+) {
   const radius = Math.max(8, light.radius);
   if (light.properties.shape === "radial") return radius;
   const delta = normalizedAngleDelta(angle, lightDirection(light));
@@ -134,10 +134,16 @@ function lightRayLimit(light: { radius: number; properties: ReturnType<typeof pu
   const halfWidth = light.properties.shape === "line" ? Math.max(6, radius * 0.08) : radius * 0.42;
   const cosine = Math.max(1e-6, Math.cos(delta));
   const sine = Math.abs(Math.sin(delta));
-  return Math.max(0, Math.min(radius / cosine, sine < 1e-6 ? Number.POSITIVE_INFINITY : halfWidth / sine));
+  return Math.max(
+    0,
+    Math.min(radius / cosine, sine < 1e-6 ? Number.POSITIVE_INFINITY : halfWidth / sine),
+  );
 }
 
-function lightSeedAngles(light: { radius: number; properties: ReturnType<typeof publicLightProperties> }) {
+function lightSeedAngles(light: {
+  radius: number;
+  properties: ReturnType<typeof publicLightProperties>;
+}) {
   const direction = lightDirection(light);
   const angles: number[] = [];
   if (light.properties.shape === "radial") {
@@ -148,10 +154,12 @@ function lightSeedAngles(light: { radius: number; properties: ReturnType<typeof 
     const aperture = Math.max(1, Math.min(359, light.properties.angle));
     const half = (aperture * Math.PI) / 360;
     const steps = Math.max(16, Math.ceil(aperture / 5));
-    for (let index = 0; index <= steps; index += 1) angles.push(direction - half + (index / steps) * half * 2);
+    for (let index = 0; index <= steps; index += 1)
+      angles.push(direction - half + (index / steps) * half * 2);
     return angles;
   }
-  for (let index = 0; index <= 72; index += 1) angles.push(direction - Math.PI / 2 + (index / 72) * Math.PI);
+  for (let index = 0; index <= 72; index += 1)
+    angles.push(direction - Math.PI / 2 + (index / 72) * Math.PI);
   return angles;
 }
 
@@ -164,13 +172,9 @@ function raySegmentDistance(
   const denominator = direction.x * segment.y - direction.y * segment.x;
   if (Math.abs(denominator) < 1e-9) return null;
   const offset = { x: wall.x1 - origin.x, y: wall.y1 - origin.y };
-  const rayDistance =
-    (offset.x * segment.y - offset.y * segment.x) / denominator;
-  const segmentPosition =
-    (offset.x * direction.y - offset.y * direction.x) / denominator;
-  return rayDistance >= 0 && segmentPosition >= 0 && segmentPosition <= 1
-    ? rayDistance
-    : null;
+  const rayDistance = (offset.x * segment.y - offset.y * segment.x) / denominator;
+  const segmentPosition = (offset.x * direction.y - offset.y * direction.x) / denominator;
+  return rayDistance >= 0 && segmentPosition >= 0 && segmentPosition <= 1 ? rayDistance : null;
 }
 
 function buildVisibilityPolygon(
@@ -187,27 +191,81 @@ function buildVisibilityPolygon(
   height: number,
 ) {
   const boundary: VisibilityWall[] = [
-    { x1: 0, y1: 0, x2: width, y2: 0, wallType: "wall", blocksVision: true, baseElevation: 0, height: 100_000 },
-    { x1: width, y1: 0, x2: width, y2: height, wallType: "wall", blocksVision: true, baseElevation: 0, height: 100_000 },
-    { x1: width, y1: height, x2: 0, y2: height, wallType: "wall", blocksVision: true, baseElevation: 0, height: 100_000 },
-    { x1: 0, y1: height, x2: 0, y2: 0, wallType: "wall", blocksVision: true, baseElevation: 0, height: 100_000 },
+    {
+      x1: 0,
+      y1: 0,
+      x2: width,
+      y2: 0,
+      wallType: "wall",
+      blocksVision: true,
+      baseElevation: 0,
+      height: 100_000,
+    },
+    {
+      x1: width,
+      y1: 0,
+      x2: width,
+      y2: height,
+      wallType: "wall",
+      blocksVision: true,
+      baseElevation: 0,
+      height: 100_000,
+    },
+    {
+      x1: width,
+      y1: height,
+      x2: 0,
+      y2: height,
+      wallType: "wall",
+      blocksVision: true,
+      baseElevation: 0,
+      height: 100_000,
+    },
+    {
+      x1: 0,
+      y1: height,
+      x2: 0,
+      y2: 0,
+      wallType: "wall",
+      blocksVision: true,
+      baseElevation: 0,
+      height: 100_000,
+    },
   ];
   const blockers = light.castsShadows
-    ? [...walls.filter((wall) => wall.blocksVision && wall.wallType !== "door_open" && light.elevation <= wall.baseElevation + wall.height + 0.5), ...boundary]
+    ? [
+        ...walls.filter(
+          (wall) =>
+            wall.blocksVision &&
+            wall.wallType !== "door_open" &&
+            light.elevation <= wall.baseElevation + wall.height + 0.5,
+        ),
+        ...boundary,
+      ]
     : boundary;
   const angles = lightSeedAngles(light);
   for (const wall of blockers) {
-    for (const point of [{ x: wall.x1, y: wall.y1 }, { x: wall.x2, y: wall.y2 }]) {
+    for (const point of [
+      { x: wall.x1, y: wall.y1 },
+      { x: wall.x2, y: wall.y2 },
+    ]) {
       const angle = Math.atan2(point.y - light.y, point.x - light.x);
       if (lightRayLimit(light, angle) <= 0) continue;
       angles.push(angle - 0.0001, angle, angle + 0.0001);
     }
   }
   const direction = lightDirection(light);
-  const unique = [...new Map(angles.filter((angle) => lightRayLimit(light, angle) > 0).map((angle) => [Math.round(angle * 1_000_000), angle])).values()];
+  const unique = [
+    ...new Map(
+      angles
+        .filter((angle) => lightRayLimit(light, angle) > 0)
+        .map((angle) => [Math.round(angle * 1_000_000), angle]),
+    ).values(),
+  ];
   unique.sort((left, right) =>
     light.properties.shape === "radial"
-      ? ((left % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2) - (((right % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2))
+      ? (((left % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2)) -
+        (((right % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2))
       : normalizedAngleDelta(left, direction) - normalizedAngleDelta(right, direction),
   );
   return unique.map((angle) => {
@@ -260,18 +318,22 @@ function publicProperties(value: unknown) {
         .filter(Boolean)
         .slice(0, 8)
     : [];
-  const barMax = Math.max(
-    0,
-    Math.min(1_000_000, finiteNumber(properties.bar_max)),
-  );
-  const barCurrent = Math.max(
-    0,
-    Math.min(barMax, finiteNumber(properties.bar_current)),
-  );
-  const renderMode = properties.render_mode === "flat" || properties.render_mode === "billboard" ? properties.render_mode : undefined;
-  const auraColor = typeof properties.aura_color === "string" && /^#[0-9a-f]{6}$/i.test(properties.aura_color) ? properties.aura_color : undefined;
-  const audioUrl = typeof properties.audio_url === "string" && /^https?:\/\//i.test(properties.audio_url.trim()) ? properties.audio_url.trim().slice(0, 2048) : undefined;
+  const barMax = Math.max(0, Math.min(1_000_000, finiteNumber(properties.bar_max)));
+  const barCurrent = Math.max(0, Math.min(barMax, finiteNumber(properties.bar_current)));
+  const renderMode =
+    properties.render_mode === "flat" || properties.render_mode === "billboard"
+      ? properties.render_mode
+      : undefined;
+  const auraColor =
+    typeof properties.aura_color === "string" && /^#[0-9a-f]{6}$/i.test(properties.aura_color)
+      ? properties.aura_color
+      : undefined;
+  const audioUrl =
+    typeof properties.audio_url === "string" && /^https?:\/\//i.test(properties.audio_url.trim())
+      ? properties.audio_url.trim().slice(0, 2048)
+      : undefined;
   return {
+    ...(publicTdvRound(properties.tdv2_round) ? {tdv2_round:publicTdvRound(properties.tdv2_round)} : {}),
     ...(status ? { status } : {}),
     ...(mimeType ? { mime_type: mimeType } : {}),
     ...(icons.length ? { icons } : {}),
@@ -298,21 +360,15 @@ function publicProperties(value: unknown) {
 function publicDirectorState(value: unknown) {
   const state = objectValue(value);
   const camera = objectValue(state.camera);
-  const mode = ["scene", "intermission", "blackout"].includes(
-    String(state.mode),
-  )
+  const mode = ["scene", "intermission", "blackout"].includes(String(state.mode))
     ? String(state.mode)
     : "scene";
-  const cameraMode = ["fit", "manual"].includes(String(camera.mode))
-    ? String(camera.mode)
-    : "fit";
+  const cameraMode = ["fit", "manual"].includes(String(camera.mode)) ? String(camera.mode) : "fit";
   const projection = ["plan", "isometric"].includes(String(camera.projection))
     ? String(camera.projection)
     : "plan";
   const levelId =
-    typeof camera.levelId === "string" && UUID_PATTERN.test(camera.levelId)
-      ? camera.levelId
-      : null;
+    typeof camera.levelId === "string" && UUID_PATTERN.test(camera.levelId) ? camera.levelId : null;
   const yaw = ((finiteNumber(camera.yaw, 45) % 360) + 360) % 360;
   return {
     mode,
@@ -329,19 +385,12 @@ function publicDirectorState(value: unknown) {
       levelId,
       yaw,
       tilt: Math.max(0.18, Math.min(0.9, finiteNumber(camera.tilt, 0.5))),
-      elevationScale: Math.max(
-        0.25,
-        Math.min(2.5, finiteNumber(camera.elevationScale, 1)),
-      ),
+      elevationScale: Math.max(0.25, Math.min(2.5, finiteNumber(camera.elevationScale, 1))),
     },
   };
 }
 
-async function isFlagEnabled(
-  admin: ReturnType<typeof createClient>,
-  userId: string,
-  key: string,
-) {
+async function isFlagEnabled(admin: ReturnType<typeof createClient>, userId: string, key: string) {
   const { data: override, error: overrideError } = await admin
     .from("feature_flag_user_overrides")
     .select("enabled")
@@ -366,10 +415,7 @@ interface SignedAsset {
   sizeBytes: number;
 }
 
-async function signAssets(
-  admin: ReturnType<typeof createClient>,
-  assetIds: string[],
-) {
+async function signAssets(admin: ReturnType<typeof createClient>, assetIds: string[]) {
   const signed = new Map<string, SignedAsset>();
   if (assetIds.length === 0) return signed;
   const { data: assets, error } = await admin
@@ -395,14 +441,10 @@ async function signAssets(
             boundedText(asset.display_name, 240) ||
             boundedText(asset.original_name, 240) ||
             "Arquivo",
-          mimeType:
-            boundedText(asset.mime_type, 160) || "application/octet-stream",
+          mimeType: boundedText(asset.mime_type, 160) || "application/octet-stream",
           sizeBytes: Math.max(
             0,
-            Math.min(
-              100 * 1024 * 1024,
-              Math.trunc(finiteNumber(asset.size_bytes)),
-            ),
+            Math.min(100 * 1024 * 1024, Math.trunc(finiteNumber(asset.size_bytes))),
           ),
         });
       }
@@ -421,8 +463,7 @@ Deno.serve(async (request) => {
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  const publicApiKey =
-    request.headers.get("apikey") ?? Deno.env.get("SUPABASE_ANON_KEY");
+  const publicApiKey = request.headers.get("apikey") ?? Deno.env.get("SUPABASE_ANON_KEY");
   const authorization = request.headers.get("Authorization");
   if (!supabaseUrl || !serviceRoleKey) {
     console.error("[tabletop-view] Server environment is unavailable.");
@@ -438,8 +479,7 @@ Deno.serve(async (request) => {
   } catch {
     return respond({ error: "Solicitação inválida." }, 400);
   }
-  const sessionId =
-    typeof payload.sessionId === "string" ? payload.sessionId : "";
+  const sessionId = typeof payload.sessionId === "string" ? payload.sessionId : "";
   if (!UUID_PATTERN.test(sessionId)) {
     return respond({ error: "Sala inválida." }, 400);
   }
@@ -454,22 +494,19 @@ Deno.serve(async (request) => {
   } = await admin.auth.getUser(token);
   if (userError || !user) return respond({ error: "Sessão inválida." }, 401);
 
-  const [tabletopEnabled, realtimeEnabled, knowledgeEnabled, lightingEnabled] =
-    await Promise.all([
-      isFlagEnabled(admin, user.id, "nexus_tabletop_enabled"),
-      isFlagEnabled(admin, user.id, "nexus_realtime_enabled"),
-      isFlagEnabled(admin, user.id, "nexus_knowledge_enabled"),
-      isFlagEnabled(admin, user.id, "nexus_lighting_enabled"),
-    ]);
+  const [tabletopEnabled, realtimeEnabled, knowledgeEnabled, lightingEnabled] = await Promise.all([
+    isFlagEnabled(admin, user.id, "nexus_tabletop_enabled"),
+    isFlagEnabled(admin, user.id, "nexus_realtime_enabled"),
+    isFlagEnabled(admin, user.id, "nexus_knowledge_enabled"),
+    isFlagEnabled(admin, user.id, "nexus_lighting_enabled"),
+  ]);
   if (!tabletopEnabled || !realtimeEnabled) {
     return respond({ error: "Mesa ao vivo desativada para esta conta." }, 403);
   }
 
   const { data: session, error: sessionError } = await admin
     .from("tabletop_sessions")
-    .select(
-      "id,campaign_id,current_scene_id,name,status,join_locked,version,director_state",
-    )
+    .select("id,campaign_id,current_scene_id,name,status,join_locked,version,director_state")
     .eq("id", sessionId)
     .maybeSingle();
   if (sessionError) {
@@ -546,9 +583,7 @@ Deno.serve(async (request) => {
       .maybeSingle(),
     admin
       .from("tabletop_levels")
-      .select(
-        "id,name,order_index,base_elevation,height,visible,locked,version",
-      )
+      .select("id,name,order_index,base_elevation,height,visible,locked,version")
       .eq("scene_id", session.current_scene_id)
       .eq("visible", true)
       .order("order_index"),
@@ -567,21 +602,12 @@ Deno.serve(async (request) => {
       .eq("hidden", false)
       .order("z_index"),
   ]);
-  if (
-    sceneError ||
-    levelError ||
-    layerError ||
-    entityError ||
-    !scene ||
-    !levels?.length
-  ) {
+  if (sceneError || levelError || layerError || entityError || !scene || !levels?.length) {
     console.error("[tabletop-view] Could not build participant projection.");
     return respond({ error: "Não foi possível carregar a cena." }, 500);
   }
 
-  const publicLayers = (layers ?? []).filter((layer) =>
-    PUBLIC_LAYER_TYPES.has(layer.layer_type),
-  );
+  const publicLayers = (layers ?? []).filter((layer) => PUBLIC_LAYER_TYPES.has(layer.layer_type));
   const publicLayerIds = new Set(publicLayers.map((layer) => layer.id));
   const controlledLevelId =
     participant.role === "player"
@@ -633,10 +659,7 @@ Deno.serve(async (request) => {
   ]);
   if (wallError || lightError || fogError) {
     console.error("[tabletop-view] Could not build visibility projection.");
-    return respond(
-      { error: "Não foi possível proteger a visão da cena." },
-      500,
-    );
+    return respond({ error: "Não foi possível proteger a visão da cena." }, 500);
   }
   const safeWalls: VisibilityWall[] = (walls ?? []).map((wall) => ({
     x1: finiteNumber(wall.x1),
@@ -658,81 +681,75 @@ Deno.serve(async (request) => {
     // A projeção visual precisa receber a arquitetura completa para que a
     // visão 3D do participante represente paredes, vãos e coberturas. A
     // permissão de interação continua separada e restrita às portas marcadas.
-    walls: (walls ?? [])
-      .slice(0, 512)
-      .map((wall) => ({
-        id: wall.id,
-        levelId: wall.level_id,
-        x1: finiteNumber(wall.x1),
-        y1: finiteNumber(wall.y1),
-        x2: finiteNumber(wall.x2),
-        y2: finiteNumber(wall.y2),
-        wallType: wall.wall_type,
-        blocksVision: wall.blocks_vision === true,
-        blocksMovement: wall.blocks_movement === true,
-        baseElevation: finiteNumber(wall.base_elevation),
-        height: Math.max(8, finiteNumber(wall.height, 64)),
-        thickness: Math.max(1, finiteNumber(wall.thickness, 8)),
-        playerOperable:
-          wall.player_operable === true &&
-          (wall.wall_type === "door_closed" || wall.wall_type === "door_open"),
-        version: Math.max(1, Math.trunc(finiteNumber(wall.version, 1))),
-      })),
-    lights: (lightingEnabled ? (lights ?? []) : [])
-      .slice(0, 64)
-      .map((light) => {
-        const intensity = Math.max(
-          0,
-          Math.min(1, finiteNumber(light.intensity, 1)),
-        );
-        const radius = Math.max(
-          8,
-          Math.min(100_000, finiteNumber(light.radius, 320)),
-        );
-        const attachedEntity =
-          typeof light.entity_id === "string"
-            ? (entities ?? []).find((entity) => entity.id === light.entity_id && entity.level_id === activeLevelId)
-            : null;
-        const properties = publicLightProperties(light.properties);
-        const safeLight = {
-          x: attachedEntity ? finiteNumber(attachedEntity.x) + Math.max(8, finiteNumber(attachedEntity.width, 64)) / 2 : finiteNumber(light.x),
-          y: attachedEntity ? finiteNumber(attachedEntity.y) + Math.max(8, finiteNumber(attachedEntity.height, 64)) / 2 : finiteNumber(light.y),
-          elevation: finiteNumber(light.elevation) + (attachedEntity ? finiteNumber(attachedEntity.elevation) : 0),
-          radius: radius * Math.max(0.12, intensity),
-          castsShadows: light.casts_shadows === true,
-          properties,
-        };
-        return {
-          id: light.id,
-          levelId: light.level_id,
-          entityId: null,
-          x: safeLight.x,
-          y: safeLight.y,
-          elevation: safeLight.elevation,
-          radius,
-          intensity,
-          color: /^#[0-9a-f]{6}$/i.test(light.color) ? light.color : "#f2c66d",
-          enabled: true,
-          castsShadows: safeLight.castsShadows,
-          properties,
-          visibilityPolygon: buildVisibilityPolygon(
-            safeLight,
-            safeWalls,
-            scene.width,
-            scene.height,
-          ),
-        };
-      }),
+    walls: (walls ?? []).slice(0, 512).map((wall) => ({
+      id: wall.id,
+      levelId: wall.level_id,
+      x1: finiteNumber(wall.x1),
+      y1: finiteNumber(wall.y1),
+      x2: finiteNumber(wall.x2),
+      y2: finiteNumber(wall.y2),
+      wallType: wall.wall_type,
+      blocksVision: wall.blocks_vision === true,
+      blocksMovement: wall.blocks_movement === true,
+      baseElevation: finiteNumber(wall.base_elevation),
+      height: Math.max(8, finiteNumber(wall.height, 64)),
+      thickness: Math.max(1, finiteNumber(wall.thickness, 8)),
+      playerOperable:
+        wall.player_operable === true &&
+        (wall.wall_type === "door_closed" || wall.wall_type === "door_open"),
+      version: Math.max(1, Math.trunc(finiteNumber(wall.version, 1))),
+    })),
+    lights: (lightingEnabled ? (lights ?? []) : []).slice(0, 64).map((light) => {
+      const intensity = Math.max(0, Math.min(1, finiteNumber(light.intensity, 1)));
+      const radius = Math.max(8, Math.min(100_000, finiteNumber(light.radius, 320)));
+      const attachedEntity =
+        typeof light.entity_id === "string"
+          ? (entities ?? []).find(
+              (entity) => entity.id === light.entity_id && entity.level_id === activeLevelId,
+            )
+          : null;
+      const properties = publicLightProperties(light.properties);
+      const safeLight = {
+        x: attachedEntity
+          ? finiteNumber(attachedEntity.x) + Math.max(8, finiteNumber(attachedEntity.width, 64)) / 2
+          : finiteNumber(light.x),
+        y: attachedEntity
+          ? finiteNumber(attachedEntity.y) +
+            Math.max(8, finiteNumber(attachedEntity.height, 64)) / 2
+          : finiteNumber(light.y),
+        elevation:
+          finiteNumber(light.elevation) +
+          (attachedEntity ? finiteNumber(attachedEntity.elevation) : 0),
+        radius: radius * Math.max(0.12, intensity),
+        castsShadows: light.casts_shadows === true,
+        properties,
+      };
+      return {
+        id: light.id,
+        levelId: light.level_id,
+        entityId: null,
+        x: safeLight.x,
+        y: safeLight.y,
+        elevation: safeLight.elevation,
+        radius,
+        intensity,
+        color: /^#[0-9a-f]{6}$/i.test(light.color) ? light.color : "#f2c66d",
+        enabled: true,
+        castsShadows: safeLight.castsShadows,
+        properties,
+        visibilityPolygon: buildVisibilityPolygon(safeLight, safeWalls, scene.width, scene.height),
+      };
+    }),
     fogStrokes: (lightingEnabled ? (fogStrokes ?? []) : [])
-      .filter((stroke) =>
-        fogVisibleToParticipant(stroke.audience, user.id, participant.role),
-      )
+      .filter((stroke) => fogVisibleToParticipant(stroke.audience, user.id, participant.role))
       .map((stroke, sequenceIndex) => ({
         id: stroke.id,
         levelId: stroke.level_id,
         operation: stroke.operation === "hide" ? "hide" : "reveal",
         shape:
-          stroke.geometry === "rectangle" || stroke.geometry === "ellipse" || stroke.geometry === "polygon"
+          stroke.geometry === "rectangle" ||
+          stroke.geometry === "ellipse" ||
+          stroke.geometry === "polygon"
             ? stroke.geometry
             : "brush",
         points: safeFogPoints(stroke.points),
@@ -743,17 +760,13 @@ Deno.serve(async (request) => {
   };
 
   const publicEntityCandidates = (entities ?? []).filter(
-    (entity) =>
-      publicLayerIds.has(entity.layer_id) && entity.level_id === activeLevelId,
+    (entity) => publicLayerIds.has(entity.layer_id) && entity.level_id === activeLevelId,
   );
   const sheetIds = [
     ...new Set(
       publicEntityCandidates
         .map((entity) => entity.linked_sheet_id)
-        .filter(
-          (value): value is string =>
-            typeof value === "string" && UUID_PATTERN.test(value),
-        ),
+        .filter((value): value is string => typeof value === "string" && UUID_PATTERN.test(value)),
     ),
   ].slice(0, 64);
   const handoutNodeIds = [
@@ -761,10 +774,7 @@ Deno.serve(async (request) => {
       publicEntityCandidates
         .filter((entity) => entity.entity_type === "handout_pin")
         .map((entity) => entity.linked_knowledge_node_id)
-        .filter(
-          (value): value is string =>
-            typeof value === "string" && UUID_PATTERN.test(value),
-        ),
+        .filter((value): value is string => typeof value === "string" && UUID_PATTERN.test(value)),
     ),
   ].slice(0, 64);
   const handoutNodes = new Map<
@@ -801,7 +811,7 @@ Deno.serve(async (request) => {
     const { data: sheets, error: sheetError } = await authorized
       .from("character_sheets")
       .select(
-        "id,name,occupation,brand,origin,exposure,equilibrium,condition,conditions,stats",
+        "id,name,occupation,brand,origin,exposure,equilibrium,condition,conditions,stats,rules_version,tdv2_data",
       )
       .in("id", sheetIds);
     if (sheetError) {
@@ -809,6 +819,31 @@ Deno.serve(async (request) => {
       return respond({ error: "Não foi possível validar as fichas." }, 500);
     }
     for (const sheet of sheets ?? []) {
+      if (sheet.rules_version === 2) {
+        const parsed = tdv2CharacterSchema.safeParse(sheet.tdv2_data);
+        if (!parsed.success)
+          return respond({ error: "Uma ficha TdV II precisa de revisão de formato." }, 500);
+        const c = parsed.data,
+          derived = constitution(c);
+        sheetSummaries.set(sheet.id, {
+          rulesVersion: 2,
+          sheetId: sheet.id,
+          name: boundedText(sheet.name, 160) || "Ficha sem nome",
+          occupation: boundedText(c.face.occupation, 160),
+          origin: boundedText(c.face.origin, 160),
+          brand: "",
+          exposure: derived.development,
+          equilibrium: c.equilibrium,
+          condition: characterStateLabel(c),
+          guard: derived.guard,
+          resources: c.resources,
+          activeConditions: c.conditions
+            .map((x) => boundedText(x.name, 80))
+            .filter(Boolean)
+            .slice(0, 12),
+        });
+        continue;
+      }
       const stats = objectValue(sheet.stats);
       sheetSummaries.set(sheet.id, {
         sheetId: sheet.id,
@@ -850,8 +885,7 @@ Deno.serve(async (request) => {
         title: boundedText(node.title, 160),
         summary: boundedText(node.summary, 600),
         nodeType: boundedText(node.node_type, 80),
-        coverAssetId:
-          typeof node.cover_asset_id === "string" ? node.cover_asset_id : null,
+        coverAssetId: typeof node.cover_asset_id === "string" ? node.cover_asset_id : null,
       });
     }
 
@@ -864,10 +898,7 @@ Deno.serve(async (request) => {
         .limit(1024);
       if (linksError) {
         console.error("[tabletop-view] Could not authorize Nexus attachments.");
-        return respond(
-          { error: "Não foi possível validar os anexos dos handouts." },
-          500,
-        );
+        return respond({ error: "Não foi possível validar os anexos dos handouts." }, 500);
       }
       for (const link of links ?? []) {
         if (
@@ -901,13 +932,8 @@ Deno.serve(async (request) => {
         scene.background_asset_id,
         ...publicEntities.map((entity) => entity.asset_id),
         ...[...handoutNodes.values()].map((node) => node.coverAssetId),
-        ...[...handoutAssetLinks.values()].flatMap((links) =>
-          links.map((link) => link.assetId),
-        ),
-      ].filter(
-        (value): value is string =>
-          typeof value === "string" && UUID_PATTERN.test(value),
-      ),
+        ...[...handoutAssetLinks.values()].flatMap((links) => links.map((link) => link.assetId)),
+      ].filter((value): value is string => typeof value === "string" && UUID_PATTERN.test(value)),
     ),
   ];
   const signedAssets = await signAssets(admin, assetIds);
@@ -964,17 +990,12 @@ Deno.serve(async (request) => {
           height: Math.max(8, finiteNumber(activeLevel.height, 192)),
           visible: true,
           locked: activeLevel.locked === true,
-          version: Math.max(
-            1,
-            Math.trunc(finiteNumber(activeLevel.version, 1)),
-          ),
+          version: Math.max(1, Math.trunc(finiteNumber(activeLevel.version, 1))),
         },
       ],
-      ...(scene.background_asset_id &&
-      signedAssets.has(scene.background_asset_id)
+      ...(scene.background_asset_id && signedAssets.has(scene.background_asset_id)
         ? {
-            backgroundAssetUrl: signedAssets.get(scene.background_asset_id)
-              ?.url,
+            backgroundAssetUrl: signedAssets.get(scene.background_asset_id)?.url,
           }
         : {}),
       layers: publicLayers.map((layer) => ({
@@ -1008,9 +1029,7 @@ Deno.serve(async (request) => {
           color: tabletopEntityColor(entity.entity_type, entity.properties),
           ...(signedAsset ? { assetUrl: signedAsset.url } : {}),
           controllable:
-            participant.role === "player" &&
-            entity.owner_user_id === user.id &&
-            !entity.locked,
+            participant.role === "player" && entity.owner_user_id === user.id && !entity.locked,
           properties: {
             ...publicProperties(entity.properties),
             ...(signedAsset ? { mime_type: signedAsset.mimeType } : {}),

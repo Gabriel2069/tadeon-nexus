@@ -1046,7 +1046,7 @@ export function KnowledgeLibrary({
                     <p className="font-semibold">{template.name}</p>
                     <p className="mt-0.5 text-[10px] uppercase tracking-wide text-muted-foreground">
                       {TYPE_LABELS[template.node_type]}
-                      {template.is_default ? " · inicial" : ""}
+                      {template.default_properties && typeof template.default_properties === "object" && !Array.isArray(template.default_properties) && template.default_properties.rules_version===2 ? " · TdV II" : template.is_default ? " · referência anterior" : ""}
                     </p>
                   </div>
                   <Badge variant="outline">{template.required_fields.length} obrigatório(s)</Badge>

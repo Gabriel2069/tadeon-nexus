@@ -14,7 +14,12 @@ permissions:
   contents: read
 
 jobs:
-  browser:
+  review:
+    name: Review (${{ matrix.suite }})
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [navigation, utilities, tabletop, sheet, tdv2]
     runs-on: ubuntu-latest
     timeout-minutes: 40
     env:
@@ -33,7 +38,16 @@ jobs:
           npm ci
           npm install --prefix /tmp/tadeon-browser --no-audit --no-fund playwright@1.56.1
           /tmp/tadeon-browser/node_modules/.bin/playwright install --with-deps chromium
+      - name: Preparar referência compartilhada
+        if: matrix.suite == 'navigation' || matrix.suite == 'tabletop'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git worktree add --detach /tmp/tadeon-baseline "$BASE_SHA"
+          cd /tmp/tadeon-baseline
+          npm ci
       - name: Validar deslizamento lateral, reversão e foco
+        if: matrix.suite == 'navigation'
         env:
           NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/navigation-slide
           NEXUS_AUDIT_WIDTHS: "[320,390,820,1440]"
@@ -41,6 +55,7 @@ jobs:
           NEXUS_SKIP_SCREENSHOTS: "1"
         run: node scripts/verify-navigation-utilities.mjs
       - name: Conferir dobras compartilhadas na Ficha
+        if: matrix.suite == 'sheet'
         env:
           NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/sheet-folds
           NEXUS_AUDIT_WIDTHS: "[320,1440]"
@@ -48,31 +63,34 @@ jobs:
           NEXUS_SKIP_SCREENSHOTS: "1"
         run: node scripts/verify-sheet-design.mjs
       - name: Comparar referência do acervo
+        if: matrix.suite == 'navigation'
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/baseline
           NEXUS_AUDIT_WIDTHS: "[390,1440]"
           NEXUS_AUDIT_STATES: '["populated"]'
         run: |
-          git worktree add --detach /tmp/tadeon-baseline "$BASE_SHA"
           cd /tmp/tadeon-baseline
-          npm ci
           node "$GITHUB_WORKSPACE/scripts/verify-dashboard-design.mjs"
       - name: Medir presença e movimento compartilhados na referência
+        if: matrix.suite == 'navigation'
         env:
           NEXUS_AUDIT_REPO: /tmp/tadeon-baseline
           NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/motion-baseline
         run: node scripts/verify-shared-motion.mjs baseline
       - name: Validar fluidez, interrupção e redução de movimento
+        if: matrix.suite == 'navigation'
         env:
           NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/motion-current
         run: node scripts/verify-shared-motion.mjs
       - name: Validar acervo, navegação, foco e movimento
+        if: matrix.suite == 'navigation'
         env:
           NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/current
           NEXUS_EXPECT_ISOLATED_LIGHT: "1"
         run: node scripts/verify-dashboard-design.mjs
       - name: Validar superfícies compartilhadas e portais
+        if: matrix.suite == 'navigation'
         env:
           NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/shared
           NEXUS_AUDIT_WIDTHS: "[320,390,820,1440]"
@@ -81,6 +99,7 @@ jobs:
           NEXUS_LAYOUT_AUDIT: "1"
         run: node scripts/verify-header-ownership.mjs current
       - name: Validar registros Offline, Usuários e Backup
+        if: matrix.suite == 'utilities'
         env:
           NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/utility-registers
           NEXUS_AUDIT_WIDTHS: "[320,390,820,1440]"
@@ -88,6 +107,7 @@ jobs:
           NEXUS_EXPECT_UTILITY_REGISTERS: "1"
         run: node scripts/verify-navigation-utilities.mjs
       - name: Comparar composição anterior da Mesa
+        if: matrix.suite == 'tabletop'
         env:
           NEXUS_AUDIT_REPO: /tmp/tadeon-baseline
           NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/tabletop-baseline
@@ -95,6 +115,7 @@ jobs:
           NEXUS_AUDIT_WIDTHS: "[390,1440]"
         run: node scripts/verify-tabletop-workspace.mjs
       - name: Conferir ações circulares da Mesa
+        if: matrix.suite == 'tabletop'
         env:
           NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/tabletop
           NEXUS_AUDIT_WIDTHS: "[320,390,820,1440]"
@@ -104,12 +125,14 @@ jobs:
           NEXUS_RADIAL_AUDIT: "1"
         run: node scripts/verify-header-ownership.mjs current
       - name: Validar composição espacial, modelos e tela inteira
+        if: matrix.suite == 'tabletop'
         env:
           NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/composition
           NEXUS_AUDIT_SCOPE: composition
           NEXUS_AUDIT_WIDTHS: "[320,390,820,1440]"
         run: node scripts/verify-tabletop-workspace.mjs
       - name: Conferir composição adaptável e abas da Ficha
+        if: matrix.suite == 'sheet'
         env:
           NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/sheet-adaptive
           NEXUS_AUDIT_WIDTHS: "[320,390,820,1440]"
@@ -121,6 +144,7 @@ jobs:
           NEXUS_EXPECT_COMPACT_DOSSIER: "1"
         run: node scripts/verify-sheet-design.mjs
       - name: Conferir radar vetorial na Ficha
+        if: matrix.suite == 'sheet'
         env:
           NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/radar-base
           NEXUS_AUDIT_STATES: '["editable","readonly"]'
@@ -129,6 +153,7 @@ jobs:
           NEXUS_EXPECT_LARGE_RADAR: "1"
         run: node scripts/verify-sheet-design.mjs
       - name: Conferir radar vetorial na Forma de Poder
+        if: matrix.suite == 'sheet'
         env:
           NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/radar-power
           NEXUS_AUDIT_STATES: '["editable","readonly"]'
@@ -137,6 +162,18 @@ jobs:
           NEXUS_EXPECT_LARGE_RADAR: "1"
           NEXUS_POWER_HEADER: "1"
         run: node scripts/verify-sheet-design.mjs
+      - name: Conferir isolamento do painel da edição anterior
+        if: matrix.suite == 'tdv2'
+        env:
+          NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/master-legacy
+          NEXUS_AUDIT_WIDTHS: "[320,1440]"
+        run: node scripts/verify-master-workspace.mjs
+      - name: Validar TdV II, continuidade e condução em quatro larguras
+        if: matrix.suite == 'tdv2'
+        env:
+          NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/tdv2
+          NEXUS_AUDIT_WIDTHS: "[320,390,820,1440]"
+        run: node scripts/verify-tdv2.mjs
       - name: Publicar métricas de comparação no log
         if: always()
         run: |
@@ -153,6 +190,18 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: visual-review
+          name: visual-review-${{ matrix.suite }}
           path: /tmp/tadeon-visual
           retention-days: 7
+
+  browser:
+    name: browser
+    needs: review
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Exigir todos os grupos visuais
+        env:
+          REVIEW_RESULT: ${{ needs.review.result }}
+        run: test "$REVIEW_RESULT" = success

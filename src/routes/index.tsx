@@ -1,3 +1,4 @@
+import { newTdvCharacter } from "@/lib/tdv2";
 import { CharacterArchive, type ArchiveSheet } from "@/components/character-archive";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -118,12 +119,29 @@ export function HomePage() {
     try {
       const query = supabase
         .from("character_sheets")
-        .select("id,name,occupation,owner_id,exposure")
+        .select("id,name,occupation,owner_id,exposure,rules_version,tdv2_data")
         .order("created_at", { ascending: false });
       const { data, error } = isMestre ? await query : await query.eq("owner_id", identity.userId);
       if (!reads.current.isCurrent(ticket)) return;
       if (error) throw error;
-      const rows = (data ?? []) as SheetRow[];
+      const rows = (data ?? []).map((row) => ({
+        ...row,
+        development:
+          row.rules_version === 2
+            ? Math.min(
+                20,
+                ((row.tdv2_data as { milestones?: unknown[] })?.milestones ?? []).length,
+              ) * 5
+            : undefined,
+        occupation:
+          row.rules_version === 2
+            ? String(
+                (row.tdv2_data as { face?: { occupation?: string } })?.face?.occupation ??
+                  row.occupation ??
+                  "",
+              )
+            : row.occupation,
+      })) as SheetRow[];
       let labeled = rows;
       if (isMestre && rows.length > 0) {
         const ids = Array.from(new Set(rows.map((row) => row.owner_id)));
@@ -235,6 +253,8 @@ export function HomePage() {
       const { data, error } = await supabase
         .from("character_sheets")
         .insert({
+          rules_version: 2,
+          tdv2_data: newTdvCharacter() as never,
           owner_id: selectedOwner.id,
           name: name.trim() || "Novo Personagem",
           weapon_proficiency: "operador",
@@ -362,14 +382,13 @@ export function HomePage() {
             detail: "Fichas que pertencem a você",
           },
           {
-            label: "Maior exposição",
+            label: "Maior progresso",
             value:
               loading || loadError
                 ? "--"
-                : String(Math.max(0, ...sheets.map((sheet) => sheet.exposure || 0))).padStart(
-                    2,
-                    "0",
-                  ),
+                : String(
+                    Math.max(0, ...sheets.map((sheet) => sheet.development ?? sheet.exposure ?? 0)),
+                  ).padStart(2, "0"),
             detail: "Entre as fichas disponíveis",
           },
         ]}

@@ -1,3 +1,5 @@
+import { tdvMasterSchema } from "@/lib/tdv2-master";
+import { tdv2CharacterSchema, constitution } from "@/lib/tdv2";
 import { PageHeader } from "@/components/page-header";
 import { UTILITY_AREAS } from "@/lib/utility-areas";
 import { UtilitySummary } from "@/components/utility-summary";
@@ -252,29 +254,54 @@ function OfflineSheetCard({
   data?: Record<string, unknown>;
   online: boolean;
 }) {
-  const attributes = (data?.attributes ?? {}) as Record<string, number>;
-  const stats = (data?.stats ?? {}) as Record<string, number>;
+  const parsed = data?.rules_version === 2 ? tdv2CharacterSchema.safeParse(data.tdv2_data) : null;
+  let tdv = parsed?.success ? parsed.data : null;
+  try {
+    if (tdv) constitution(tdv);
+  } catch {
+    tdv = null;
+  }
+  const invalidTdv = data?.rules_version === 2 && !tdv;
+  const attributes = (
+    tdv ? constitution(tdv).matrices : invalidTdv ? {} : (data?.attributes ?? {})
+  ) as Record<string, number>;
+  const stats = (invalidTdv ? {} : (data?.stats ?? {})) as Record<string, number>;
   const identity = (data?.identity_data ?? {}) as Record<string, unknown>;
 
   return (
     <Card className="tadeon-offline-folio" data-availability={data ? "details" : "summary"}>
       <div className="tadeon-offline-folio__meta">
-        <span>Exposição {summary.exposure ?? 0}%</span>
+        <span>
+          {summary.rules_version === 2 || tdv ? "Desenvolvimento" : "Exposição"}{" "}
+          {tdv ? constitution(tdv).development : (summary.development ?? summary.exposure ?? 0)}%
+        </span>
         <span>{data ? "Detalhes disponíveis" : "Somente resumo"}</span>
       </div>
       <h2 className="tadeon-offline-folio__title">{summary.name}</h2>
       <p className="text-xs text-muted-foreground">
         {summary.occupation || "Ocupação não definida"}
       </p>
-      {data ? (
+      {invalidTdv ? (
+        <p role="alert" className="tdv-note">
+          O registro TdV II armazenado precisa de revisão. Abra a versão principal para conferir; os
+          dados não foram substituídos.
+        </p>
+      ) : data ? (
         <>
           <dl className="tadeon-offline-resources" aria-label="Recursos locais">
-            {[
-              ["PV", stats.pv_current],
-              ["PS", stats.ps_current],
-              ["PE", stats.pe_current],
-              ["PA", stats.pa_current],
-            ].map(([label, value]) => (
+            {(tdv
+              ? [
+                  ["PV", tdv.resources.pv],
+                  ["PI", tdv.resources.pi],
+                  ["PE", tdv.resources.pe],
+                ]
+              : [
+                  ["PV", stats.pv_current],
+                  ["PS", stats.ps_current],
+                  ["PE", stats.pe_current],
+                  ["PA", stats.pa_current],
+                ]
+            ).map(([label, value]) => (
               <div key={String(label)}>
                 <dt>{label}</dt>
                 <dd>
@@ -314,6 +341,37 @@ function OfflineSheetCard({
 }
 
 function OfflineMaster({ cache }: { cache: NonNullable<OfflineCache["master"]> }) {
+  const tdv = tdvMasterSchema.safeParse(cache.tdv2);
+  if (tdv.success) {
+    const s = tdv.data;
+    return (
+      <div className="grid gap-4">
+        <Card className="tadeon-surface rounded-2xl p-4 md:p-6">
+          <p className="tadeon-eyebrow">Condução TdV II · somente leitura</p>
+          <h2 className="font-cinzel text-2xl">{s.title || "Cena sem título"}</h2>
+          <p>{s.objective}</p>
+          <ReadOnlyList
+            title="Frentes de Pressão"
+            items={s.pressures.map(
+              (p) => `${p.name || "Frente"}: ${p.value}/4. ${p.value === 4 ? p.rupture : p.cause}`,
+            )}
+          />
+          <ReadOnlyList
+            title={`Rodada ${s.round}`}
+            items={s.participants.map(
+              (p) =>
+                `${p.name}: ${p.impulses} Impulsos, ${p.response ? "1 Resposta" : "Resposta utilizada"}. ${p.position}`,
+            )}
+          />
+          <ReadOnlyList title="Pistas" items={s.investigation.clues.map((c) => c.name)} />
+          <p className="tdv-note">
+            Cópia local da última condução aberta nesta conta. A edição e a sincronização exigem
+            conexão.
+          </p>
+        </Card>
+      </div>
+    );
+  }
   const activeScenes = (cache.scenes as Array<Record<string, unknown>>).filter(
     (scene) => scene.status === "Em curso",
   );

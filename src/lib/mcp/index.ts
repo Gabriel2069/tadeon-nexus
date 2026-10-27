@@ -13,7 +13,7 @@ export default defineMcp({
   title: "Tadeon Nexus",
   version: "0.1.0",
   instructions:
-    "Tools for Tadeon Nexus, a Portuguese-language RPG character-sheet manager. Use `get_my_profile` to inspect the caller, `list_my_sheets` to enumerate accessible character sheets, and `get_sheet` to read a full sheet by id.",
+    "Tools for Tadeon Nexus, a Portuguese-language RPG character-sheet manager. Use `get_my_profile` to inspect the caller, `list_my_sheets` to enumerate accessible character sheets, and `get_sheet` to read a full sheet by id. In rules_version 2, use tdv2_data for TdV II rules; legacy columns are historical and are not cumulative mechanics.",
   auth: auth.oauth.issuer({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated",

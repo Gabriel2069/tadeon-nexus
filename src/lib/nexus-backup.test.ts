@@ -45,3 +45,29 @@ it("isolates local history by account and rejects non-master scopes", () => {
   expect(() => snapshotDatabaseName({ userId: "a", role: "jogador" })).toThrow(/restrito/);
   expect(() => snapshotDatabaseName({ userId: "", role: "mestre" })).toThrow(/restrito/);
 });
+
+it("preserves versioned TdV II character and mestre state through a serialized backup", () => {
+  const payload = {
+    version: 2,
+    resources: { pv: 0, pi: 8, pe: 0 },
+    milestones: [{ id: "marco", event: "O arquivo", incorporation: "Vínculo reconhecido" }],
+    notes: "Memória privada",
+  };
+  const backup = createNexusBackup(
+    [{ id: "sheet", rules_version: 2, tdv2_data: payload, attributes: { COR: 3 } }],
+    [
+      {
+        id: "settings",
+        tdv2_state: {
+          version: 2,
+          round: 3,
+          pressures: [{ id: "p", value: 4, rupture: "O portão cede" }],
+        },
+      },
+    ],
+  );
+  const restored = parseNexusBackup(JSON.parse(JSON.stringify(backup)));
+  expect(restored).toEqual(backup);
+  expect(restored.characterSheets[0].tdv2_data).toEqual(payload);
+  expect(restored.characterSheets[0].attributes).toEqual({ COR: 3 });
+});

@@ -110,7 +110,7 @@ try {
       await mine.click();
       assert(await page.locator(".tadeon-character-card").count() === 3, "Ownership filter uses authorized rows");
       await mine.click();
-      await order.click(); await page.getByRole("option",{name:"Maior exposição",exact:true}).click();
+      await order.click(); await page.getByRole("option",{name:/^Maior (?:exposição|progresso)$/,exact:true}).click();
       assert(await page.locator(".tadeon-character-card h3").first().textContent() === "Personagem de exemplo 5", "Exposure order");
       await order.click(); await page.getByRole("option",{name:"Nome: A–Z",exact:true}).click();
       assert((await page.locator(".tadeon-character-card h3").first().textContent()).startsWith("A guardiã"), "Name order");
@@ -158,6 +158,7 @@ try {
         await drawer.waitFor();
         assert(await drawer.evaluate(e => e.contains(document.activeElement)), "Drawer must contain opening focus");
         await page.keyboard.press("Escape"); await drawer.waitFor({state:"hidden"});
+        await page.waitForFunction(e=>document.activeElement===e,await opener.elementHandle());
         assert(await opener.evaluate(e => document.activeElement === e), "Drawer must return focus");
         const more = page.getByRole("button", { name: "Mais", exact: true });
         await more.focus(); await page.keyboard.press("Enter");

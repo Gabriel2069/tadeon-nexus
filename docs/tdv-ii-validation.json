@@ -1,0 +1,95 @@
+{
+  "task": "NEX-040",
+  "state": "expanded-scope-validation",
+  "source": {
+    "file": "02_Livro_de_Regras(3).docx",
+    "sha256": "8846b485dc528e3998de9227a033bea746eb439d6519ea7f3362a7a8f9515c0f",
+    "reference": "docs/rules/tdv-ii-v2.md"
+  },
+  "verification": {
+    "engineTests": 44,
+    "postgresLocalChecks": 41,
+    "status": "expanded-local-validation-in-progress",
+    "unitSuites": 161,
+    "unitTests": 682,
+    "build": true,
+    "auditHigh": 0,
+    "browser": {
+      "cases": 55,
+      "widths": [
+        320,
+        390,
+        820,
+        1440
+      ],
+      "roles": [
+        "mestre",
+        "espectador"
+      ],
+      "conversionAndConflictWidths": [
+        320,
+        1440
+      ],
+      "overflow": false,
+      "pageErrors": 0,
+      "status": "new-five-area-and-procedure-checks-in-progress",
+      "coverage": [
+        "canonical sheet",
+        "mestre scene and round",
+        "read-only",
+        "explicit legacy conversion",
+        "CAS conflict without overwrite/retry",
+        "archive ignores legacy exposure for TdV II"
+      ]
+    },
+    "mcp": "authenticated edition-aware summaries; no payload secrets or legacy Rank",
+    "backup": "serialized versioned payload and mestre state preserved; no real restore certification",
+    "headerTargets": {
+      "states": 8,
+      "widths": [
+        320,
+        390,
+        820,
+        1440
+      ],
+      "routes": [
+        "/offline",
+        "/master-panel"
+      ],
+      "minimumPx": 44,
+      "status": "passed-local"
+    }
+  },
+  "migration": {
+    "path": "supabase/migrations/20261027093709_tdv_ii_versioned_rules.sql",
+    "applied": true,
+    "project": "nkxpstyfrzufsnowjrdi",
+    "version": "20261027093709",
+    "legacyRowsPreserved": 5,
+    "newPayloads": 0,
+    "sha256": "00bfaa6d3bdb401f6168c24ed46abd0d44bde2c0509265b9f03cb2ba4b16b035"
+  },
+  "production": "not-published",
+  "limits": [
+    "Fixtures do not certify physical hardware, real-account authorization or real restore. NEX-009/010/011 remain separate."
+  ],
+  "edge": {
+    "function": "tabletop-view",
+    "version": 14,
+    "verify_jwt": true,
+    "bundleSha256": "2d426dd6a443223e2abbe0233ee6992f208b8621388beafd5fd3ee5510309fa1",
+    "anonymousRequestStatus": 401
+  },
+  "review": {
+    "pr": 310,
+    "url": "https://github.com/Gabriel2069/tadeon-nexus/pull/310",
+    "status": "draft"
+  },
+  "operationalMigration": {
+    "path": "supabase/migrations/20261027191353_tdv_ii_operational_play.sql",
+    "applied": true,
+    "project": "nkxpstyfrzufsnowjrdi",
+    "version": "20261027191353"
+  },
+  "coverage": "docs/tdv-ii-coverage.md"
+}

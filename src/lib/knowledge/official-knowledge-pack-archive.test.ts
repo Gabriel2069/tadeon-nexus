@@ -48,10 +48,12 @@ describe("Tadeon Nexus official pack", () => {
 
     expect(
       preview.pages.filter((page) => page.status === "canonical"),
-    ).toHaveLength(130);
+    ).toHaveLength(123);
     expect(
       preview.pages.filter((page) => page.status === "review"),
-    ).toHaveLength(56);
+    ).toHaveLength(80);
+    expect(preview.pages.filter(page => (page.properties as Record<string,unknown>).rules_version === 2)).toHaveLength(17);
+    expect(preview.pages.filter(page => (page.properties as Record<string,unknown>).rules_edition === "historical-v1").every(page=>page.status === "review")).toBe(true);
     expect(
       preview.source_types.filter(
         (sourceType) =>

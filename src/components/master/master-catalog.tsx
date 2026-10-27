@@ -60,10 +60,11 @@ export function MasterCatalog({
     try {
       const { data, error } = await supabase
         .from("character_sheets")
-        .select("weapons,abilities,plots,fragments_items")
+        .select("weapons,abilities,plots,fragments_items,rules_version")
         .eq("id", sheetId)
         .single();
       if (error || !data) throw error;
+      if (data.rules_version === 2) throw new Error("Use os registros de Expressão do TdV II para esta ficha.");
       const source = data as unknown as Record<string, unknown>;
       const field =
         selected.category === "arma"
