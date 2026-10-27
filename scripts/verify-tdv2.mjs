@@ -507,9 +507,9 @@ try {
           );
         }
         await geometry("master-workspace");
-        await page.getByRole("tab", { name: "Regras TdV II", exact: true }).click();
+        await page.getByLabel("Ir para uma ferramenta do mestre").selectOption("rules");
         await page.getByLabel("Título da cena", { exact: true }).fill("Rascunho protegido");
-        await page.getByRole("tab", { name: "Sessão Ativa", exact: true }).click();
+        await page.getByLabel("Ir para uma ferramenta do mestre").selectOption("session");
         await page.getByRole("alertdialog").waitFor();
         await page.getByRole("button", { name: "Continuar no painel", exact: true }).click();
         assert(
@@ -517,9 +517,9 @@ try {
             "Rascunho protegido",
           "Parent navigation lost embedded draft",
         );
-        await page.getByRole("tab", { name: "Sessão Ativa", exact: true }).click();
+        await page.getByLabel("Ir para uma ferramenta do mestre").selectOption("session");
         await page.getByRole("button", { name: "Salvar e continuar", exact: true }).click();
-        await page.getByLabel("Campanha", { exact: true }).waitFor();
+        await page.waitForFunction(() => new URL(location.href).searchParams.get("tab") === "session");
         assert(
           settings.tdv2_state.title === "Rascunho protegido",
           "Embedded draft not saved before navigation",

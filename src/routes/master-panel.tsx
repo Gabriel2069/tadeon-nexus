@@ -608,7 +608,11 @@ function MasterWorkspace() {
       <div data-page-layout className="tadeon-page tadeon-route-master">
         <PageHeader
           section="master"
-          eyebrow="Edição anterior · arquivo da campanha"
+          eyebrow={
+            search.edition === "legacy"
+              ? "Edição anterior · arquivo da campanha"
+              : "Campanha · ferramentas do Mestre"
+          }
           title="Painel do Mestre"
         />
         <Card className="p-6 text-center">
@@ -682,7 +686,11 @@ function MasterWorkspace() {
 
       <PageHeader
         section="master"
-        eyebrow="Edição anterior · arquivo da campanha"
+        eyebrow={
+          search.edition === "legacy"
+            ? "Edição anterior · arquivo da campanha"
+            : "Campanha · ferramentas do Mestre"
+        }
         title="Painel do Mestre"
         description={`${s.campaign_title || "Campanha sem título"} · comando, ritmo e continuidade`}
         mark={<MasterPanelIdentity activeTab={activeTab} />}
