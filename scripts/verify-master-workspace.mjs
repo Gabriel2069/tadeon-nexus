@@ -19,6 +19,12 @@ const server = spawn(
   ["run", "dev", "--", "--host", "127.0.0.1", "--strictPort", "--port", String(port)],
   { detached: true, stdio: ["ignore", "pipe", "pipe"] },
 );
+let serverLog = "";
+const captureServerLog = (chunk) => {
+  serverLog = (serverLog + chunk.toString()).slice(-8000);
+};
+server.stdout.on("data", captureServerLog);
+server.stderr.on("data", captureServerLog);
 const userId = "00000000-0000-4000-8000-000000000001";
 const user = {
   id: userId,
@@ -75,13 +81,20 @@ const settings = {
   interludes: [],
 };
 try {
-  await new Promise((ok, fail) => {
-    server.stdout.on("data", (b) => {
-      if (b.toString().includes("Local:")) ok();
-    });
-    server.on("exit", (code) => fail(new Error("Vite exited " + code)));
-    setTimeout(() => fail(new Error("Vite timeout")), 30000).unref();
-  });
+  const deadline = Date.now() + 120000;
+  while (true) {
+    if (server.exitCode !== null) throw new Error(`Vite exited ${server.exitCode}: ${serverLog}`);
+    try {
+      const response = await fetch(`http://127.0.0.1:${port}`, {
+        signal: AbortSignal.timeout(2000),
+      });
+      if (response.ok) break;
+    } catch {
+      /* HTTP readiness, not a terminal message. */
+    }
+    if (Date.now() > deadline) throw new Error(`Vite HTTP readiness timeout: ${serverLog}`);
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
   for (const width of JSON.parse(process.env.NEXUS_AUDIT_WIDTHS || "[320,390,820,1440]")) {
     const context = await browser.newContext({
       viewport: { width, height: 1000 },
@@ -145,7 +158,16 @@ try {
       else if (url.pathname.includes("/user_roles")) body = [{ user_id: userId, role: "mestre" }];
       else if (url.pathname.includes("/feature_flags"))
         body = [{ key: "nexus_knowledge_enabled", enabled: true }];
-      else if (url.pathname.includes("/character_sheets")) body = [...sheets,{...sheets[0],id:"00000000-0000-4000-8000-000000000088",name:"Ficha TdV II fora do arquivo anterior",rules_version:2}];
+      else if (url.pathname.includes("/character_sheets"))
+        body = [
+          ...sheets,
+          {
+            ...sheets[0],
+            id: "00000000-0000-4000-8000-000000000088",
+            name: "Ficha TdV II fora do arquivo anterior",
+            rules_version: 2,
+          },
+        ];
       else if (url.pathname.includes("/game_settings")) {
         if (failLoad) {
           await r.fulfill({
@@ -225,12 +247,18 @@ try {
         );
       }
     };
-    await page.goto(`http://127.0.0.1:${port}/master-panel?edition=legacy`, { waitUntil: "domcontentloaded" });
+    await page.goto(`http://127.0.0.1:${port}/master-panel?edition=legacy`, {
+      waitUntil: "domcontentloaded",
+    });
     await page
       .getByRole("heading", { name: "Painel do Mestre", exact: true, level: 1 })
       .waitFor({ timeout: 180000 });
     await page.getByLabel("Campanha", { exact: true }).waitFor();
-    assert(await page.getByText("Ficha TdV II fora do arquivo anterior",{exact:true}).count()===0,"Legacy workspace mixed a TdV II character into old mechanics");
+    assert(
+      (await page.getByText("Ficha TdV II fora do arquivo anterior", { exact: true }).count()) ===
+        0,
+      "Legacy workspace mixed a TdV II character into old mechanics",
+    );
     if (width < 768) {
       await page.getByRole("button", { name: "Abrir menu", exact: true }).click();
       const drawer = page.getByRole("dialog", { name: "Navegação principal", exact: true });
