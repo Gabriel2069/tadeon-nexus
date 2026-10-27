@@ -178,7 +178,7 @@ export function TdvOutcome({ character: c, onChange, canEdit }: Props) {
           id="tdv-outcome-test"
           value={test.id}
           onChange={(e) => setId(e.target.value)}
-          disabled={!canEdit}
+          data-view-control
         >
           {tests.map((t) => (
             <option key={t.id} value={t.id}>

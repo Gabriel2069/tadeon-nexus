@@ -61,12 +61,14 @@ export function TdvSelect({
   options,
   onChange,
   disabled = false,
+  navigation = false,
 }: {
   label: string;
   value: string;
   options: readonly string[];
   onChange: (value: string) => void;
   disabled?: boolean;
+  navigation?: boolean;
 }) {
   const id = useId();
   return (
@@ -76,6 +78,7 @@ export function TdvSelect({
       </label>
       <select
         className="tadeon-dossier-field"
+        data-view-control={navigation || undefined}
         id={id}
         value={value}
         disabled={disabled}

@@ -671,7 +671,7 @@ export function Tdv2Sheet({
                 label="Tipo de registro"
                 value={recordKind}
                 options={Object.keys(RECORD_FIELDS)}
-                disabled={disabled}
+                navigation
                 onChange={(v) => setRecordKind(v as TdvRecord["kind"])}
               />
               <Button

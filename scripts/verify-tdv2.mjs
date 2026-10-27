@@ -98,6 +98,13 @@ try {
         conditions: {},
         power_form_enabled: false,
       };
+      if (role === "espectador")
+        row.tdv2_data.records.push({
+          id: "readonly-trama",
+          kind: "Trama",
+          name: "A trama consultável",
+          fields: { Alvo: "O portão" },
+        });
       const legacy = JSON.stringify({ attributes: row.attributes, stats: row.stats });
       let settings = {
         id: "00000000-0000-4000-8000-000000000099",
@@ -226,16 +233,14 @@ try {
           `${label}/${width}/${role}: ${JSON.stringify(g)}`,
         );
         assert(!errors.length, errors.join("\n"));
-        const checkboxText = await page
-          .locator(".tadeon-tdv2-sheet .tdv-check")
-          .evaluateAll((es) =>
-            es
-              .filter((el) => el.getBoundingClientRect().height > 0)
-              .map((el) => ({
-                label: el.textContent.trim(),
-                size: parseFloat(getComputedStyle(el).fontSize),
-              })),
-          );
+        const checkboxText = await page.locator(".tadeon-tdv2-sheet .tdv-check").evaluateAll((es) =>
+          es
+            .filter((el) => el.getBoundingClientRect().height > 0)
+            .map((el) => ({
+              label: el.textContent.trim(),
+              size: parseFloat(getComputedStyle(el).fontSize),
+            })),
+        );
         assert(
           checkboxText.every((x) => x.size >= 14),
           "Legacy game styling reduced TdV II checkbox text: " + JSON.stringify(checkboxText),
@@ -334,7 +339,7 @@ try {
         assert(
           (await page
             .locator(
-              ".tadeon-tdv2-sheet input:not([disabled]),.tadeon-tdv2-sheet textarea:not([disabled]),.tadeon-tdv2-sheet select:not([disabled])",
+              ".tadeon-tdv2-sheet input:not([disabled]),.tadeon-tdv2-sheet textarea:not([disabled]),.tadeon-tdv2-sheet select:not([disabled]):not([data-view-control])",
             )
             .count()) === 0,
           "Readonly fields enabled",
@@ -346,11 +351,26 @@ try {
           assert(
             (await page
               .locator(
-                ".tadeon-tdv2-sheet input:not([disabled]),.tadeon-tdv2-sheet textarea:not([disabled]),.tadeon-tdv2-sheet select:not([disabled])",
+                ".tadeon-tdv2-sheet input:not([disabled]),.tadeon-tdv2-sheet textarea:not([disabled]),.tadeon-tdv2-sheet select:not([disabled]):not([data-view-control])",
               )
               .count()) === 0,
             "Readonly fields enabled in " + name,
           );
+          if (name === "Expressão") {
+            const filter = page.getByLabel("Tipo de registro", { exact: true });
+            assert(await filter.isEnabled(), "Readonly repertoire navigation blocked");
+            await filter.selectOption("Trama");
+            await page
+              .locator("summary")
+              .filter({ hasText: "Trama · A trama consultável" })
+              .waitFor();
+            assert(
+              await page
+                .getByRole("button", { name: "Adicionar registro", exact: true })
+                .isDisabled(),
+              "Readonly navigation enabled a mutation",
+            );
+          }
           await geometry("sheet-readonly-" + name.toLowerCase());
         }
       await page.getByRole("tab", { name: "Ação", exact: true }).click();
