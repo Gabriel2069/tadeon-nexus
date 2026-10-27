@@ -342,33 +342,32 @@ export function AppLayout({ children }: { children: ReactNode }) {
   }) => (
     <div className="tadeon-sidebar__body relative flex h-full w-full min-h-0 min-w-0 flex-col overflow-hidden p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
       <ThreadField className="text-sidebar-primary opacity-40" />
-      <div className={`relative z-10 mb-4 shrink-0 ${mini ? "text-center" : ""}`}>
-        {mini ? (
-          <BrandMark className="mx-auto h-9 w-9 text-primary" />
-        ) : (
-          <>
-            <div className="flex items-center gap-3 px-1 pt-1">
-              <BrandMark className="h-11 w-11 shrink-0 text-primary" />
-              <div className="min-w-0">
-                <div className="tadeon-eyebrow">Fio-Mestre</div>
-                <p className="font-cinzel text-xl font-semibold leading-none text-primary">
-                  Tadeon Nexus
-                </p>
-              </div>
-            </div>
-            <div className="mt-4 border-l border-primary/25 pl-3">
-              <p className="truncate text-xs text-muted-foreground">
-                {profile?.full_name || user?.email}
-              </p>
-            </div>
+      <div
+        className="tadeon-sidebar-identity relative z-10 mb-4 shrink-0"
+        data-mini={mini ? "true" : "false"}
+      >
+        <div className="tadeon-sidebar-identity__brand">
+          <BrandMark className="h-9 w-9 shrink-0 text-primary" />
+          <div className="tadeon-sidebar-identity__name" aria-hidden={mini || undefined}>
+            <div className="tadeon-eyebrow">Fio-Mestre</div>
+            <p className="font-cinzel text-xl font-semibold leading-none text-primary">
+              Tadeon Nexus
+            </p>
+          </div>
+        </div>
+        <div className="tadeon-sidebar-identity__details" aria-hidden={mini || undefined}>
+          <div>
+            <p className="truncate text-xs text-muted-foreground">
+              {profile?.full_name || user?.email}
+            </p>
             {role && (
-              <div className="mt-1 flex items-center gap-1.5 pl-3 text-[11px] text-primary">
+              <div className="mt-1 flex items-center gap-1.5 text-[11px] text-primary">
                 <RoleIcon className="w-3 h-3" />
                 <span className="capitalize">{role}</span>
               </div>
             )}
-          </>
-        )}
+          </div>
+        </div>
       </div>
 
       <div className="tadeon-sidebar__scroll relative z-10 min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
@@ -726,21 +725,28 @@ function NavItem({
       aria-label={mini ? label : undefined}
       title={mini ? label : undefined}
       data-material-surface="navigation"
-      className={`tadeon-nav-item group flex min-h-11 items-center gap-2 rounded-xl px-2 py-2 text-sm ${
-        mini ? "justify-center px-2" : ""
-      } ${active ? "font-medium" : ""}`}
+      className={`tadeon-nav-item group flex min-h-11 items-center gap-2 rounded-xl px-2 py-2 text-sm ${active ? "font-medium" : ""}`}
     >
       <span className="tadeon-nav-item__icon" aria-hidden="true">
         {icon}
       </span>
-      {!mini && <span className="tadeon-nav-item__label">{label}</span>}
+      <span className="tadeon-nav-item__label" aria-hidden={mini || undefined}>
+        {label}
+      </span>
     </Link>
   );
 }
 
 function NavGroupLabel({ label, mini }: { label: string; mini: boolean }) {
-  if (mini) return <div className="tadeon-nav-group-rule" aria-hidden />;
-  return <p className="tadeon-nav-group-label">{label}</p>;
+  return (
+    <p
+      className="tadeon-nav-group-label"
+      data-mini={mini ? "true" : "false"}
+      aria-hidden={mini || undefined}
+    >
+      <span>{label}</span>
+    </p>
+  );
 }
 
 function SideAction({
@@ -762,14 +768,17 @@ function SideAction({
       onClick={onClick}
       title={mini ? label : undefined}
       aria-label={mini ? label : undefined}
-      className={`w-full gap-2 ${mini ? "justify-center px-2" : "justify-start"} ${
+      data-mini={mini ? "true" : "false"}
+      className={`tadeon-side-action w-full gap-2 justify-start ${
         danger
           ? "text-destructive hover:bg-destructive/10 hover:text-destructive"
           : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
       }`}
     >
       {icon}
-      {!mini && label}
+      <span className="tadeon-nav-item__label" aria-hidden={mini || undefined}>
+        {label}
+      </span>
     </Button>
   );
 }

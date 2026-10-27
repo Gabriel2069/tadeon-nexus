@@ -103,8 +103,31 @@ try {
    await opener.click();await drawer.waitFor();await page.setViewportSize({width:820,height:1000});await drawer.waitFor({state:"hidden"});await page.waitForFunction(() => document.querySelector('button[aria-controls="tadeon-mobile-navigation"]')?.getAttribute("aria-expanded") === "false" && document.getElementById("tadeon-main") === document.activeElement, undefined, {timeout:5000});await page.setViewportSize({width,height:1000});
   } else if(width>=768 && process.env.NEXUS_AUDIT_SCOPE !== "utilities") {
    await page.getByRole("button",{name:"Recolher menu",exact:true}).click();await page.waitForTimeout(250);const compact=page.locator("#tadeon-desktop-sidebar").getByRole("link",{name:"Usuários",exact:true});assert(await compact.isVisible(),"Collapsed destination keeps accessible label");
-   const icon=await compact.locator(".tadeon-nav-item__icon").evaluate(e=>({width:e.getBoundingClientRect().width,opacity:getComputedStyle(e).opacity}));assert(icon.width>=16&&Number(icon.opacity)>0,"Collapsed icon remains visible");if(process.env.NEXUS_SKIP_SCREENSHOTS!=="1")await page.screenshot({path:`${root}/sidebar-${width}.png`});await page.getByRole("button",{name:"Expandir menu",exact:true}).click();await page.waitForTimeout(500);
+   const icon=await compact.locator(".tadeon-nav-item__icon").evaluate(e=>({width:e.getBoundingClientRect().width,opacity:getComputedStyle(e).opacity,centerDelta:Math.abs((e.getBoundingClientRect().left+e.getBoundingClientRect().width/2)-(e.parentElement.getBoundingClientRect().left+e.parentElement.getBoundingClientRect().width/2))}));assert(icon.width>=16&&Number(icon.opacity)>0&&icon.centerDelta<1,"Collapsed icon remains visible and centered");if(process.env.NEXUS_SKIP_SCREENSHOTS!=="1")await page.screenshot({path:`${root}/sidebar-${width}.png`});await page.getByRole("button",{name:"Expandir menu",exact:true}).click();await page.waitForTimeout(500);
    const nav=page.locator("#tadeon-desktop-sidebar").getByRole("link",{name:"Consulta offline",exact:true});const before=await nav.boundingBox();await nav.hover();await page.waitForTimeout(250);const after=await nav.boundingBox();assert(Math.abs(after.x-before.x)<.5&&Math.abs(after.y-before.y)<.5,`Navigation target stays still on hover: ${JSON.stringify({before,after,style:await nav.evaluate(e=>({transform:getComputedStyle(e).transform,translate:getComputedStyle(e).translate,scale:getComputedStyle(e).scale,animation:getComputedStyle(e).animationName}))})}`);
+   const sidebar=page.locator('#tadeon-desktop-sidebar');
+   const slide=await sidebar.evaluate(async e=>{
+    const button=e.querySelector('.tadeon-sidebar-collapse');
+    const expanded=e.getBoundingClientRect().width;button.click();
+    while(e.dataset.collapsed!=='true')await new Promise(requestAnimationFrame);
+    // Sample the browser's interpolation at a fixed phase. Wall-clock rAF samples
+    // can miss every intermediate frame on a busy software GPU; this is geometry,
+    // not a claim about physical frame rate.
+    const transition=e.getAnimations().find(a=>a.transitionProperty==='width');
+    if(!transition)throw new Error('Sidebar must own a width transition');
+    transition.pause();transition.currentTime=130;
+    const intermediate=e.getBoundingClientRect().width;
+    button.click();while(e.dataset.collapsed!=='false')await new Promise(requestAnimationFrame);
+    await new Promise(resolve=>setTimeout(resolve,360));
+    return {expanded,intermediate,settled:e.getBoundingClientRect().width,labels:e.querySelectorAll('.tadeon-nav-item__label').length};
+   });
+   assert(slide.intermediate>82 && slide.intermediate<slide.expanded-2,'Sidebar interpolates width: '+JSON.stringify(slide));
+   assert(Math.abs(slide.settled-slide.expanded)<1 && slide.labels>3,'Interrupted sidebar converges to expanded state');
+   await page.emulateMedia({reducedMotion:'reduce'});await page.getByRole('button',{name:'Recolher menu',exact:true}).click();
+   assert(await sidebar.evaluate(e=>Math.abs(e.getBoundingClientRect().width-80)<1),'Reduced-motion sidebar settles immediately');
+   await page.getByRole('button',{name:'Expandir menu',exact:true}).click();await page.emulateMedia({reducedMotion:'no-preference'});
+   results.push({width,label:'sidebar-slide',...slide});
+
   }
   await page.emulateMedia({reducedMotion:"reduce"});
   if (process.env.NEXUS_AUDIT_SCOPE === "navigation") { await geometry("navigation"); await page.getByRole("button",{name:"Limpar cópia local",exact:true}).click();await page.getByRole("button",{name:"Cancelar",exact:true}).click();await context.close();continue; }
@@ -132,11 +155,13 @@ await page.getByText("Cronista",{exact:true}).waitFor();
   if(process.env.NEXUS_EXPECT_UTILITY_REGISTERS === "1") {
    const roles=await page.locator('.tadeon-user-row__access [role="combobox"]').evaluateAll(items=>items.map(e=>{const text=e.querySelector('span'),icon=e.querySelector('svg'),range=document.createRange();range.selectNodeContents(text);const r=range.getBoundingClientRect();return {text:e.textContent,fits:r.width<=text.getBoundingClientRect().width+1 && r.right<=icon.getBoundingClientRect().left+1};}));
    assert(roles.length===3 && roles.every(e=>e.fits),'Full role names fit: '+JSON.stringify(roles));
+   const cardFrames=await page.locator('.tadeon-user-row').evaluateAll(items=>items.map(e=>{const r=e.getBoundingClientRect();return {y:r.y,height:r.height};}));
+   assert(cardFrames.every(a=>cardFrames.every(b=>Math.abs(a.y-b.y)>1 || Math.abs(a.height-b.height)<1)),'Individual cards share a frame height when on the same row');
    await page.emulateMedia({reducedMotion:'no-preference'});
    const row=page.locator('.tadeon-user-row').last();await row.hover();
    assert(await row.evaluate(e=>{const c=getComputedStyle(e);return c.transform==='none' && c.filter==='none';}),'Directory rows stay still while operating controls');
    await page.emulateMedia({reducedMotion:'reduce'});
-   results.push({width,label:'directory-contract',roles});
+   results.push({width,label:'directory-contract',roles,cardFrames});
   }
   assert(results.findLast(result=>result.label==="users").rows.every(r=>r.inside && (width>=768 || r.height<220)),"Compact user rows stay readable without forced giant heights");
   await page.getByRole("searchbox").fill("cronista@");assert(!(await page.getByText(people[1].full_name,{exact:true}).count()),"User search filters name/email");

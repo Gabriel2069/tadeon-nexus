@@ -1,0 +1,17 @@
+{
+  "task": "NEX-039",
+  "state": "local-validation",
+  "base": "109b94fe9fa67b4ea747348b76b89056d5e8a498",
+  "changes": [
+    "Cartões individuais com grade pela largura disponível, costura bronze e trilha de acesso própria.",
+    "Exposição com preenchimento bronze/carmim proporcional, reflexo estático e marcador; sem loop decorativo.",
+    "Sidebar com largura reversível em 260ms e rótulos persistentes; drawer em 260ms/180ms; busca sem deslocamento no hover; promoção permanente legada retirada."
+  ],
+  "verification": {
+    "status": "pending",
+    "auditVulnerabilities": 0
+  },
+  "limits": [
+    "Fixtures não certificam FPS/INP em aparelhos físicos, contas reais ou restauração. NEX-009/010/011 preservados."
+  ]
+}

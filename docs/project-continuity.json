@@ -1270,6 +1270,28 @@
         "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40293915696"
       ],
       "checkpoint": "Integrado pela PR #306, fonte c67207e, merge 535106f. Dossiê compacto com radar preservado, Exposição graduada e par de estados alinhado no desktop aberto; altura mínima legada de 240px retirada. Recursos móveis com nomes íntegros e alvos de 44px; Maestria/História e perícias com densidade e tipografia revistas. Offline, Backup e Usuários reorganizados como registros. Dossiê Véu & Trama incorporado como referência; regras/autosave/autorização/rodas preservados. Quality do fonte/main: 157 suítes/634 testes, audit zero. Visual review do fonte exato aprovado; quatro larguras, 40 estados/contratos de utilidades, oito vistas adaptáveis e regressões compartilhadas/Mesa. Artefato final e capturas inspecionados. HTTP 200/SHA exato em 2026-10-26T08:43:07.9831728Z. Fixtures não certificam hardware, contas ou restauração reais; NEX-009/010/011 mantidos. Fechamento documental confirma a própria publicação na PR correspondente."
+    },
+    {
+      "id": "NEX-039",
+      "title": "Jogadores individuais, presença da Exposição e deslizamento lateral",
+      "domain": "shell",
+      "status": "active",
+      "priority": 7,
+      "dependsOn": [
+        "NEX-038"
+      ],
+      "acceptance": [
+        "Restaurar cartões individuais de jogadores com dimensões adaptáveis, papéis legíveis e confirmações preservadas.",
+        "Dar cor, relevo e preenchimento proporcional à Exposição, mantendo bases, controles e regras existentes.",
+        "Reconciliar abertura/recolhimento lateral, rótulos persistentes, interrupção e movimento reduzido; preservar botões aprovados e rodas.",
+        "Validar quatro larguras, teclado/foco/portais, check e auditoria; distinguir fixtures, integração e publicação."
+      ],
+      "evidence": [
+        "docs/navigation-presence-validation.json",
+        "scripts/verify-navigation-utilities.mjs",
+        "scripts/verify-sheet-design.mjs"
+      ],
+      "checkpoint": "Implementação em validação local; ainda não integrada nem publicada."
     }
   ],
   "decisions": [
@@ -1681,6 +1703,10 @@
     {
       "path": "docs/dossier-density-validation.json",
       "purpose": "Evidência de NEX-038: proporções e encaixe dos instrumentos, Exposição, guias da Ficha e organização de Offline/Backup/Usuários; fixtures, integração e publicação separados."
+    },
+    {
+      "path": "docs/navigation-presence-validation.json",
+      "purpose": "NEX-039: cartões individuais, preenchimento da Exposição e movimento lateral, com contratos, procedência e limites de validação."
     }
   ],
   "integrationHistory": [

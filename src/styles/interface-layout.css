@@ -859,14 +859,7 @@ body:has(.tadeon-tabletop-studio) {
    Sidebar: restore the centered, symmetric collapsed state from before #149.
    -------------------------------------------------------------------------- */
 
-#tadeon-desktop-sidebar button[data-mini="true"] {
-  width: 3.35rem !important;
-  min-width: 3.35rem !important;
-  min-height: 3.1rem !important;
-  margin-inline: auto !important;
-  justify-content: center !important;
-  padding-inline: .7rem !important;
-}
+
 
 /* --------------------------------------------------------------------------
    Mesa: selection can never become a viewport effect.

@@ -2632,15 +2632,14 @@ details.tadeon-utility-note { padding-block: .35rem; }
 .tadeon-library-preview__content { line-height: 1.75; }
 
 /* Directory: a continuous register, with roles and actions on a stable second track. */
-.tadeon-users-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; overflow: clip; border: 1px solid var(--border); border-radius: 1rem; background: #12171e; }
-.tadeon-user-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(13rem, auto); align-items: center; gap: .75rem 1.25rem; min-width: 0; padding: 1rem 1.125rem; border: 0; border-radius: 0; overflow-wrap: anywhere; background: linear-gradient(100deg, rgb(183 129 77 / 4%), transparent 60%), #12171e; box-shadow: none; }
-.tadeon-user-row + .tadeon-user-row { border-top: 1px solid var(--border); }
+.tadeon-users-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr)); align-items: stretch; gap: .875rem; }
+.tadeon-user-row { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr auto; gap: .875rem; min-width: 0; padding: 1rem; border: 1px solid rgb(183 129 77 / 24%); border-radius: 1rem .4rem 1rem .4rem; overflow-wrap: anywhere; background: radial-gradient(ellipse at 0 0, rgb(183 129 77 / 11%), transparent 65%), #12171e; box-shadow: inset 0 1px rgb(233 227 213 / 9%), inset 2px 0 rgb(183 129 77 / 18%), 0 10px 22px -20px #000; transition: border-color 160ms var(--ease-out), background-color 160ms var(--ease-out); }
 .tadeon-user-row__identity { display: flex; align-items: center; gap: .75rem; min-width: 0; }
 .tadeon-user-row__sigil { display: grid; flex: 0 0 auto; width: 2.75rem; aspect-ratio: 1; place-items: center; border: 1px solid rgb(183 129 77 / 30%); border-radius: .7rem .25rem .7rem .25rem; color: #e9e3d5; background: linear-gradient(145deg, rgb(183 129 77 / 14%), transparent), #171c22; box-shadow: inset 0 1px rgb(233 227 213 / 8%); font: 600 1.3rem/1 var(--font-cinzel); }
 .tadeon-user-row[data-user-role="mestre"] .tadeon-user-row__sigil { border-color: rgb(217 215 164 / 38%); }
-.tadeon-user-row__access { display: flex; align-items: center; gap: .5rem; min-width: 0; }
+.tadeon-user-row__access { display: flex; align-items: center; gap: .5rem; min-width: 0; padding-top: .75rem; border-top: 1px solid rgb(183 129 77 / 15%); }
 .tadeon-user-row__access [role="combobox"] { min-height: 44px; }
-.tadeon-user-row:focus-within { background-color: #1b2027; }
+.tadeon-user-row:focus-within { border-color: rgb(183 129 77 / 60%); background-color: #1b2027; }
 /* Offline folios expose availability and keep four resources in one engraved register. */
 .tadeon-offline-folio { display: flex; flex-direction: column; min-width: 0; padding: 1rem; border-radius: 1rem .35rem 1rem .35rem; border-color: rgb(113 107 123 / 35%); border-inline-start: 2px solid rgb(113 107 123 / 65%); background: linear-gradient(110deg, rgb(113 107 123 / 7%), transparent 60%), #12171e; }
 .tadeon-offline-folio__meta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .35rem .75rem; color: var(--muted-foreground); font: 400 .75rem/1.4 var(--font-inter); }
@@ -2664,7 +2663,7 @@ details.tadeon-utility-note { padding-block: .35rem; }
 .tadeon-backup-import { border-inline-start: 2px solid rgb(122 129 135 / 60%); }
 .tadeon-backup-entry { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; padding: .875rem 0; border-top: 1px solid var(--border); }
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-user-row:hover { background-color: #1b2027; }
+  .tadeon-user-row:hover { border-color: rgb(183 129 77 / 44%); background-color: #1b2027; }
 }
 @media (max-width: 767px) {
   .tadeon-user-row { grid-template-columns: minmax(0, 1fr); padding: .875rem; }
@@ -2677,3 +2676,5 @@ details.tadeon-utility-note { padding-block: .35rem; }
 .tadeon-diagnostic-record[data-diagnostic-level="error"] { border-inline-start-color: #fca5a5; }
 .tadeon-diagnostic-record__heading { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem .75rem; }
 .tadeon-diagnostic-record__heading > span { color: var(--muted-foreground); font: 400 .75rem/1.4 var(--font-inter); }
+
+@media (prefers-reduced-motion: reduce) { .tadeon-user-row { transition: none; } }
