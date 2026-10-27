@@ -777,10 +777,15 @@ function MasterWorkspace() {
           <ScenesPanel s={s} upd={upd} />
         </TabsContent>
         <TabsContent value="initiative" className="mt-0">
-          {search.edition === "legacy" ? (
-            <InitiativePanel s={s} upd={upd} />
-          ) : (
-            <Tdv2MasterPanel embedded initialTab="scene" />
+          <InitiativePanel s={s} upd={upd} />
+          {search.edition !== "legacy" && (
+            <>
+              <p className="tdv-note">
+                A fila livre conserva NPCs, jogadores e marcadores manuais. A condução abaixo
+                registra a prioridade disputada e a economia de 2 Impulsos e 1 Resposta do TdV II.
+              </p>
+              <Tdv2MasterPanel embedded initialTab="scene" />
+            </>
           )}
         </TabsContent>
         <TabsContent value="rules" className="mt-0">
@@ -864,7 +869,13 @@ function MasterWorkspace() {
           {search.edition === "legacy" ? (
             <DataPanel s={s} upd={upd} />
           ) : (
-            <Tdv2MasterPanel embedded initialTab="reference" />
+            <>
+              <Tdv2MasterPanel embedded initialTab="reference" />
+              <details className="tdv-disclosure">
+                <summary>Parâmetros e tabelas da edição anterior</summary>
+                <DataPanel s={s} upd={upd} />
+              </details>
+            </>
           )}
         </TabsContent>
       </Tabs>

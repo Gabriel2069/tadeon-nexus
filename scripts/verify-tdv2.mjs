@@ -507,6 +507,14 @@ try {
           );
         }
         await geometry("master-workspace");
+        await page.getByLabel("Ir para uma ferramenta do mestre").selectOption("initiative");
+        await page.getByRole("button", { name: "NPC", exact: true }).waitFor();
+        assert(
+          (await page.getByRole("button", { name: "Jogador", exact: true }).count()) === 1,
+          "Manual initiative controls removed",
+        );
+        await page.getByLabel("Título da cena", { exact: true }).waitFor();
+        await geometry("master-initiative-retained");
         await page.getByLabel("Ir para uma ferramenta do mestre").selectOption("rules");
         await page.getByLabel("Título da cena", { exact: true }).fill("Rascunho protegido");
         await page.getByLabel("Ir para uma ferramenta do mestre").selectOption("session");
@@ -519,7 +527,9 @@ try {
         );
         await page.getByLabel("Ir para uma ferramenta do mestre").selectOption("session");
         await page.getByRole("button", { name: "Salvar e continuar", exact: true }).click();
-        await page.waitForFunction(() => new URL(location.href).searchParams.get("tab") === "session");
+        await page.waitForFunction(
+          () => new URL(location.href).searchParams.get("tab") === "session",
+        );
         assert(
           settings.tdv2_state.title === "Rascunho protegido",
           "Embedded draft not saved before navigation",
