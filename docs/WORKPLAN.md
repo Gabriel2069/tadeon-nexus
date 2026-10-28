@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-27; referência de runtime: `720fd9618a2915d3c2fa73335984d6a2d9d064d3`. PR #310 em `feat/nex-040-tdv-ii`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-27; referência de runtime: `b3713f2ffa0681c01c2f0e98999d4732f0217b0f`. PR #312 em `fix/nex-041-preserve-workspaces`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -50,7 +50,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-038 | Dossiê compacto, Exposição graduada e utilidades como registros | Integrado | 7 | sheet | NEX-037 |
 | NEX-039 | Jogadores individuais, presença da Exposição e deslizamento lateral | Integrado | 7 | shell | NEX-038 |
 | NEX-040 | TdV II v2.0: motor, fichas e condução integrados | Integrado | 7 | sheet | NEX-039 |
-| NEX-041 | Restituir ferramentas da campanha e adaptar fichas existentes sem perda funcional | Em andamento | 1 | sheet | NEX-040 |
+| NEX-041 | Restituir ferramentas da campanha e adaptar fichas existentes sem perda funcional | Integrado | 1 | sheet | NEX-040 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -405,7 +405,7 @@ Evidências: [docs/rules/tdv-ii-v2.md](../docs/rules/tdv-ii-v2.md), [docs/tdv-ii
 - Abrir fichas anteriores na estrutura TdV II com revisão dos valores sem equivalências inventadas; preservar registros, detalhes, narrativa, inventário e organização.
 - Validar edição, leitura, CAS, navegação, foco e quatro larguras antes de publicar.
 
-Evidências: [src/components/master/master-panel-navigation.tsx](../src/components/master/master-panel-navigation.tsx), [src/lib/tdv2-conversion.ts](../src/lib/tdv2-conversion.ts), [scripts/verify-tdv2.mjs](../scripts/verify-tdv2.mjs).
+Evidências: [src/components/master/master-panel-navigation.tsx](../src/components/master/master-panel-navigation.tsx), [src/lib/tdv2-conversion.ts](../src/lib/tdv2-conversion.ts), [scripts/verify-tdv2.mjs](../scripts/verify-tdv2.mjs), [src/lib/master-sheet-reading.test.ts](../src/lib/master-sheet-reading.test.ts), [src/components/sheet/tdv2-retained-tools.tsx](../src/components/sheet/tdv2-retained-tools.tsx), [docs/tdv-ii-validation.json](../docs/tdv-ii-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/312), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40597779150), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40597779387), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40599233213), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40599233315).
 
 ## Decisões vigentes
 

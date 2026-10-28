@@ -310,5 +310,148 @@
     "sourceSha256": "e3063430958304e15a5b39c75fc0767234357c5e48a8a47794755c5ba4e7d17d",
     "workflow": ".github/workflows/cloudflare-preview.yml",
     "comparison": "Published HTTP bytes and SHA-256 must match the exact checked-out source; the closing PR records its deployment result."
+  },
+  "continuityCorrection": {
+    "task": "NEX-041",
+    "state": "integrated-and-published",
+    "decision": "DEC-022",
+    "sourceCommit": "ee2e45ad0cd3868aa8896c830cb69c5c215ef88d",
+    "sourceTree": "b23a31ad03f73518268655c65fd2547cccd23243",
+    "verification": {
+      "unitSuites": 162,
+      "unitTests": 688,
+      "auditHigh": 0,
+      "postgresChecks": 41,
+      "browser": {
+        "tdvCases": 89,
+        "legacyCampaignCases": 42,
+        "widths": [
+          320,
+          390,
+          820,
+          1440
+        ],
+        "roles": [
+          "mestre",
+          "espectador"
+        ],
+        "overflow": false,
+        "pageErrors": 0,
+        "coverage": [
+          "full campaign navigation as default",
+          "free initiative alongside new scene economy",
+          "embedded draft navigation cancel/save",
+          "existing v1 dossier opens in current structure without mutation on read",
+          "retained item IDs and source fields",
+          "rich history editor and other narrative sections",
+          "inventory organizer access and compatible item projection",
+          "CAS without overwrite and full dossier conflict download",
+          "edition-aware campaign/session resources and development",
+          "read-only actions, focus and reduced motion"
+        ]
+      }
+    },
+    "database": {
+      "migrationsChanged": false,
+      "bulkUserWrites": false,
+      "existingSheetsReadOnlyCount": 5,
+      "prepublicationStoredEditionCount": {
+        "v1": 5,
+        "v2": 0
+      },
+      "firstEditOrSavePersistsDraft": true
+    },
+    "artifacts": [
+      {
+        "id": 12777383771,
+        "name": "visual-review-tabletop",
+        "bytes": 15100457,
+        "digest": "sha256:cefe51c43059cfc251e996011233ac6cf145de988aebe307a58708d6cecc577f",
+        "sourceCommit": "ee2e45ad0cd3868aa8896c830cb69c5c215ef88d"
+      },
+      {
+        "id": 12777048285,
+        "name": "visual-review-sheet",
+        "bytes": 32035676,
+        "digest": "sha256:b525c6203cdaa166944fd3b188aaea64ed0fc3b99bff46f3efbce5e1588bb863",
+        "sourceCommit": "ee2e45ad0cd3868aa8896c830cb69c5c215ef88d"
+      },
+      {
+        "id": 12777013277,
+        "name": "visual-review-utilities",
+        "bytes": 15704277,
+        "digest": "sha256:1318f2c54430a3ce127b67244bbcc58500e9d700d9e94608608eef2ccac3878c",
+        "sourceCommit": "ee2e45ad0cd3868aa8896c830cb69c5c215ef88d"
+      },
+      {
+        "id": 12776653435,
+        "name": "visual-review-tdv2",
+        "bytes": 48680941,
+        "digest": "sha256:c25a5186bd4e20c5d52af0c90da3f52381625def5a850ee22bce84ce44ac2635",
+        "sourceCommit": "ee2e45ad0cd3868aa8896c830cb69c5c215ef88d"
+      },
+      {
+        "id": 12776099846,
+        "name": "visual-review-navigation",
+        "bytes": 31605492,
+        "digest": "sha256:f2d9ec9839c66b18dc8bfd9cc98e071f2ead9bfb3621068f65910fd4a1f100a9",
+        "sourceCommit": "ee2e45ad0cd3868aa8896c830cb69c5c215ef88d"
+      }
+    ],
+    "publication": {
+      "merge": "b3713f2ffa0681c01c2f0e98999d4732f0217b0f",
+      "mainQualityRun": 40599233213,
+      "deployRun": 40599233315,
+      "tdvCases": 89,
+      "artifacts": [
+        {
+          "id": 12777383771,
+          "name": "visual-review-tabletop",
+          "bytes": 15100457,
+          "digest": "sha256:cefe51c43059cfc251e996011233ac6cf145de988aebe307a58708d6cecc577f",
+          "sourceCommit": "ee2e45ad0cd3868aa8896c830cb69c5c215ef88d"
+        },
+        {
+          "id": 12777048285,
+          "name": "visual-review-sheet",
+          "bytes": 32035676,
+          "digest": "sha256:b525c6203cdaa166944fd3b188aaea64ed0fc3b99bff46f3efbce5e1588bb863",
+          "sourceCommit": "ee2e45ad0cd3868aa8896c830cb69c5c215ef88d"
+        },
+        {
+          "id": 12777013277,
+          "name": "visual-review-utilities",
+          "bytes": 15704277,
+          "digest": "sha256:1318f2c54430a3ce127b67244bbcc58500e9d700d9e94608608eef2ccac3878c",
+          "sourceCommit": "ee2e45ad0cd3868aa8896c830cb69c5c215ef88d"
+        },
+        {
+          "id": 12776653435,
+          "name": "visual-review-tdv2",
+          "bytes": 48680941,
+          "digest": "sha256:c25a5186bd4e20c5d52af0c90da3f52381625def5a850ee22bce84ce44ac2635",
+          "sourceCommit": "ee2e45ad0cd3868aa8896c830cb69c5c215ef88d"
+        },
+        {
+          "id": 12776099846,
+          "name": "visual-review-navigation",
+          "bytes": 31605492,
+          "digest": "sha256:f2d9ec9839c66b18dc8bfd9cc98e071f2ead9bfb3621068f65910fd4a1f100a9",
+          "sourceCommit": "ee2e45ad0cd3868aa8896c830cb69c5c215ef88d"
+        }
+      ],
+      "verifiedAt": "2026-10-27T23:04:17.349Z",
+      "canonicalPack": {
+        "httpStatus": 200,
+        "bytes": 510485,
+        "sha256": "e3063430958304e15a5b39c75fc0767234357c5e48a8a47794755c5ba4e7d17d",
+        "sourceCommit": "b3713f2ffa0681c01c2f0e98999d4732f0217b0f",
+        "verifiedAt": "2026-10-27T23:04:17.349Z"
+      }
+    },
+    "limits": [
+      "Fixtures are not real accounts or physical-device certification.",
+      "Initial competency distribution remains reviewable; no equivalence from five attributes, old damage or PM to new values is inferred."
+    ]
   }
 }
