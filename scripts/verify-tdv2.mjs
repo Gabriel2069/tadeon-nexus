@@ -519,6 +519,11 @@ try {
           "Manual initiative controls removed",
         );
         await page.getByLabel("Título da cena", { exact: true }).waitFor();
+        const initiativeName = await page.getByLabel("Nome", { exact: true }).boundingBox();
+        assert(
+          initiativeName && initiativeName.width >= Math.min(240, width - 110),
+          "Initiative name became too narrow to read",
+        );
         await geometry("master-initiative-retained");
         await masterTool("rules", "Regras TdV II");
         await page.getByLabel("Título da cena", { exact: true }).fill("Rascunho protegido");

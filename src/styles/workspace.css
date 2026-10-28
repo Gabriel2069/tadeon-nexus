@@ -2488,6 +2488,7 @@ details.tadeon-utility-note { padding-block: .35rem; }
   padding-top: 0.75rem;
   border-top: 1px solid rgb(185 112 122 / 16%);
 }
+.tadeon-master-overview__resources[data-resource-count="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .tadeon-master-overview__resources > span {
   display: flex;
   flex-direction: column;
@@ -2719,3 +2720,14 @@ details.tadeon-utility-note { padding-block: .35rem; }
 .tdv-reference-dts > div { padding: .65rem; border-bottom: 1px solid var(--border); }
 .tdv-reference-dts dt { font: 600 1.75rem/1.3 var(--font-cinzel); }
 .tdv-reference-dts dd { color: var(--muted-foreground); }
+
+/* The free initiative queue keeps readable names above its compact mobile controls. */
+.tadeon-initiative-form { display: grid; grid-template-columns: minmax(0,1fr) 6rem auto auto; align-items: end; gap: .65rem; }
+.tadeon-initiative-form > div { display: grid; gap: .35rem; min-width: 0; }
+.tadeon-initiative-form > button { min-height: 44px; }
+.tadeon-initiative-form > button:last-child:nth-of-type(3) { grid-column: 1 / -1; justify-self: end; }
+@media (max-width: 639px) {
+  .tadeon-initiative-form { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .tadeon-initiative-form__name { grid-column: 1 / -1; }
+  .tadeon-initiative-form > button { min-width: 0; padding-inline: .4rem; }
+}

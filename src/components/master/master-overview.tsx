@@ -240,7 +240,10 @@ export function DashboardHub({
                     {sheet.equilibrium}
                   </span>
                 </span>
-                <span className="tadeon-master-overview__resources">
+                <span
+                  className="tadeon-master-overview__resources"
+                  data-resource-count={campaignSheetReading(sheet).resources.length}
+                >
                   {campaignSheetReading(sheet).resources.map(([label, value]) => (
                     <span key={label}>
                       <small>{label}</small>

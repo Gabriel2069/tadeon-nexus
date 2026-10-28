@@ -2101,8 +2101,8 @@
 .tdv-tabs--sheet > button { min-width: 0; white-space: normal; padding-inline: .35rem; }
 @media (max-width: 639px) { .tdv-tabs--sheet { grid-template-columns: repeat(6,minmax(0,1fr)); } .tdv-tabs--sheet > button { grid-column: span 2; } .tdv-tabs--sheet > button:nth-of-type(n+4) { grid-column: span 3; } }
 .tdv-grid--identity { grid-template-columns: repeat(2,minmax(0,1fr)); }
-.tdv-overview { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); padding: .8rem 0; border-block: 1px solid var(--border); }
-.tdv-overview > div { display: grid; gap: .25rem; min-width: 0; padding-inline: .65rem; }
+.tdv-overview { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); padding: .8rem .15rem; border: 1px solid color-mix(in srgb,var(--primary) 20%,var(--border)); border-radius: 1rem .4rem 1rem .4rem; background: radial-gradient(ellipse at 0 0,rgb(217 215 164 / 7%),transparent 65%),rgb(18 21 26 / 85%); box-shadow: inset 0 1px rgb(233 227 213 / 5%),0 12px 28px -25px #000; }
+.tdv-overview > div { display: grid; align-content: center; gap: .35rem; min-width: 0; padding: .2rem .7rem; }
 .tdv-overview > div + div { border-left: 1px solid var(--border); }
 .tdv-overview small { color: var(--muted-foreground); font: 400 .8rem/1.4 var(--font-inter); }
 .tdv-overview strong { font: 500 clamp(1.2rem,2vw,1.7rem)/1.2 var(--font-cinzel); overflow-wrap: anywhere; }
@@ -2116,7 +2116,7 @@
 .tdv-alinhavos .tdv-field { width: 4.5rem; flex: none; }
 .tdv-alinhavos .tdv-field > label { font-size: .7rem; }
 .tdv-alinhavos strong { font: 600 1.35rem/1 var(--font-cinzel); }
-.tdv-anchor { margin-top: .85rem; padding-block: .85rem; border-block: 1px solid rgb(217 215 164 / 18%); }
+.tdv-anchor { display: grid; gap: .85rem; min-width: 0; }
 .tdv-resources { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .6rem; }
 .tdv-resource { min-width: 0; padding: .65rem; border: 1px solid rgb(217 215 164 / 18%); border-radius: .75rem; background: #12171e; }
 .tdv-resource[data-resource="pv"] { border-color: rgb(150 70 80 / 45%); }
@@ -2136,3 +2136,14 @@
 .tdv-development { height: .85rem; overflow: hidden; margin-block: .6rem; border: 1px solid rgb(183 129 77 / 40%); border-radius: .5rem; background: #0f1218; box-shadow: inset 0 2px 6px #000; }
 .tdv-development > span { display: block; height: 100%; background: linear-gradient(90deg,#8e642d,#b64b3c 55%,#9d2546); box-shadow: inset 0 1px rgb(255 218 170 / 45%); }
 @media (max-width: 639px) { .tdv-matrices { grid-template-columns: repeat(2,minmax(0,1fr)); } .tdv-overview { grid-template-columns: repeat(2,minmax(0,1fr)); gap: .75rem 0; } .tdv-overview > div:nth-child(3) { border-left: 0; } .tdv-defense { grid-template-columns: repeat(2,minmax(0,1fr)); gap: .75rem; } }
+
+/* Pessoa groups the dossier and its point of continuity without changing field ownership. */
+.tdv-persona-layout, .tdv-persona-dossier, .tdv-constitution-instruments { display: grid; gap: .85rem; min-width: 0; align-items: start; }
+.tdv-persona-layout > *, .tdv-persona-dossier > * { min-width: 0; }
+.tdv-constitution-instruments { align-items: center; margin-bottom: 1.25rem; }
+.tdv-constitution-instruments .tdv-matrices { margin-bottom: 0; }
+@media (min-width: 900px) {
+  .tdv-constitution-instruments { grid-template-columns: minmax(16rem,.8fr) minmax(0,1.2fr); gap: 1.5rem; }
+  .tdv-constitution-instruments .tdv-matrices { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (min-width: 1100px) { .tdv-persona-layout { grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 1rem; } }

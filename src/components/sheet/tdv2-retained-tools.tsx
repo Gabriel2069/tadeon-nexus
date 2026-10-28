@@ -15,7 +15,7 @@ export function Tdv2DossierDetails({
 }) {
   return (
     <Section id="tdv-pessoal" title="Dossiê pessoal">
-      <div className="tdv-grid">
+      <div className="tdv-grid tdv-grid--identity">
         <TdvField
           label="Idade"
           value={sheet.age ?? ""}

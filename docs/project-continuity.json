@@ -1396,6 +1396,28 @@
         "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40599233315"
       ],
       "checkpoint": "Integrado pela PR #312, fonte ee2e45a, merge b3713f2, e publicado em 2026-10-27T23:04:17.349Z. Corrige a regressão de NEX-040: a campanha volta à navegação completa, com cenas, sessão, elenco, investigação, interlúdios, dobras, acervo, arquivos, fichas, notas e parâmetros. A fila manual de iniciativa permanece junto da economia TdV II. Fichas anteriores abrem diretamente no rascunho atual, com revisão sem equivalências numéricas inventadas e sem escrita em massa. Narrativa em quatro cartões, detalhes pessoais, radar de quatro Matrizes, armas/inventário, recipientes e registro independente da Forma de Poder foram preservados. CAS e cópia integral do dossiê em conflitos protegem os dados; resumos usam PI e Desenvolvimento quando a ficha está na edição atual. Quality do fonte: 162 suítes/688 testes, auditoria zero e 41 verificações PostgreSQL isoladas. Cinco grupos visuais aprovados no HEAD exato, com 89 estados/fluxos TdV II e 42 do painel anterior; 320/390/820/1440px, edição/leitura, foco, portais e movimento reduzido. HTTP200/SHA de produção exato e pacote canônico conferidos. Nenhuma migration alterada. Fixtures não certificam hardware, contas reais ou restauração integral. A PR de fechamento registra a própria publicação."
+    },
+    {
+      "id": "NEX-042",
+      "title": "Organização visual dos dossiês e instrumentos de campanha",
+      "domain": "sheet",
+      "status": "active",
+      "priority": 1,
+      "dependsOn": [
+        "NEX-041"
+      ],
+      "acceptance": [
+        "Reorganizar Feição, detalhes pessoais e Âncora com hierarquia clara, preservando todos os campos e ações.",
+        "Agrupar radar e Matrizes; alinhar resumos atuais e recompor a fila manual para nomes legíveis no celular.",
+        "Preservar identidade, regras, salvamento e acessibilidade; comparar quatro larguras e publicar após os gates."
+      ],
+      "evidence": [
+        "src/components/sheet/tdv2-sheet.tsx",
+        "src/styles/sheet-premium.css",
+        "src/styles/workspace.css",
+        "scripts/verify-tdv2.mjs"
+      ],
+      "checkpoint": "Rodada visual solicitada após a aprovação da restauração funcional. Implementação em andamento; preservar DEC-022 e todas as ferramentas."
     }
   ],
   "decisions": [
