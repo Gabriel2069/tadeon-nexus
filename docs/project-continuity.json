@@ -1,23 +1,23 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-27",
-  "runtimeReference": "b3713f2ffa0681c01c2f0e98999d4732f0217b0f",
+  "checkedAt": "2026-10-29",
+  "runtimeReference": "886feff6f7ea0130ae047c950d87dec68c1e3332",
   "integration": {
-    "pr": 312,
-    "branch": "fix/nex-041-preserve-workspaces",
+    "pr": 314,
+    "branch": "feat/nex-042-visual-organization",
     "base": "main",
-    "baseCommit": "267d7f4a66369a9b071a01bca8d0f1bbf1c2f8b2",
-    "sourceCommit": "ee2e45ad0cd3868aa8896c830cb69c5c215ef88d",
-    "headCommit": "ee2e45ad0cd3868aa8896c830cb69c5c215ef88d",
+    "baseCommit": "f8a2a1211020803f1dce335a3f1444f017fd3f87",
+    "sourceCommit": "2af4946e455285b8ce26785301501ea366082973",
+    "headCommit": "2af4946e455285b8ce26785301501ea366082973",
     "state": "integrated",
-    "mergeCommit": "b3713f2ffa0681c01c2f0e98999d4732f0217b0f",
-    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40597779150",
-    "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40597779387",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40599233213",
+    "mergeCommit": "886feff6f7ea0130ae047c950d87dec68c1e3332",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40851660233",
+    "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40851660251",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40853375137",
     "production": "confirmed",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40599233315",
-    "productionCommit": "b3713f2ffa0681c01c2f0e98999d4732f0217b0f",
-    "productionVerifiedAt": "2026-10-27T23:04:17.349Z",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40853375149",
+    "productionCommit": "886feff6f7ea0130ae047c950d87dec68c1e3332",
+    "productionVerifiedAt": "2026-10-29T09:57:43.016Z",
     "productionHttpStatus": 200
   },
   "domains": [
@@ -1401,7 +1401,7 @@
       "id": "NEX-042",
       "title": "Organização visual dos dossiês e instrumentos de campanha",
       "domain": "sheet",
-      "status": "active",
+      "status": "integrated",
       "priority": 1,
       "dependsOn": [
         "NEX-041"
@@ -1416,9 +1416,14 @@
         "src/components/sheet/tdv2-sheet.tsx",
         "src/styles/sheet-premium.css",
         "src/styles/workspace.css",
-        "scripts/verify-tdv2.mjs"
+        "scripts/verify-tdv2.mjs",
+        "docs/tdv-ii-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/314",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40851660233",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40851660251",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40853375149"
       ],
-      "checkpoint": "Correção adicional solicitada por Tadeu: evitar a volta aos blocos gigantes em fila única. Comparação de densidade antes/depois em andamento; nenhuma publicação da rodada visual foi feita."
+      "checkpoint": "Integrado pela PR #314, fonte 2af4946, merge 886feff, e publicado em 2026-10-29T09:57:43.016Z. Ficha TdV II com abertura compacta, cinco abas na mesma faixa, recursos em uma linha e campos curtos lado a lado. Pessoa agrupa Feição/Dossiê e Âncora; vínculos têm resumo e edição individual. Radar e Matrizes próximos; Alinhavos e narrativa recompostos por largura. Iniciativa manual conserva nomes legíveis no celular/tablet. Todos os campos, ações e ferramentas restauradas por NEX-041/DEC-022 permanecem. Quality: 162 suítes/688 testes, auditoria sem alto/crítico (dois moderados). Cinco grupos visuais e agregador aprovados no HEAD exato; 99 estados TdV II, 42 do painel anterior e 40 vistas locais das cinco abas em 320/390/820/1440px, edição/leitura e movimento reduzido. Capturas finais inspecionadas; HTTP200/SHA exato e pacote canônico conferidos. Nenhuma migration ou escrita em contas reais. Geometria não mede FPS/INP; fixtures não certificam dispositivos físicos. A PR de fechamento registra a própria publicação."
     }
   ],
   "decisions": [

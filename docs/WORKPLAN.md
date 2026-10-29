@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-27; referência de runtime: `b3713f2ffa0681c01c2f0e98999d4732f0217b0f`. PR #312 em `fix/nex-041-preserve-workspaces`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-29; referência de runtime: `886feff6f7ea0130ae047c950d87dec68c1e3332`. PR #314 em `feat/nex-042-visual-organization`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -51,7 +51,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-039 | Jogadores individuais, presença da Exposição e deslizamento lateral | Integrado | 7 | shell | NEX-038 |
 | NEX-040 | TdV II v2.0: motor, fichas e condução integrados | Integrado | 7 | sheet | NEX-039 |
 | NEX-041 | Restituir ferramentas da campanha e adaptar fichas existentes sem perda funcional | Integrado | 1 | sheet | NEX-040 |
-| NEX-042 | Organização visual dos dossiês e instrumentos de campanha | Em andamento | 1 | sheet | NEX-041 |
+| NEX-042 | Organização visual dos dossiês e instrumentos de campanha | Integrado | 1 | sheet | NEX-041 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -415,7 +415,7 @@ Evidências: [src/components/master/master-panel-navigation.tsx](../src/componen
 - Preservar identidade, regras, salvamento e acessibilidade; comparar quatro larguras e publicar após os gates.
 - Corrigir a densidade em todas as guias: campos e Alinhavos em colunas úteis no celular, abertura compacta e narrativa sem caixas excessivas, mantendo texto legível e acesso completo.
 
-Evidências: [src/components/sheet/tdv2-sheet.tsx](../src/components/sheet/tdv2-sheet.tsx), [src/styles/sheet-premium.css](../src/styles/sheet-premium.css), [src/styles/workspace.css](../src/styles/workspace.css), [scripts/verify-tdv2.mjs](../scripts/verify-tdv2.mjs).
+Evidências: [src/components/sheet/tdv2-sheet.tsx](../src/components/sheet/tdv2-sheet.tsx), [src/styles/sheet-premium.css](../src/styles/sheet-premium.css), [src/styles/workspace.css](../src/styles/workspace.css), [scripts/verify-tdv2.mjs](../scripts/verify-tdv2.mjs), [docs/tdv-ii-validation.json](../docs/tdv-ii-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/314), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40851660233), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40851660251), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40853375149).
 
 ## Decisões vigentes
 

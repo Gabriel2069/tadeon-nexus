@@ -453,5 +453,198 @@
       "Fixtures are not real accounts or physical-device certification.",
       "Initial competency distribution remains reviewable; no equivalence from five attributes, old damage or PM to new values is inferred."
     ]
+  },
+  "visualOrganization": {
+    "task": "NEX-042",
+    "state": "integrated-and-published",
+    "sourceCommit": "2af4946e455285b8ce26785301501ea366082973",
+    "sourceTree": "d6e094ede2864d831ed82086bbbc37ec0b370bd9",
+    "pullRequest": 314,
+    "qualityRun": 40851660233,
+    "visualRun": 40851660251,
+    "unitSuites": 162,
+    "unitTests": 688,
+    "auditHighCritical": 0,
+    "auditModerate": 2,
+    "browser": {
+      "tdvCases": 99,
+      "legacyMasterCases": 42,
+      "widths": [
+        320,
+        390,
+        820,
+        1440
+      ],
+      "roles": [
+        "mestre",
+        "espectador"
+      ],
+      "status": "passed-exact-head-CI",
+      "overflow": false
+    },
+    "localLayout": {
+      "sourceCommit": "2af4946e455285b8ce26785301501ea366082973",
+      "sourceTree": "d6e094ede2864d831ed82086bbbc37ec0b370bd9",
+      "cases": 40,
+      "widths": [
+        320,
+        390,
+        820,
+        1440
+      ],
+      "roles": [
+        "mestre",
+        "espectador"
+      ],
+      "overflow": false,
+      "boundaries": false,
+      "metrics390": [
+        {
+          "label": "layout-person",
+          "documentHeight": 2130,
+          "headerHeight": 156,
+          "firstSectionTop": 431
+        },
+        {
+          "label": "layout-constitution",
+          "documentHeight": 2572,
+          "headerHeight": 156,
+          "firstSectionTop": 431
+        },
+        {
+          "label": "layout-action",
+          "documentHeight": 2516,
+          "headerHeight": 156,
+          "firstSectionTop": 431
+        },
+        {
+          "label": "layout-expression",
+          "documentHeight": 1645,
+          "headerHeight": 156,
+          "firstSectionTop": 431
+        },
+        {
+          "label": "layout-path",
+          "documentHeight": 1846,
+          "headerHeight": 156,
+          "firstSectionTop": 431
+        }
+      ]
+    },
+    "comparison": {
+      "width": 390,
+      "baselineSource": "7c414943ba203e8e09a8f57dc14d30b82f7068cb",
+      "baselineIs": "first draft of this visual round, not main",
+      "baselineFirstSectionTop": 602,
+      "finalFirstSectionTop": 431,
+      "beforeIntermediateConstitutionHeight": 3489,
+      "intermediateConstitutionHeight": 2590,
+      "beforeIntermediatePathHeight": 2953,
+      "intermediatePathHeight": 1966,
+      "note": "Height comparison is not FPS/INP; final unedited layout metrics are recorded separately."
+    },
+    "coverage": [
+      "compact opening and five-tab navigation",
+      "short fields in useful mobile columns",
+      "independent link summaries with editable/readonly persistence",
+      "new links open for editing",
+      "radar and matrices grouped without shrinking the graph",
+      "anchor status readable at 320px",
+      "manual initiative name readable at all four widths",
+      "all restored campaign and tabletop tools retained"
+    ],
+    "artifacts": [
+      {
+        "id": 12888021127,
+        "name": "visual-review-tdv2",
+        "bytes": 53661028,
+        "digest": "sha256:b738185355aeaf09da2efdd2ecec053076af336f059bc0ebc595b568e4d43e74",
+        "sourceCommit": "2af4946e455285b8ce26785301501ea366082973"
+      },
+      {
+        "id": 12887922933,
+        "name": "visual-review-sheet",
+        "bytes": 31985342,
+        "digest": "sha256:285ffd1a02de7616d8a4eae046e856e8109ce23e336fc3a71803c85338abd64d",
+        "sourceCommit": "2af4946e455285b8ce26785301501ea366082973"
+      },
+      {
+        "id": 12887323593,
+        "name": "visual-review-tabletop",
+        "bytes": 15200886,
+        "digest": "sha256:575466c8522f7286dfe364f1c616574a52e28e2ae9039dbe2422a2a39d126ad5",
+        "sourceCommit": "2af4946e455285b8ce26785301501ea366082973"
+      },
+      {
+        "id": 12886784709,
+        "name": "visual-review-navigation",
+        "bytes": 31586518,
+        "digest": "sha256:b210e42dd8edea99b8de78a2e86ffa0e0a686ef3bd447eab7fbf4592e80648b7",
+        "sourceCommit": "2af4946e455285b8ce26785301501ea366082973"
+      },
+      {
+        "id": 12886384834,
+        "name": "visual-review-utilities",
+        "bytes": 15650678,
+        "digest": "sha256:32be8a7db5eef440dea3ebdd4f45f6d14d5db88ebee89b08583efa9ab97ad98a",
+        "sourceCommit": "2af4946e455285b8ce26785301501ea366082973"
+      }
+    ],
+    "publication": {
+      "merge": "886feff6f7ea0130ae047c950d87dec68c1e3332",
+      "mainQualityRun": 40853375137,
+      "deployRun": 40853375149,
+      "verifiedAt": "2026-10-29T09:57:43.016Z",
+      "httpStatus": 200,
+      "canonicalPack": {
+        "httpStatus": 200,
+        "bytes": 510485,
+        "sha256": "e3063430958304e15a5b39c75fc0767234357c5e48a8a47794755c5ba4e7d17d",
+        "sourceCommit": "886feff6f7ea0130ae047c950d87dec68c1e3332",
+        "verifiedAt": "2026-10-29T09:57:43.016Z"
+      },
+      "artifacts": [
+        {
+          "id": 12888021127,
+          "name": "visual-review-tdv2",
+          "bytes": 53661028,
+          "digest": "sha256:b738185355aeaf09da2efdd2ecec053076af336f059bc0ebc595b568e4d43e74",
+          "sourceCommit": "2af4946e455285b8ce26785301501ea366082973"
+        },
+        {
+          "id": 12887922933,
+          "name": "visual-review-sheet",
+          "bytes": 31985342,
+          "digest": "sha256:285ffd1a02de7616d8a4eae046e856e8109ce23e336fc3a71803c85338abd64d",
+          "sourceCommit": "2af4946e455285b8ce26785301501ea366082973"
+        },
+        {
+          "id": 12887323593,
+          "name": "visual-review-tabletop",
+          "bytes": 15200886,
+          "digest": "sha256:575466c8522f7286dfe364f1c616574a52e28e2ae9039dbe2422a2a39d126ad5",
+          "sourceCommit": "2af4946e455285b8ce26785301501ea366082973"
+        },
+        {
+          "id": 12886784709,
+          "name": "visual-review-navigation",
+          "bytes": 31586518,
+          "digest": "sha256:b210e42dd8edea99b8de78a2e86ffa0e0a686ef3bd447eab7fbf4592e80648b7",
+          "sourceCommit": "2af4946e455285b8ce26785301501ea366082973"
+        },
+        {
+          "id": 12886384834,
+          "name": "visual-review-utilities",
+          "bytes": 15650678,
+          "digest": "sha256:32be8a7db5eef440dea3ebdd4f45f6d14d5db88ebee89b08583efa9ab97ad98a",
+          "sourceCommit": "2af4946e455285b8ce26785301501ea366082973"
+        }
+      ]
+    },
+    "limits": [
+      "Fixtures do not certify real accounts or physical devices.",
+      "No migrations or bulk user writes.",
+      "Two moderate dependency advisories remain below the mandated audit threshold."
+    ]
   }
 }
