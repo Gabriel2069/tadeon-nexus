@@ -2237,7 +2237,7 @@
 
 /* Columns depend on the result pane, which shares space with shelves and preview. */
 .tadeon-library-card-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
-.tadeon-offline-sheet-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: .75rem; }
+.tadeon-offline-sheet-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, clamp(7.25rem, 24vw, 15rem)), 1fr)); gap: .75rem; }
 .tadeon-library-card__mark { flex-shrink: 0; }
 .tadeon-library-card__meta > span { white-space: nowrap; }
 .tadeon-library-card__title { white-space: normal; min-height: 2.25rem; }
@@ -2681,12 +2681,12 @@ details.tadeon-utility-note { padding-block: .35rem; }
 @media (prefers-reduced-motion: reduce) { .tadeon-user-row { transition: none; } }
 
 /* TdV II forms: shared field grammar, kept in the workspace owner. */
-.tdv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); align-items: start; gap: .85rem; min-width: 0; }
+.tdv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, clamp(7.25rem, 24vw, 15rem)), 1fr)); align-items: start; gap: .85rem; min-width: 0; }
 .tdv-grid--three { grid-template-columns: repeat(3,minmax(0,1fr)); }
 .tdv-field { display: grid; gap: .35rem; min-width: 0; }
 .tdv-field > label { color: var(--muted-foreground); font: 400 .875rem/1.4 var(--font-inter); }
 .tdv-field :is(input,textarea,select) { min-width: 0; width: 100%; font-family: var(--font-inter); font-size: 1rem; }
-.tdv-field textarea { min-height: 5.5rem; resize: vertical; }
+.tdv-field textarea { min-height: 3.5rem; resize: vertical; }
 .tdv-field select { min-height: 44px; padding: .5rem .65rem; border: 1px solid var(--border); border-radius: .65rem; color: var(--foreground); background: #11161d; }
 .tdv-field select:focus-visible { outline: 2px solid var(--foreground); outline-offset: 2px; }
 .tdv-field select:disabled { opacity: .7; }
@@ -2712,7 +2712,7 @@ details.tadeon-utility-note { padding-block: .35rem; }
 .tdv-legacy-notice,.tdv-creation { display: grid; justify-items: start; gap: .75rem; margin-bottom: 1rem; padding: 1rem; border-inline-start: 2px solid #b4a580; background: #171b21; line-height: 1.6; }
 .tdv-creation h2 { font: 600 1.6rem/1.3 var(--font-cinzel); }
 .tdv-creation ul { list-style: disc; padding-left: 1.25rem; }
-@media (max-width: 639px) { .tdv-field textarea { min-height: 5rem; } .tdv-test-dice > button { width: 100%; } }
+@media (max-width: 639px) { .tdv-field textarea { min-height: 3.5rem; } .tdv-test-dice > button { width: 100%; } }
 .tadeon-tdv2-master [data-slot="tabs-content"] { display: grid; gap: .85rem; margin-top: 1rem; }
 .tadeon-tdv2-master [data-slot="tabs-content"][data-state="inactive"] { display: none; }
 .tdv-master-participants { display: grid; gap: .75rem; margin-block: .75rem; }
@@ -2731,3 +2731,9 @@ details.tadeon-utility-note { padding-block: .35rem; }
   .tadeon-initiative-form__name { grid-column: 1 / -1; }
   .tadeon-initiative-form > button { min-width: 0; padding-inline: .4rem; }
 }
+
+.tdv-creation-head { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: .65rem; width: 100%; }
+.tdv-creation .tdv-creation-head h2 { font-size: 1.2rem; }
+.tdv-creation-review { width: 100%; min-width: 0; }
+.tdv-creation-review > summary { min-height: 44px; align-content: center; cursor: pointer; }
+.tdv-creation-review > p, .tdv-creation-review > ul { margin-top: .6rem; }

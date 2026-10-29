@@ -240,6 +240,21 @@ try {
         });
         const g = await page.evaluate(() => ({
           overflow: document.documentElement.scrollWidth > innerWidth,
+          documentHeight: document.documentElement.scrollHeight,
+          headerHeight: Math.round(
+            document.querySelector("[data-page-header]")?.getBoundingClientRect().height ?? 0,
+          ),
+          firstSectionTop: Math.round(
+            document
+              .querySelector("[data-sheet-content][data-state='active'] .tadeon-sheet-section")
+              ?.getBoundingClientRect().top ?? 0,
+          ),
+          visibleControls: [
+            ...document.querySelectorAll("main input,main select,main textarea"),
+          ].filter((el) => {
+            const r = el.getBoundingClientRect();
+            return r.width > 0 && r.top >= 0 && r.bottom <= innerHeight;
+          }).length,
           h1: document.querySelectorAll("h1").length,
           boundary: document.body.textContent.includes("Something went wrong"),
         }));
@@ -285,7 +300,7 @@ try {
       };
       const saved = async (predicate) => {
         await page.getByRole("button", { name: "Salvar", exact: true }).click();
-        await page.waitForFunction(() => document.body.textContent.includes("Salvo"));
+        await page.locator('[data-page-header="sheet"] [data-tadeon-state="saved"]').waitFor();
         const end = Date.now() + 10000;
         while (!predicate()) {
           if (Date.now() > end)
@@ -686,6 +701,7 @@ try {
           "Existing sheet still blocked behind conversion",
         );
         await page.getByRole("heading", { name: "Preparar a personagem", exact: true }).waitFor();
+        await geometry("sheet-adaptation-review");
         assert(
           await page
             .getByRole("button", { name: "Concluir criação TdV II", exact: true })

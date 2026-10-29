@@ -413,6 +413,7 @@ Evidências: [src/components/master/master-panel-navigation.tsx](../src/componen
 - Reorganizar Feição, detalhes pessoais e Âncora com hierarquia clara, preservando todos os campos e ações.
 - Agrupar radar e Matrizes; alinhar resumos atuais e recompor a fila manual para nomes legíveis no celular.
 - Preservar identidade, regras, salvamento e acessibilidade; comparar quatro larguras e publicar após os gates.
+- Corrigir a densidade em todas as guias: campos e Alinhavos em colunas úteis no celular, abertura compacta e narrativa sem caixas excessivas, mantendo texto legível e acesso completo.
 
 Evidências: [src/components/sheet/tdv2-sheet.tsx](../src/components/sheet/tdv2-sheet.tsx), [src/styles/sheet-premium.css](../src/styles/sheet-premium.css), [src/styles/workspace.css](../src/styles/workspace.css), [scripts/verify-tdv2.mjs](../scripts/verify-tdv2.mjs).
 

@@ -62,6 +62,7 @@ export function TdvSelect({
   onChange,
   disabled = false,
   navigation = false,
+  compactLabel = false,
 }: {
   label: string;
   value: string;
@@ -69,11 +70,12 @@ export function TdvSelect({
   onChange: (value: string) => void;
   disabled?: boolean;
   navigation?: boolean;
+  compactLabel?: boolean;
 }) {
   const id = useId();
   return (
     <div className="tdv-field">
-      <label className="tadeon-dossier-label" htmlFor={id}>
+      <label className={compactLabel ? "sr-only" : "tadeon-dossier-label"} htmlFor={id}>
         {label}
       </label>
       <select

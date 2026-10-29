@@ -98,37 +98,61 @@ export function Tdv2Sheet({
           Âncora: c.face.anchor.shaken ? "Abalada" : "Assentada",
         }).map(([label, value]) => (
           <div key={label}>
-            <small>{label}</small>
+            <small>
+              {label === "Desenvolvimento" ? (
+                <abbr title="Desenvolvimento">Desenv.</abbr>
+              ) : label === "PU disponíveis" ? (
+                <abbr title="Pontos de Urdume disponíveis">PU</abbr>
+              ) : (
+                label
+              )}
+            </small>
             <strong>{value}</strong>
           </div>
         ))}
       </div>
       {!c.ready && (
         <div className="tdv-creation" role="status">
-          <h2>Preparar a personagem</h2>
-          <p>
-            A distribuição inicial abaixo é um exemplo editável. Revise Feição, Matrizes e Alinhavos
-            antes de concluir.
-          </p>
-          {errors.length > 0 && (
-            <ul>
-              {errors.map((e) => (
-                <li key={e}>{e}</li>
-              ))}
-            </ul>
-          )}
-          <Button
-            disabled={disabled || errors.length > 0}
-            onClick={() => run(() => finishCreation(c))}
-          >
-            Concluir criação TdV II
-          </Button>
+          <div className="tdv-creation-head">
+            <h2>Preparar a personagem</h2>
+            <Button
+              aria-label="Concluir criação TdV II"
+              title="Concluir criação TdV II"
+              disabled={disabled || errors.length > 0}
+              onClick={() => run(() => finishCreation(c))}
+            >
+              Concluir
+            </Button>
+          </div>
+          <details className="tdv-creation-review">
+            <summary>
+              {errors.length
+                ? `Ver ${errors.length} pendências da revisão`
+                : "Conferir a distribuição inicial"}
+            </summary>
+            <p>
+              A distribuição inicial é um exemplo editável. Revise Feição, Matrizes e Alinhavos
+              antes de concluir.
+            </p>
+            {errors.length > 0 && (
+              <ul>
+                {errors.map((error) => (
+                  <li key={error}>{error}</li>
+                ))}
+              </ul>
+            )}
+          </details>
         </div>
       )}
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="tdv-tabs tdv-tabs--sheet">
           <TabsTrigger value="pessoa">Pessoa</TabsTrigger>
-          <TabsTrigger value="constituicao">Constituição</TabsTrigger>
+          <TabsTrigger value="constituicao" aria-label="Constituição">
+            <span className="tdv-tab-label-full">Constituição</span>
+            <abbr className="tdv-tab-label-short" title="Constituição">
+              Constit.
+            </abbr>
+          </TabsTrigger>
           <TabsTrigger value="acao">Ação</TabsTrigger>
           <TabsTrigger value="expressao">Expressão</TabsTrigger>
           <TabsTrigger value="percurso">Percurso</TabsTrigger>
@@ -396,6 +420,7 @@ export function Tdv2Sheet({
                   {!c.ready ? (
                     <TdvSelect
                       label={`Grau inicial de ${name}`}
+                      compactLabel
                       value={String(c.alinhavos[name] ?? 0)}
                       options={["0", "1", "2"]}
                       onChange={(v) => upd("alinhavos", { ...c.alinhavos, [name]: Number(v) })}

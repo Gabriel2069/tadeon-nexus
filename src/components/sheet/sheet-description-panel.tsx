@@ -92,12 +92,15 @@ export function SheetDescriptionPanel({
                 </div>
                 <span className="tadeon-description-card__count">{words} palavras</span>
               </div>
-              <p className="tadeon-description-card__prompt">{prompt}</p>
+              <details className="tadeon-description-card__guidance">
+                <summary>Ideias para escrever</summary>
+                <p className="tadeon-description-card__prompt">{prompt}</p>
+              </details>
               <Textarea
                 disabled={!canEdit}
                 value={value}
                 onChange={(event) => onChange({ ...description, [key]: event.target.value })}
-                rows={6}
+                rows={3}
                 aria-label={label}
                 placeholder={placeholder}
               />
