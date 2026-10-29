@@ -2102,7 +2102,7 @@
 .tdv-tab-label-short { display: none; text-decoration: none; }
 @media (max-width: 639px) { .tdv-tabs--sheet > button { padding-inline: .1rem; } .tdv-tab-label-full { display: none; } .tdv-tab-label-short { display: inline; } }
 .tdv-grid--identity { grid-template-columns: repeat(2,minmax(0,1fr)); }
-.tdv-overview { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); padding: .4rem .15rem; border: 1px solid color-mix(in srgb,var(--primary) 20%,var(--border)); border-radius: 1rem .4rem 1rem .4rem; background: radial-gradient(ellipse at 0 0,rgb(217 215 164 / 7%),transparent 65%),rgb(18 21 26 / 85%); box-shadow: inset 0 1px rgb(233 227 213 / 5%),0 12px 28px -25px #000; }
+.tdv-overview { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)) minmax(5.25rem,1.2fr); padding: .4rem .15rem; border: 1px solid color-mix(in srgb,var(--primary) 20%,var(--border)); border-radius: 1rem .4rem 1rem .4rem; background: radial-gradient(ellipse at 0 0,rgb(217 215 164 / 7%),transparent 65%),rgb(18 21 26 / 85%); box-shadow: inset 0 1px rgb(233 227 213 / 5%),0 12px 28px -25px #000; }
 .tdv-overview > div { display: grid; align-content: center; gap: .25rem; min-width: 0; padding: .2rem .4rem; }
 .tdv-overview > div + div { border-left: 1px solid var(--border); }
 .tdv-overview small { color: var(--muted-foreground); font: 400 .8rem/1.4 var(--font-inter); }
