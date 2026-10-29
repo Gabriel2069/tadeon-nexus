@@ -20,7 +20,7 @@ export function SheetDescriptionPanel({
         <div className="min-w-0 flex-1">
           <p className="tadeon-eyebrow">Arquivo narrativo</p>
           <h2>Quem existe além dos números</h2>
-          <p>Passado, presença e desejos da personagem. Escreva livremente em cada registro.</p>
+          <p>Passado, presença e desejos da personagem.</p>
         </div>
         <div className="tadeon-description-hero__progress">
           <strong>

@@ -2695,7 +2695,7 @@ details.tadeon-utility-note { padding-block: .35rem; }
 .tdv-check { display: flex; gap: .6rem; align-items: center; min-height: 44px; margin-block: .5rem; font: 400 .95rem/1.4 var(--font-inter); }
 .tdv-check input { flex: 0 0 auto; width: 24px; height: 24px; margin: 10px; accent-color: #b4a580; }
 .tdv-note { color: var(--muted-foreground); font: 400 .9rem/1.6 var(--font-inter); margin-block: .65rem; }
-.tdv-disclosure { margin-block: .75rem; padding-block: .5rem; border-block: 1px solid var(--border); min-width: 0; }
+.tdv-disclosure { margin-block: .35rem; padding-block: .15rem; border-block: 1px solid var(--border); min-width: 0; }
 .tdv-disclosure > summary { min-height: 44px; display: list-item; align-content: center; cursor: pointer; font: 500 1rem/1.5 var(--font-inter); }
 .tdv-disclosure > :not(summary) { margin-top: .65rem; }
 .tdv-folios { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: .85rem; }

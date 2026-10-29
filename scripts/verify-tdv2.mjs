@@ -313,6 +313,20 @@ try {
       };
       await page.goto(`http://127.0.0.1:${port}/sheet/${sheetId}`);
       await page.getByLabel("Nome da personagem", { exact: true }).waitFor();
+      if (process.env.NEXUS_LAYOUT_ONLY === "1") {
+        for (const [label, key] of [
+          ["Pessoa", "person"],
+          ["Constituição", "constitution"],
+          ["Ação", "action"],
+          ["Expressão", "expression"],
+          ["Percurso", "path"],
+        ]) {
+          await page.getByRole("tab", { name: label, exact: true }).click();
+          await geometry("layout-" + key);
+        }
+        await context.close();
+        continue;
+      }
       await geometry("sheet-person");
       await page.getByRole("tab", { name: "Ação", exact: true }).click();
       await page.getByRole("tab", { name: "Pessoa", exact: true }).click();
