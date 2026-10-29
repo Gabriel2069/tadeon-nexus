@@ -51,6 +51,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-039 | Jogadores individuais, presença da Exposição e deslizamento lateral | Integrado | 7 | shell | NEX-038 |
 | NEX-040 | TdV II v2.0: motor, fichas e condução integrados | Integrado | 7 | sheet | NEX-039 |
 | NEX-041 | Restituir ferramentas da campanha e adaptar fichas existentes sem perda funcional | Integrado | 1 | sheet | NEX-040 |
+| NEX-042 | Organização visual dos dossiês e instrumentos de campanha | Em andamento | 1 | sheet | NEX-041 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -406,6 +407,15 @@ Evidências: [docs/rules/tdv-ii-v2.md](../docs/rules/tdv-ii-v2.md), [docs/tdv-ii
 - Validar edição, leitura, CAS, navegação, foco e quatro larguras antes de publicar.
 
 Evidências: [src/components/master/master-panel-navigation.tsx](../src/components/master/master-panel-navigation.tsx), [src/lib/tdv2-conversion.ts](../src/lib/tdv2-conversion.ts), [scripts/verify-tdv2.mjs](../scripts/verify-tdv2.mjs), [src/lib/master-sheet-reading.test.ts](../src/lib/master-sheet-reading.test.ts), [src/components/sheet/tdv2-retained-tools.tsx](../src/components/sheet/tdv2-retained-tools.tsx), [docs/tdv-ii-validation.json](../docs/tdv-ii-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/312), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40597779150), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40597779387), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40599233213), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/40599233315).
+
+## NEX-042 — Organização visual dos dossiês e instrumentos de campanha
+
+- Reorganizar Feição, detalhes pessoais e Âncora com hierarquia clara, preservando todos os campos e ações.
+- Agrupar radar e Matrizes; alinhar resumos atuais e recompor a fila manual para nomes legíveis no celular.
+- Preservar identidade, regras, salvamento e acessibilidade; comparar quatro larguras e publicar após os gates.
+- Corrigir a densidade em todas as guias: campos e Alinhavos em colunas úteis no celular, abertura compacta e narrativa sem caixas excessivas, mantendo texto legível e acesso completo.
+
+Evidências: [src/components/sheet/tdv2-sheet.tsx](../src/components/sheet/tdv2-sheet.tsx), [src/styles/sheet-premium.css](../src/styles/sheet-premium.css), [src/styles/workspace.css](../src/styles/workspace.css), [scripts/verify-tdv2.mjs](../scripts/verify-tdv2.mjs).
 
 ## Decisões vigentes
 

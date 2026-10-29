@@ -13,6 +13,10 @@ import { ChevronDown, Minus, Plus, Trash } from "lucide-react";
 import { MaterialSurface } from "@/components/material-surface";
 import { clamp } from "./sheet-model";
 const SECTION_HELP: Record<string, string> = {
+  "tdv-feicao": "Origem, ofício, convicção e limite situam a presença da personagem.",
+  "tdv-pessoal": "Detalhes pessoais e perguntas que permanecem entre as cenas.",
+  "tdv-ancora": "Um ponto concreto de retorno para sustentar ou redirecionar uma consequência.",
+  "tdv-vinculos": "Nós, ofertas, cobranças e tensões que ligam a personagem ao mundo.",
   "sec-info": "Identidade, origem, ocupação e marcas que situam a personagem no mundo.",
   "sec-attr": "Atributos medem potenciais fundamentais e sustentam testes e derivados.",
   "sec-pontos": "Recursos atuais e máximos da personagem, além da proteção em jogo.",
@@ -27,6 +31,11 @@ const SECTION_HELP: Record<string, string> = {
   "sec-notas": "Notas de campo e registros livres da personagem.",
 };
 const SECTION_PRESENTATION: Record<string, { index: string; kicker: string }> = {
+  "tdv-feicao": { index: "•", kicker: "Presença em cena" },
+  "tdv-pessoal": { index: "•", kicker: "História e particularidades" },
+  "tdv-ancora": { index: "•", kicker: "Continuidade e retorno" },
+  "tdv-vinculos": { index: "•", kicker: "Relações vivas" },
+  "tdv-constituicao": { index: "•", kicker: "Potencial e prática" },
   "sec-info": { index: "01", kicker: "Identidade e continuidade" },
   "sec-attr": { index: "02", kicker: "Matriz de potencial" },
   "sec-pontos": { index: "03", kicker: "Recursos e proteção" },

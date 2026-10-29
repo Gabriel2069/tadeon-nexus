@@ -66,6 +66,7 @@ export function Tdv2Sheet({
     [cost, setCost] = useState(4),
     [transcendent, setTranscendent] = useState(false),
     [recordKind, setRecordKind] = useState<TdvRecord["kind"]>("Lavor");
+  const [newLinkId, setNewLinkId] = useState<string | null>(null);
   const [recovery, setRecovery] = useState("Pausa breve"),
     [care, setCare] = useState(false),
     [rebuilt, setRebuilt] = useState(false),
@@ -98,233 +99,279 @@ export function Tdv2Sheet({
           Âncora: c.face.anchor.shaken ? "Abalada" : "Assentada",
         }).map(([label, value]) => (
           <div key={label}>
-            <small>{label}</small>
+            <small>
+              {label === "Desenvolvimento" ? (
+                <abbr title="Desenvolvimento">Desenv.</abbr>
+              ) : label === "PU disponíveis" ? (
+                <abbr title="Pontos de Urdume disponíveis">PU</abbr>
+              ) : (
+                label
+              )}
+            </small>
             <strong>{value}</strong>
           </div>
         ))}
       </div>
       {!c.ready && (
         <div className="tdv-creation" role="status">
-          <h2>Preparar a personagem</h2>
-          <p>
-            A distribuição inicial abaixo é um exemplo editável. Revise Feição, Matrizes e Alinhavos
-            antes de concluir.
-          </p>
-          {errors.length > 0 && (
-            <ul>
-              {errors.map((e) => (
-                <li key={e}>{e}</li>
-              ))}
-            </ul>
-          )}
-          <Button
-            disabled={disabled || errors.length > 0}
-            onClick={() => run(() => finishCreation(c))}
-          >
-            Concluir criação TdV II
-          </Button>
+          <div className="tdv-creation-head">
+            <h2>Preparar a personagem</h2>
+            <Button
+              aria-label="Concluir criação TdV II"
+              title="Concluir criação TdV II"
+              disabled={disabled || errors.length > 0}
+              onClick={() => run(() => finishCreation(c))}
+            >
+              Concluir
+            </Button>
+          </div>
+          <details className="tdv-creation-review">
+            <summary>
+              {errors.length
+                ? `Ver ${errors.length} pendências da revisão`
+                : "Conferir a distribuição inicial"}
+            </summary>
+            <p>
+              A distribuição inicial é um exemplo editável. Revise Feição, Matrizes e Alinhavos
+              antes de concluir.
+            </p>
+            {errors.length > 0 && (
+              <ul>
+                {errors.map((error) => (
+                  <li key={error}>{error}</li>
+                ))}
+              </ul>
+            )}
+          </details>
         </div>
       )}
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="tdv-tabs tdv-tabs--sheet">
           <TabsTrigger value="pessoa">Pessoa</TabsTrigger>
-          <TabsTrigger value="constituicao">Constituição</TabsTrigger>
+          <TabsTrigger value="constituicao" aria-label="Constituição">
+            <span className="tdv-tab-label-full">Constituição</span>
+            <abbr className="tdv-tab-label-short" title="Constituição">
+              Constit.
+            </abbr>
+          </TabsTrigger>
           <TabsTrigger value="acao">Ação</TabsTrigger>
           <TabsTrigger value="expressao">Expressão</TabsTrigger>
           <TabsTrigger value="percurso">Percurso</TabsTrigger>
         </TabsList>
         <TabsContent value="pessoa" data-sheet-content>
-          {personaExtra}
-          <Section id="tdv-feicao" title="Feição">
-            <div className="tdv-grid tdv-grid--identity">
-              {(
-                [
-                  ["origin", "Origem"],
-                  ["occupation", "Ofício"],
-                  ["conviction", "Convicção"],
-                  ["limit", "Limite"],
-                ] as const
-              ).map(([key, label]) => (
-                <TdvField
-                  key={key}
-                  label={label}
-                  short={key === "origin" || key === "occupation"}
-                  value={c.face[key]}
-                  onChange={(v) => face(key, v)}
-                  disabled={disabled}
-                />
-              ))}
-            </div>
-            <details className="tdv-disclosure">
-              <summary>
-                Marca · {c.face.mark.trigger ? "transformação registrada" : "não manifestada"}
-              </summary>
-              <div className="tdv-grid">
-                {(
-                  [
-                    ["trigger", "Gatilho"],
-                    ["manifestation", "Manifestação"],
-                    ["residue", "Resíduo"],
-                  ] as const
-                ).map(([key, label]) => (
-                  <TdvField
-                    key={key}
-                    label={label}
-                    value={c.face.mark[key]}
-                    onChange={(v) => upd("face", { ...c.face, mark: { ...c.face.mark, [key]: v } })}
-                    disabled={disabled}
-                  />
-                ))}
-              </div>
-            </details>
-            <div className="tdv-anchor">
-              <div className="tdv-grid">
-                <TdvSelect
-                  label="Pilar escolhido como Âncora"
-                  value={c.face.anchor.pillar}
-                  options={PILLARS}
-                  onChange={(v) =>
-                    upd("face", {
-                      ...c.face,
-                      anchor: {
-                        ...c.face.anchor,
-                        pillar: v as TdvCharacter["face"]["anchor"]["pillar"],
-                      },
-                    })
-                  }
-                  disabled={disabled}
-                />
-                <TdvField
-                  label="A que parte de mim consigo retornar?"
-                  value={c.face.anchor.detail}
-                  onChange={(v) =>
-                    upd("face", { ...c.face, anchor: { ...c.face.anchor, detail: v } })
-                  }
-                  disabled={disabled}
-                />
-              </div>
-              <p className="tdv-note">
-                Ancorar sustenta ou redireciona uma consequência plausível; não a apaga. Depois, a
-                Âncora fica Abalada até uma ação significativa de Reassentar.
-              </p>
-              {!c.face.anchor.shaken && (
-                <>
-                  <TdvSelect
-                    label="Forma de Ancorar"
-                    value={anchorMode}
-                    options={["Sustentar", "Redirecionar"]}
-                    onChange={(v) => setAnchorMode(v as typeof anchorMode)}
-                    disabled={disabled}
-                  />
-                  <TdvField
-                    label="Consequência concreta"
-                    value={consequence}
-                    onChange={setConsequence}
-                    disabled={disabled}
-                  />
-                </>
-              )}
-              <TdvField
-                label={
-                  c.face.anchor.shaken
-                    ? "Ação significativa de Reassentar"
-                    : "Como a consequência permanece na ficção"
-                }
-                value={outcome}
-                onChange={setOutcome}
-                disabled={disabled}
-              />
-              <Button
-                variant="outline"
-                disabled={disabled || !c.ready}
-                onClick={() =>
-                  run(() =>
-                    c.face.anchor.shaken
-                      ? resettle(c, outcome)
-                      : anchor(c, anchorMode, consequence, outcome),
-                  )
-                }
-              >
-                {c.face.anchor.shaken ? "Registrar Reassentamento" : "Ancorar e abalar Âncora"}
-              </Button>
-            </div>
-          </Section>
-          <Section id="tdv-vinculos" title="Vínculos">
-            <div className="tdv-folios">
-              {c.face.links.map((link, index) => (
-                <div key={link.id} className="tdv-folio">
-                  <div className="tdv-grid tdv-grid--identity">
+          <div className="tdv-persona-layout">
+            <div className="tdv-persona-dossier">
+              <Section id="tdv-feicao" title="Feição">
+                <div className="tdv-grid tdv-grid--identity">
+                  {(
+                    [
+                      ["origin", "Origem"],
+                      ["occupation", "Ofício"],
+                      ["conviction", "Convicção"],
+                      ["limit", "Limite"],
+                    ] as const
+                  ).map(([key, label]) => (
+                    <TdvField
+                      key={key}
+                      label={label}
+                      short={key === "origin" || key === "occupation"}
+                      value={c.face[key]}
+                      onChange={(v) => face(key, v)}
+                      disabled={disabled}
+                    />
+                  ))}
+                </div>
+                <details className="tdv-disclosure">
+                  <summary>
+                    Marca · {c.face.mark.trigger ? "transformação registrada" : "não manifestada"}
+                  </summary>
+                  <div className="tdv-grid">
                     {(
                       [
-                        ["node", "Nó"],
-                        ["nature", "Natureza"],
-                        ["offer", "Oferta"],
-                        ["demand", "Cobrança"],
-                        ["tension", "Condição de tensão"],
+                        ["trigger", "Gatilho"],
+                        ["manifestation", "Manifestação"],
+                        ["residue", "Resíduo"],
                       ] as const
                     ).map(([key, label]) => (
                       <TdvField
                         key={key}
-                        label={`${label} do vínculo ${index + 1}`}
-                        value={link[key]}
+                        label={label}
+                        value={c.face.mark[key]}
+                        onChange={(v) =>
+                          upd("face", { ...c.face, mark: { ...c.face.mark, [key]: v } })
+                        }
+                        disabled={disabled}
+                      />
+                    ))}
+                  </div>
+                </details>
+              </Section>
+              {personaExtra}
+            </div>
+            <Section id="tdv-ancora" title="Âncora">
+              <div className="tdv-anchor">
+                <div className="tdv-grid">
+                  <TdvSelect
+                    label="Pilar escolhido como Âncora"
+                    value={c.face.anchor.pillar}
+                    options={PILLARS}
+                    onChange={(v) =>
+                      upd("face", {
+                        ...c.face,
+                        anchor: {
+                          ...c.face.anchor,
+                          pillar: v as TdvCharacter["face"]["anchor"]["pillar"],
+                        },
+                      })
+                    }
+                    disabled={disabled}
+                  />
+                  <TdvField
+                    label="A que parte de mim consigo retornar?"
+                    value={c.face.anchor.detail}
+                    onChange={(v) =>
+                      upd("face", { ...c.face, anchor: { ...c.face.anchor, detail: v } })
+                    }
+                    disabled={disabled}
+                  />
+                </div>
+                <p className="tdv-note">
+                  Ancorar sustenta ou redireciona uma consequência plausível; não a apaga. Depois, a
+                  Âncora fica Abalada até uma ação significativa de Reassentar.
+                </p>
+                {!c.face.anchor.shaken && (
+                  <>
+                    <TdvSelect
+                      label="Forma de Ancorar"
+                      value={anchorMode}
+                      options={["Sustentar", "Redirecionar"]}
+                      onChange={(v) => setAnchorMode(v as typeof anchorMode)}
+                      disabled={disabled}
+                    />
+                    <TdvField
+                      label="Consequência concreta"
+                      value={consequence}
+                      onChange={setConsequence}
+                      disabled={disabled}
+                    />
+                  </>
+                )}
+                <TdvField
+                  label={
+                    c.face.anchor.shaken
+                      ? "Ação significativa de Reassentar"
+                      : "Como a consequência permanece na ficção"
+                  }
+                  value={outcome}
+                  onChange={setOutcome}
+                  disabled={disabled}
+                />
+                <Button
+                  variant="outline"
+                  disabled={disabled || !c.ready}
+                  onClick={() =>
+                    run(() =>
+                      c.face.anchor.shaken
+                        ? resettle(c, outcome)
+                        : anchor(c, anchorMode, consequence, outcome),
+                    )
+                  }
+                >
+                  {c.face.anchor.shaken ? "Registrar Reassentamento" : "Ancorar e abalar Âncora"}
+                </Button>
+              </div>
+            </Section>
+          </div>
+          <Section id="tdv-vinculos" title="Vínculos">
+            <div className="tdv-folios tdv-link-list">
+              {c.face.links.map((link, index) => (
+                <TdvDisclosure
+                  key={link.id}
+                  initiallyOpen={(!c.ready && index === 0) || newLinkId === link.id}
+                  className="tdv-folio tdv-link-folio"
+                >
+                  <summary className="tdv-link-summary">
+                    <strong>{link.node.trim() || `Vínculo ${index + 1}`}</strong>
+                    <small>
+                      {link.nature.trim() || "Definir relação"} · {link.state}
+                    </small>
+                  </summary>
+                  <div className="tdv-link-editor">
+                    <div className="tdv-grid tdv-grid--identity">
+                      {(
+                        [
+                          ["node", "Nó"],
+                          ["nature", "Natureza"],
+                          ["offer", "Oferta"],
+                          ["demand", "Cobrança"],
+                          ["tension", "Condição de tensão"],
+                        ] as const
+                      ).map(([key, label]) => (
+                        <TdvField
+                          key={key}
+                          label={`${label} do vínculo ${index + 1}`}
+                          value={link[key]}
+                          onChange={(v) =>
+                            upd("face", {
+                              ...c.face,
+                              links: c.face.links.map((l) =>
+                                l.id === link.id ? { ...l, [key]: v } : l,
+                              ),
+                            })
+                          }
+                          disabled={disabled}
+                          short={key === "node" || key === "nature"}
+                        />
+                      ))}
+                      <TdvSelect
+                        label={`Estado do vínculo ${index + 1}`}
+                        value={link.state}
+                        options={LINK_STATES}
                         onChange={(v) =>
                           upd("face", {
                             ...c.face,
                             links: c.face.links.map((l) =>
-                              l.id === link.id ? { ...l, [key]: v } : l,
+                              l.id === link.id ? { ...l, state: v as typeof link.state } : l,
                             ),
                           })
                         }
                         disabled={disabled}
-                        short={key === "node" || key === "nature"}
                       />
-                    ))}
-                    <TdvSelect
-                      label={`Estado do vínculo ${index + 1}`}
-                      value={link.state}
-                      options={LINK_STATES}
-                      onChange={(v) =>
+                    </div>
+                    <TdvLinkUse
+                      character={c}
+                      linkId={link.id}
+                      onChange={onChange}
+                      canEdit={canEdit}
+                    />
+                    <Button
+                      variant="ghost"
+                      disabled={disabled}
+                      onClick={() =>
                         upd("face", {
                           ...c.face,
-                          links: c.face.links.map((l) =>
-                            l.id === link.id ? { ...l, state: v as typeof link.state } : l,
-                          ),
+                          links: c.face.links.filter((l) => l.id !== link.id),
                         })
                       }
-                      disabled={disabled}
-                    />
+                    >
+                      Remover vínculo {index + 1}
+                    </Button>
                   </div>
-                  <TdvLinkUse
-                    character={c}
-                    linkId={link.id}
-                    onChange={onChange}
-                    canEdit={canEdit}
-                  />
-                  <Button
-                    variant="ghost"
-                    disabled={disabled}
-                    onClick={() =>
-                      upd("face", {
-                        ...c.face,
-                        links: c.face.links.filter((l) => l.id !== link.id),
-                      })
-                    }
-                  >
-                    Remover vínculo {index + 1}
-                  </Button>
-                </div>
+                </TdvDisclosure>
               ))}
             </div>
             <Button
               variant="outline"
               disabled={disabled || c.face.links.length >= 50}
-              onClick={() =>
+              onClick={() => {
+                const id = uid();
+                setNewLinkId(id);
                 upd("face", {
                   ...c.face,
                   links: [
                     ...c.face.links,
                     {
-                      id: uid(),
+                      id,
                       node: "",
                       nature: "",
                       state: "Presente",
@@ -333,8 +380,8 @@ export function Tdv2Sheet({
                       tension: "",
                     },
                   ],
-                })
-              }
+                });
+              }}
             >
               Novo vínculo
             </Button>
@@ -342,42 +389,44 @@ export function Tdv2Sheet({
         </TabsContent>
         <TabsContent value="constituicao" data-sheet-content>
           <Section id="tdv-constituicao" title="Matrizes e Alinhavos">
-            <div className="tadeon-attribute-radar">
-              <AttributeRadar
-                color="#a397bf"
-                tickColor="#e9e3d5"
-                data={MATRICES.map((attr) => ({ attr, value: stats.matrices[attr] }))}
-              />
-            </div>
-            <div className="tdv-matrices">
-              {MATRICES.map((matrix) => (
-                <div className="tdv-matrix" key={matrix}>
-                  <span>{matrix}</span>
-                  <strong>d{DICE[stats.matrices[matrix]]}</strong>
-                  {!c.ready ? (
-                    <TdvNumber
-                      label={`Valor de ${matrix}`}
-                      value={c.matrices[matrix]}
-                      min={2}
-                      max={3}
-                      onChange={(v) =>
-                        onChange(
-                          (() => {
-                            const next = { ...c, matrices: { ...c.matrices, [matrix]: v } };
-                            return { ...next, resources: constitution(next).maximums };
-                          })(),
-                        )
-                      }
-                      disabled={disabled}
-                    />
-                  ) : (
-                    <small>
-                      Categoria {stats.matrices[matrix]}
-                      {c.scene.shaken.includes(matrix) ? " · Abalada" : ""}
-                    </small>
-                  )}
-                </div>
-              ))}
+            <div className="tdv-constitution-instruments">
+              <div className="tadeon-attribute-radar">
+                <AttributeRadar
+                  color="#a397bf"
+                  tickColor="#e9e3d5"
+                  data={MATRICES.map((attr) => ({ attr, value: stats.matrices[attr] }))}
+                />
+              </div>
+              <div className="tdv-matrices">
+                {MATRICES.map((matrix) => (
+                  <div className="tdv-matrix" key={matrix}>
+                    <span>{matrix}</span>
+                    <strong>d{DICE[stats.matrices[matrix]]}</strong>
+                    {!c.ready ? (
+                      <TdvNumber
+                        label={`Valor de ${matrix}`}
+                        value={c.matrices[matrix]}
+                        min={2}
+                        max={3}
+                        onChange={(v) =>
+                          onChange(
+                            (() => {
+                              const next = { ...c, matrices: { ...c.matrices, [matrix]: v } };
+                              return { ...next, resources: constitution(next).maximums };
+                            })(),
+                          )
+                        }
+                        disabled={disabled}
+                      />
+                    ) : (
+                      <small>
+                        Categoria {stats.matrices[matrix]}
+                        {c.scene.shaken.includes(matrix) ? " · Abalada" : ""}
+                      </small>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
             <div className="tdv-alinhavos">
               {ALINHAVOS.map((name) => (
@@ -386,6 +435,7 @@ export function Tdv2Sheet({
                   {!c.ready ? (
                     <TdvSelect
                       label={`Grau inicial de ${name}`}
+                      compactLabel
                       value={String(c.alinhavos[name] ?? 0)}
                       options={["0", "1", "2"]}
                       onChange={(v) => upd("alinhavos", { ...c.alinhavos, [name]: Number(v) })}

@@ -20,7 +20,7 @@ export function SheetDescriptionPanel({
         <div className="min-w-0 flex-1">
           <p className="tadeon-eyebrow">Arquivo narrativo</p>
           <h2>Quem existe além dos números</h2>
-          <p>Passado, presença e desejos da personagem. Escreva livremente em cada registro.</p>
+          <p>Passado, presença e desejos da personagem.</p>
         </div>
         <div className="tadeon-description-hero__progress">
           <strong>
@@ -92,12 +92,15 @@ export function SheetDescriptionPanel({
                 </div>
                 <span className="tadeon-description-card__count">{words} palavras</span>
               </div>
-              <p className="tadeon-description-card__prompt">{prompt}</p>
+              <details className="tadeon-description-card__guidance">
+                <summary>Ideias para escrever</summary>
+                <p className="tadeon-description-card__prompt">{prompt}</p>
+              </details>
               <Textarea
                 disabled={!canEdit}
                 value={value}
                 onChange={(event) => onChange({ ...description, [key]: event.target.value })}
-                rows={6}
+                rows={3}
                 aria-label={label}
                 placeholder={placeholder}
               />

@@ -629,9 +629,15 @@ function SheetPage() {
           title={sheet.name || "Ficha"}
           className="tadeon-sheet-commandbar"
           actions={
-            <div className="tdv-actions">
-              <Button variant="outline" onClick={() => navigate({ to: "/" })}>
-                Arquivo
+            <div className="tadeon-sheet-commandbar__actions">
+              <Button
+                variant="outline"
+                size="icon"
+                aria-label="Arquivo"
+                title="Arquivo"
+                onClick={() => navigate({ to: "/" })}
+              >
+                <ArrowLeft className="h-4 w-4" />
               </Button>
               {sheet.power_form_enabled && (
                 <Button
@@ -648,12 +654,19 @@ function SheetPage() {
                 </Button>
               )}
               <SheetExperienceBridge sheetId={id} dropTarget={sheetHost} canEdit={canEdit} />
-              <SaveStatus
-                state={saveError ? "error" : saving ? "saving" : dirty ? "pending" : "saved"}
-                savedAt={lastSavedAt}
-                onRetry={() => void doSave()}
-              />
-              <Button disabled={!canEdit || saving} onClick={() => void doSave()}>
+              <span className="tadeon-sheet-save-state">
+                <SaveStatus
+                  compact
+                  state={saveError ? "error" : saving ? "saving" : dirty ? "pending" : "saved"}
+                  savedAt={lastSavedAt}
+                  onRetry={() => void doSave()}
+                />
+              </span>
+              <Button
+                className="tadeon-sheet-save-button"
+                disabled={!canEdit || saving}
+                onClick={() => void doSave()}
+              >
                 Salvar
               </Button>
             </div>
@@ -693,9 +706,9 @@ function SheetPage() {
             </div>
           </div>
         )}
-        <div className="tdv-field">
+        <div className="tdv-field tdv-character-name">
           <Label className="tadeon-dossier-label" htmlFor="tdv-character-name">
-            Nome da personagem
+            Nome<span className="sr-only"> da personagem</span>
           </Label>
           <Input
             id="tdv-character-name"

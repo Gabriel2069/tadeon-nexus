@@ -8,7 +8,7 @@ import { WorkspaceActions } from "@/components/workspace-actions";
 import { PageHeader } from "@/components/page-header";
 import { useAuth } from "@/lib/auth";
 import { createFileRoute, useBlocker, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { ProtectedShell } from "@/components/protected-shell";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
@@ -1254,6 +1254,7 @@ function LinkPicker({
 
 /* ============ Initiative ============ */
 function InitiativePanel({ s, upd }: PanelProps) {
+  const fieldId = useId();
   const [name, setName] = useState("");
   const [init, setInit] = useState(0);
   const sorted = [...s.initiative_order].sort((a, b) => b.init - a.init);
@@ -1278,18 +1279,28 @@ function InitiativePanel({ s, upd }: PanelProps) {
 
   return (
     <Card className="p-4">
-      <div className="flex items-end gap-2 flex-wrap">
-        <div className="flex-1 min-w-[140px]">
-          <Label className="text-xs">Nome</Label>
+      <div className="tadeon-initiative-form">
+        <div className="tadeon-initiative-form__name">
+          <Label className="text-xs" htmlFor={`${fieldId}-name`}>
+            Nome
+          </Label>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
+            id={`${fieldId}-name`}
             placeholder="NPC, jogador..."
           />
         </div>
-        <div className="w-24">
-          <Label className="text-xs">Iniciativa</Label>
-          <Input type="number" value={init} onChange={(e) => setInit(Number(e.target.value))} />
+        <div className="tadeon-initiative-form__score">
+          <Label className="text-xs" htmlFor={`${fieldId}-score`}>
+            Iniciativa
+          </Label>
+          <Input
+            id={`${fieldId}-score`}
+            type="number"
+            value={init}
+            onChange={(e) => setInit(Number(e.target.value))}
+          />
         </div>
         <Button onClick={() => add(false)} className="gap-1.5">
           <Plus className="w-4 h-4" /> NPC

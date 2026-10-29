@@ -240,6 +240,21 @@ try {
         });
         const g = await page.evaluate(() => ({
           overflow: document.documentElement.scrollWidth > innerWidth,
+          documentHeight: document.documentElement.scrollHeight,
+          headerHeight: Math.round(
+            document.querySelector("[data-page-header]")?.getBoundingClientRect().height ?? 0,
+          ),
+          firstSectionTop: Math.round(
+            document
+              .querySelector("[data-sheet-content][data-state='active'] .tadeon-sheet-section")
+              ?.getBoundingClientRect().top ?? 0,
+          ),
+          visibleControls: [
+            ...document.querySelectorAll("main input,main select,main textarea"),
+          ].filter((el) => {
+            const r = el.getBoundingClientRect();
+            return r.width > 0 && r.top >= 0 && r.bottom <= innerHeight;
+          }).length,
           h1: document.querySelectorAll("h1").length,
           boundary: document.body.textContent.includes("Something went wrong"),
         }));
@@ -285,7 +300,7 @@ try {
       };
       const saved = async (predicate) => {
         await page.getByRole("button", { name: "Salvar", exact: true }).click();
-        await page.waitForFunction(() => document.body.textContent.includes("Salvo"));
+        await page.locator('[data-page-header="sheet"] [data-tadeon-state="saved"]').waitFor();
         const end = Date.now() + 10000;
         while (!predicate()) {
           if (Date.now() > end)
@@ -298,7 +313,29 @@ try {
       };
       await page.goto(`http://127.0.0.1:${port}/sheet/${sheetId}`);
       await page.getByLabel("Nome da personagem", { exact: true }).waitFor();
+      if (process.env.NEXUS_LAYOUT_ONLY === "1") {
+        for (const [label, key] of [
+          ["Pessoa", "person"],
+          ["Constituição", "constitution"],
+          ["Ação", "action"],
+          ["Expressão", "expression"],
+          ["Percurso", "path"],
+        ]) {
+          await page.getByRole("tab", { name: label, exact: true }).click();
+          await geometry("layout-" + key);
+        }
+        await context.close();
+        continue;
+      }
       await geometry("sheet-person");
+      await page.locator(".tdv-link-summary").first().click();
+      const linkOffer = page.getByLabel("Oferta do vínculo 1", { exact: true });
+      if (role === "mestre") {
+        await linkOffer.fill("Abrigo no cais");
+        await saved(() => row.tdv2_data.face.links[0].offer === "Abrigo no cais");
+      } else assert(await linkOffer.isDisabled(), "Readonly link became editable");
+      await geometry("sheet-link-editor");
+      await page.locator(".tdv-link-summary").first().click();
       await page.getByRole("tab", { name: "Ação", exact: true }).click();
       await page.getByRole("tab", { name: "Pessoa", exact: true }).click();
       if (role === "mestre") {
@@ -519,6 +556,11 @@ try {
           "Manual initiative controls removed",
         );
         await page.getByLabel("Título da cena", { exact: true }).waitFor();
+        const initiativeName = await page.getByLabel("Nome", { exact: true }).boundingBox();
+        assert(
+          initiativeName && initiativeName.width >= Math.min(240, width - 110),
+          "Initiative name became too narrow to read",
+        );
         await geometry("master-initiative-retained");
         await masterTool("rules", "Regras TdV II");
         await page.getByLabel("Título da cena", { exact: true }).fill("Rascunho protegido");
@@ -681,6 +723,7 @@ try {
           "Existing sheet still blocked behind conversion",
         );
         await page.getByRole("heading", { name: "Preparar a personagem", exact: true }).waitFor();
+        await geometry("sheet-adaptation-review");
         assert(
           await page
             .getByRole("button", { name: "Concluir criação TdV II", exact: true })

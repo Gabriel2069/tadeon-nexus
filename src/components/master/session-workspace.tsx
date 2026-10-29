@@ -569,7 +569,7 @@ export function SessionWorkspace({
                         <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
                       </span>
                     </div>
-                    <div className="mt-2 grid grid-cols-2 gap-1 text-center sm:grid-cols-4">
+                    <div className={`mt-2 grid gap-1 text-center ${sheet.rules_version === 2 ? "grid-cols-3" : "grid-cols-2 sm:grid-cols-4"}`}>
                       {campaignSheetReading(sheet).resources.map(([label, value]) => (
                         <div
                           key={String(label)}
