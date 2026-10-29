@@ -328,6 +328,14 @@ try {
         continue;
       }
       await geometry("sheet-person");
+      await page.locator(".tdv-link-summary").first().click();
+      const linkOffer = page.getByLabel("Oferta do vínculo 1", { exact: true });
+      if (role === "mestre") {
+        await linkOffer.fill("Abrigo no cais");
+        await saved(() => row.tdv2_data.face.links[0].offer === "Abrigo no cais");
+      } else assert(await linkOffer.isDisabled(), "Readonly link became editable");
+      await geometry("sheet-link-editor");
+      await page.locator(".tdv-link-summary").first().click();
       await page.getByRole("tab", { name: "Ação", exact: true }).click();
       await page.getByRole("tab", { name: "Pessoa", exact: true }).click();
       if (role === "mestre") {

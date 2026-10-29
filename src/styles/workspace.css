@@ -2726,7 +2726,7 @@ details.tadeon-utility-note { padding-block: .35rem; }
 .tadeon-initiative-form > div { display: grid; gap: .35rem; min-width: 0; }
 .tadeon-initiative-form > button { min-height: 44px; }
 .tadeon-initiative-form > button:last-child:nth-of-type(3) { grid-column: 1 / -1; justify-self: end; }
-@media (max-width: 639px) {
+@media (max-width: 1023px) {
   .tadeon-initiative-form { grid-template-columns: repeat(3,minmax(0,1fr)); }
   .tadeon-initiative-form__name { grid-column: 1 / -1; }
   .tadeon-initiative-form > button { min-width: 0; padding-inline: .4rem; }

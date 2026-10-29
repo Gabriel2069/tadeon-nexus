@@ -4,13 +4,19 @@ import { Textarea } from "@/components/ui/textarea";
 export function TdvDisclosure({
   initiallyOpen,
   children,
+  className = "",
 }: {
   initiallyOpen: boolean;
   children: ReactNode;
+  className?: string;
 }) {
   const [open, setOpen] = useState(initiallyOpen);
   return (
-    <details className="tdv-disclosure" open={open} onToggle={(e) => setOpen(e.currentTarget.open)}>
+    <details
+      className={`tdv-disclosure ${className}`}
+      open={open}
+      onToggle={(e) => setOpen(e.currentTarget.open)}
+    >
       {children}
     </details>
   );

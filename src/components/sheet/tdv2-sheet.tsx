@@ -66,6 +66,7 @@ export function Tdv2Sheet({
     [cost, setCost] = useState(4),
     [transcendent, setTranscendent] = useState(false),
     [recordKind, setRecordKind] = useState<TdvRecord["kind"]>("Lavor");
+  const [newLinkId, setNewLinkId] = useState<string | null>(null);
   const [recovery, setRecovery] = useState("Pausa breve"),
     [care, setCare] = useState(false),
     [rebuilt, setRebuilt] = useState(false),
@@ -282,81 +283,95 @@ export function Tdv2Sheet({
             </Section>
           </div>
           <Section id="tdv-vinculos" title="Vínculos">
-            <div className="tdv-folios">
+            <div className="tdv-folios tdv-link-list">
               {c.face.links.map((link, index) => (
-                <div key={link.id} className="tdv-folio">
-                  <div className="tdv-grid tdv-grid--identity">
-                    {(
-                      [
-                        ["node", "Nó"],
-                        ["nature", "Natureza"],
-                        ["offer", "Oferta"],
-                        ["demand", "Cobrança"],
-                        ["tension", "Condição de tensão"],
-                      ] as const
-                    ).map(([key, label]) => (
-                      <TdvField
-                        key={key}
-                        label={`${label} do vínculo ${index + 1}`}
-                        value={link[key]}
+                <TdvDisclosure
+                  key={link.id}
+                  initiallyOpen={(!c.ready && index === 0) || newLinkId === link.id}
+                  className="tdv-folio tdv-link-folio"
+                >
+                  <summary className="tdv-link-summary">
+                    <strong>{link.node.trim() || `Vínculo ${index + 1}`}</strong>
+                    <small>
+                      {link.nature.trim() || "Definir relação"} · {link.state}
+                    </small>
+                  </summary>
+                  <div className="tdv-link-editor">
+                    <div className="tdv-grid tdv-grid--identity">
+                      {(
+                        [
+                          ["node", "Nó"],
+                          ["nature", "Natureza"],
+                          ["offer", "Oferta"],
+                          ["demand", "Cobrança"],
+                          ["tension", "Condição de tensão"],
+                        ] as const
+                      ).map(([key, label]) => (
+                        <TdvField
+                          key={key}
+                          label={`${label} do vínculo ${index + 1}`}
+                          value={link[key]}
+                          onChange={(v) =>
+                            upd("face", {
+                              ...c.face,
+                              links: c.face.links.map((l) =>
+                                l.id === link.id ? { ...l, [key]: v } : l,
+                              ),
+                            })
+                          }
+                          disabled={disabled}
+                          short={key === "node" || key === "nature"}
+                        />
+                      ))}
+                      <TdvSelect
+                        label={`Estado do vínculo ${index + 1}`}
+                        value={link.state}
+                        options={LINK_STATES}
                         onChange={(v) =>
                           upd("face", {
                             ...c.face,
                             links: c.face.links.map((l) =>
-                              l.id === link.id ? { ...l, [key]: v } : l,
+                              l.id === link.id ? { ...l, state: v as typeof link.state } : l,
                             ),
                           })
                         }
                         disabled={disabled}
-                        short={key === "node" || key === "nature"}
                       />
-                    ))}
-                    <TdvSelect
-                      label={`Estado do vínculo ${index + 1}`}
-                      value={link.state}
-                      options={LINK_STATES}
-                      onChange={(v) =>
+                    </div>
+                    <TdvLinkUse
+                      character={c}
+                      linkId={link.id}
+                      onChange={onChange}
+                      canEdit={canEdit}
+                    />
+                    <Button
+                      variant="ghost"
+                      disabled={disabled}
+                      onClick={() =>
                         upd("face", {
                           ...c.face,
-                          links: c.face.links.map((l) =>
-                            l.id === link.id ? { ...l, state: v as typeof link.state } : l,
-                          ),
+                          links: c.face.links.filter((l) => l.id !== link.id),
                         })
                       }
-                      disabled={disabled}
-                    />
+                    >
+                      Remover vínculo {index + 1}
+                    </Button>
                   </div>
-                  <TdvLinkUse
-                    character={c}
-                    linkId={link.id}
-                    onChange={onChange}
-                    canEdit={canEdit}
-                  />
-                  <Button
-                    variant="ghost"
-                    disabled={disabled}
-                    onClick={() =>
-                      upd("face", {
-                        ...c.face,
-                        links: c.face.links.filter((l) => l.id !== link.id),
-                      })
-                    }
-                  >
-                    Remover vínculo {index + 1}
-                  </Button>
-                </div>
+                </TdvDisclosure>
               ))}
             </div>
             <Button
               variant="outline"
               disabled={disabled || c.face.links.length >= 50}
-              onClick={() =>
+              onClick={() => {
+                const id = uid();
+                setNewLinkId(id);
                 upd("face", {
                   ...c.face,
                   links: [
                     ...c.face.links,
                     {
-                      id: uid(),
+                      id,
                       node: "",
                       nature: "",
                       state: "Presente",
@@ -365,8 +380,8 @@ export function Tdv2Sheet({
                       tension: "",
                     },
                   ],
-                })
-              }
+                });
+              }}
             >
               Novo vínculo
             </Button>
